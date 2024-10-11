@@ -1,8 +1,7 @@
-package symbolics.division.armistice.util.registry;
+package symbolics.division.armistice.util.registrar;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -15,6 +14,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * A registrar registers all static fields in within itself to a registry.
+ * Block Registrars also register a BlockItem for each block, unless annotated with {@link NoBlockItem}.
+ */
 public interface BlockRegistrar extends Registrar<Block> {
     @Override
     default void init(String namespace, RegisterEvent event) {

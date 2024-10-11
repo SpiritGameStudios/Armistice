@@ -1,4 +1,4 @@
-package symbolics.division.armistice.util.registry;
+package symbolics.division.armistice.util.registrar;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
@@ -12,6 +12,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 
+/**
+ * A registrar registers all static fields in within itself to a registry.
+ *
+ * @param <T> Type of object to register
+ */
 public interface Registrar<T> {
     /**
      * Process a registrar class and register all objects.

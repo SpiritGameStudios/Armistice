@@ -12,18 +12,15 @@ import java.util.List;
  * mecha. It can be encoded as an item data component, or passed into
  * the constructor for a MechaEntity to provide the core for it.
  */
-public class MechaSchematic {
-    public MechaCore make() { throw new NotImplementedException(); }
-    public Codec<MechaSchematic> codec() { throw new NotImplementedException(); }
-
-	public HullSchematic hull() { throw new NotImplementedException(); }
-	// you can figure out the best way to set up ordnance w/ empty slots
-	public List<OrdnanceSchematic> ordnance() { throw new NotImplementedException(); }
-	public ChassisSchematic chassis() { throw new NotImplementedException(); }
-	public ArmorPart armor() { throw new NotImplementedException(); }
+public record MechaSchematic(
+	HullSchematic hull,
+	List<OrdnanceSchematic> ordnance, // TODO: figure out how to handle empty slots
+	ChassisSchematic chassis,
+	ArmorSchematic armor
+) implements Schematic<MechaSchematic, MechaCore> {
+	@Override
+	public MechaCore make() { throw new NotImplementedException(); }
 
 	@Override
-	public boolean equals(Object obj) {
-		throw new NotImplementedException();
-	}
+	public Codec<MechaSchematic> codec() { throw new NotImplementedException(); }
 }
