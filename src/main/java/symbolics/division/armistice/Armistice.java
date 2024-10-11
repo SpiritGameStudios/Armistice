@@ -4,8 +4,10 @@ import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.slf4j.Logger;
+import symbolics.division.armistice.particle.ParticleSpawner;
 import symbolics.division.armistice.particle.ParticleSpawnerRegistrar;
 import symbolics.division.armistice.util.registry.Registrar;
 
@@ -16,10 +18,15 @@ public class Armistice {
 
     public Armistice(IEventBus modEventBus, ModContainer modContainer) {
         modEventBus.addListener(Armistice::onRegister);
+        modEventBus.addListener(Armistice::onNewRegistry);
     }
 
     private static void onRegister(RegisterEvent event) {
         Registrar.process(ArmisticeBlockRegistrar.class, MODID, event);
         Registrar.process(ParticleSpawnerRegistrar.class, MODID, event);
+    }
+
+    private static void onNewRegistry(NewRegistryEvent event) {
+        event.register(ParticleSpawner.REGISTRY);
     }
 }
