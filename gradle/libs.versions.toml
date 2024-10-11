@@ -1,0 +1,15 @@
+[versions]
+moddevgradle = "1.0.20"
+neoforge = "21.0.167"
+neoforge_range = "[21.0.0-beta,)"
+loader_range = "[4,)"
+
+minecraft = "1.21"
+minecraft_range = "[1.21,1.21.1)"
+parchment = "2024.07.28"
+
+[libraries]
+neoforge = { module = "net.neoforged:neoforge", version.ref = "neoforge" }
+
+[plugins]
+moddevgradle = { id = "net.neoforged.moddev", version.ref = "moddevgradle" }
