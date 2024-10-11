@@ -10,7 +10,7 @@ import symbolics.division.armistice.mecha.schematic.MechaSchematic;
  *
  * updates model to reflect state.
  */
-public class MechaCore extends MechaPart {
+public class MechaCore {
 	// codec contains schematic + state data for this specific instance
 	// decoding reconstructs itself from the schem THEN applies state
 	protected final MechaSchematic schematic;
