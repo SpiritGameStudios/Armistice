@@ -38,6 +38,7 @@ public final class RegistryEvents {
 			Registrar.process(ArmisticeBlockRegistrar.class, MODID, event);
 			Registrar.process(ArmisticeEntityTypeRegistrar.class, MODID, event);
 			Registrar.process(ArmisticeItemRegistrar.class, MODID, event);
+			Registrar.process(ArmisticeCreativeModeTabRegistrar.class, MODID, event);
 
 			// region Debug
 			if (FMLEnvironment.production) return;

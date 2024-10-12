@@ -1,5 +1,6 @@
 {
 	"commands.heal.not_living": "Cannot heal non-living entity",
 	"commands.heal.success": "Healed %s for %s health",
-	"block.armistice.iron_grate": "Iron Grate"
+	"block.armistice.iron_grate": "Iron Grate",
+	"itemGroup.armistice.schematics": "Schematics"
 }
