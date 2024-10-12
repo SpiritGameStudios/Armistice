@@ -7,8 +7,7 @@ import symbolics.division.armistice.mecha.ArmorPart;
 import symbolics.division.armistice.registry.ArmisticeRegistries;
 
 public record ArmorSchematic(
-	@Range(from = 1, to = 9) int size,
-	int platingAmount
+	@Range(from = 1, to = 9) int size
 ) implements Schematic<ArmorSchematic, ArmorPart> {
 	public static final Codec<ArmorSchematic> REGISTRY_CODEC = ArmisticeRegistries.ARMOR.byNameCodec();
 
