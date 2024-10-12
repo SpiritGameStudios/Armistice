@@ -25,5 +25,10 @@ public final class ArmisticeDatagen {
 			event.includeServer(),
 			new ArmisticeLootTableProvider(output, lookupProvider)
 		);
+
+		generator.addProvider(
+			event.includeServer(),
+			new ArmisticeBlockTagsProvider(output, lookupProvider, existingFileHelper)
+		);
 	}
 }
