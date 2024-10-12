@@ -1,6 +1,7 @@
 package symbolics.division.armistice.mecha.schematic;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Range;
 import symbolics.division.armistice.mecha.HullPart;
 import symbolics.division.armistice.registry.ArmisticeRegistries;
@@ -21,5 +22,9 @@ public record HullSchematic(
 	@Override
 	public Codec<HullSchematic> codec() {
 		return ArmisticeRegistries.HULL.byNameCodec();
+	}
+
+	public ResourceLocation id() {
+		return ArmisticeRegistries.HULL.getKey(this);
 	}
 }

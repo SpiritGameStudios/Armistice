@@ -2,7 +2,6 @@ package symbolics.division.armistice.mecha.schematic;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import org.apache.commons.lang3.NotImplementedException;
 import symbolics.division.armistice.mecha.MechaCore;
 
 import java.util.List;
@@ -25,25 +24,31 @@ public record MechaSchematic(
 		ArmorSchematic.REGISTRY_CODEC.fieldOf("armor").forGetter(MechaSchematic::armor)
 	).apply(instance, MechaSchematic::new));
 
-	public MechaSchematic {
-		if (hull().tier() != chassis().tier())
-			throw new IllegalArgumentException("Hull and chassis must be of the same tier");
-
-		ordnance().stream()
-			.map(OrdnanceSchematic::size)
-			.forEach(size -> {
-				if (!hull().slots().contains(size))
-					throw new IllegalArgumentException("Ordnance size " + size + " is not supported by the chassis");
-			});
-	}
-
 	@Override
 	public MechaCore make() {
-		throw new NotImplementedException();
+		if (!verify())
+			throw new IllegalStateException("Mecha schematic is invalid");
+
+		return new MechaCore(this);
 	}
 
 	@Override
 	public Codec<MechaSchematic> codec() {
 		return CODEC;
+	}
+
+	public boolean verify() {
+		if (hull().tier() != chassis().tier())
+			return false;
+
+		if (hull().slots().size() < ordnance().size())
+			return false;
+
+		if (armor().size() > chassis().maxArmorLevel() || armor().size() < chassis().minArmorLevel())
+			return false;
+
+		return ordnance().stream()
+			.map(OrdnanceSchematic::size)
+			.allMatch(size -> hull().slots().contains(size));
 	}
 }
