@@ -2,7 +2,6 @@ package symbolics.division.armistice.mecha.schematic;
 
 import com.mojang.serialization.Codec;
 import org.apache.commons.lang3.NotImplementedException;
-import symbolics.division.armistice.mecha.ArmorPart;
 import symbolics.division.armistice.mecha.MechaCore;
 
 import java.util.List;
@@ -19,8 +18,12 @@ public record MechaSchematic(
 	ArmorSchematic armor
 ) implements Schematic<MechaSchematic, MechaCore> {
 	@Override
-	public MechaCore make() { throw new NotImplementedException(); }
+	public MechaCore make() {
+		throw new NotImplementedException();
+	}
 
 	@Override
-	public Codec<MechaSchematic> codec() { throw new NotImplementedException(); }
+	public Codec<MechaSchematic> codec() {
+		throw new NotImplementedException();
+	}
 }

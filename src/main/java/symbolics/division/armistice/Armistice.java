@@ -6,6 +6,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import org.slf4j.Logger;
+import symbolics.division.armistice.datagen.ArmisticeDatagen;
 import symbolics.division.armistice.event.RegistryEvents;
 
 @Mod(Armistice.MODID)
@@ -15,6 +16,7 @@ public class Armistice {
 
 	public Armistice(IEventBus modEventBus, ModContainer modContainer) {
 		RegistryEvents.init(modEventBus);
+		modEventBus.register(ArmisticeDatagen.class);
 	}
 
 	public static ResourceLocation id(String path) {

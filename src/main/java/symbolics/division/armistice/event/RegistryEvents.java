@@ -9,6 +9,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import symbolics.division.armistice.debug.command.HealCommand;
 import symbolics.division.armistice.particle.ParticleSpawner;
 import symbolics.division.armistice.registry.ArmisticeBlockRegistrar;
+import symbolics.division.armistice.registry.ArmisticeEntityTypeRegistrar;
 import symbolics.division.armistice.util.registrar.Registrar;
 
 import static symbolics.division.armistice.Armistice.MODID;
@@ -28,6 +29,7 @@ public final class RegistryEvents {
         @SubscribeEvent
         private static void onRegister(RegisterEvent event) {
             Registrar.process(ArmisticeBlockRegistrar.class, MODID, event);
+            Registrar.process(ArmisticeEntityTypeRegistrar.class, MODID, event);
         }
 
         @SubscribeEvent

@@ -1,6 +1,6 @@
 [versions]
 moddevgradle = "1.0.20"
-neoforge = "21.0.167"
+neoforge = "21.1.68"
 neoforge_range = "[21.0.0-beta,)"
 loader_range = "[4,)"
 

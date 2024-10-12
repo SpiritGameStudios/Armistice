@@ -1,0 +1,18 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"catagory": "misc",
+	"key": {
+		"#": {
+			"item": "minecraft:iron_ingot"
+		}
+	},
+	"pattern": [
+		" # ",
+		"# #",
+		" # "
+	],
+	"result": {
+		"count": 4,
+		"id": "armistice:iron_grate"
+	}
+}
