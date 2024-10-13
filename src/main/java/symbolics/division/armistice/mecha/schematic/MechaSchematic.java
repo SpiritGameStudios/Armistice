@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import symbolics.division.armistice.mecha.MechaCore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,8 +48,13 @@ public record MechaSchematic(
 		if (armor().size() > chassis().maxArmorLevel() || armor().size() < chassis().minArmorLevel())
 			return false;
 
-		return ordnance().stream()
-			.map(OrdnanceSchematic::size)
-			.allMatch(size -> hull().slots().contains(size));
+		List<Integer> hullSlots = new ArrayList<>(hull().slots());
+		List<Integer> ordnanceSizes = ordnance().stream().map(OrdnanceSchematic::size).toList();
+		for (Integer size : ordnanceSizes) {
+			if (!hullSlots.contains(size)) return false;
+			hullSlots.remove(size);
+		}
+
+		return true;
 	}
 }
