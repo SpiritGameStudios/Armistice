@@ -9,6 +9,8 @@ public class JointNode {
 	protected int depth;
 	protected Vec3 pos = Vec3.ZERO;  // joint pos
 	protected double offset; // distance from parent
+	protected float baseYaw;
+
 
 	public JointNode() {
 		depth = 1;

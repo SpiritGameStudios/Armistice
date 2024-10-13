@@ -26,8 +26,6 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 
 	@Override
 	public void render(MechaEntity mecha, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-//		var tess = Tesselator.getInstance();
-//		var bb = tess.begin(VertexFormat.Mode.DEBUG_LINES, DefaultVertexFormat.POSITION_COLOR);
 		poseStack.pushPose();
 		poseStack.translate(-mecha.getX(), -mecha.getY(), -mecha.getZ());
 		for (var leg : mecha.legs()) {
