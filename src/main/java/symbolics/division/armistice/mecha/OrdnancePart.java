@@ -1,4 +1,4 @@
 package symbolics.division.armistice.mecha;
 
-public class OrdnancePart implements ISubPart, Part {
+public class OrdnancePart implements Part {
 }
