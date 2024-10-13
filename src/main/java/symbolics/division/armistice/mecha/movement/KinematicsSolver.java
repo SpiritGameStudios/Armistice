@@ -58,6 +58,16 @@ public class KinematicsSolver {
 				) {
 					// constrain joint i to be in correct rotation
 					var constrained = constrain(nodes[i].getPos(), rootPos, planeNormal);
+
+					// it is now in correct plane but wrong rotation
+					// wrt pitch, it is either below the min angle or above the max angle.
+					// constraining: constrain, then adjust.
+
+					if (i <= n - 3) {
+						Vec3 i2i3 = nodes[i + 2].getPos().subtract(nodes[i + 1].getPos());
+//						Vec3 i1i2 =  nodes[i]
+					}
+
 					// ensure offset from i+1 is satisfied
 					nodes[i].setPos(adjustRelative(nodes[i + 1].getPos(), constrained, offsets[i]));
 				}

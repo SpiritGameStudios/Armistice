@@ -18,7 +18,7 @@ public final class ArmisticeEntityTypeRegistrar implements EntityTypeRegistrar {
 	public static final class Attributes {
 		@SubscribeEvent
 		public static void addDefaultAttributes(EntityAttributeCreationEvent event) {
-			event.put(MECHA, Mob.createMobAttributes().build());
+			event.put(MECHA, Mob.createMobAttributes().add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 8.0).add(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE, 4.0).build());
 		}
 	}
 
