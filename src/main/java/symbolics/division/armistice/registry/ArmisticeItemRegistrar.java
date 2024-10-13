@@ -26,7 +26,8 @@ public final class ArmisticeItemRegistrar implements ItemRegistrar {
 		.rarity(Rarity.UNCOMMON),
 		ArmisticeDataComponentTypeRegistrar.ORDNANCE_SCHEMATIC);
 
-	public static final Item MECHA_SCHEMATIC = new Item(new Item.Properties()
+	public static final Item MECHA_SCHEMATIC = new ComponentTooltipItem(new Item.Properties()
 		.stacksTo(1)
-		.rarity(Rarity.RARE));
+		.rarity(Rarity.RARE),
+		ArmisticeDataComponentTypeRegistrar.MECHA_SCHEMATIC);
 }

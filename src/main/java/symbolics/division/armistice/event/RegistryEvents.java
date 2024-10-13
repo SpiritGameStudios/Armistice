@@ -1,5 +1,6 @@
 package symbolics.division.armistice.event;
 
+import net.minecraft.core.registries.Registries;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -13,6 +14,7 @@ import symbolics.division.armistice.mecha.schematic.ArmorSchematic;
 import symbolics.division.armistice.mecha.schematic.ChassisSchematic;
 import symbolics.division.armistice.mecha.schematic.HullSchematic;
 import symbolics.division.armistice.mecha.schematic.OrdnanceSchematic;
+import symbolics.division.armistice.recipe.MechaSchematicRecipe;
 import symbolics.division.armistice.registry.*;
 import symbolics.division.armistice.util.registrar.Registrar;
 
@@ -39,6 +41,11 @@ public final class RegistryEvents {
 			Registrar.process(ArmisticeEntityTypeRegistrar.class, MODID, event);
 			Registrar.process(ArmisticeItemRegistrar.class, MODID, event);
 			Registrar.process(ArmisticeCreativeModeTabRegistrar.class, MODID, event);
+
+			event.register(
+				Registries.RECIPE_SERIALIZER,
+				registry -> registry.register(Armistice.id("mecha_schematic"), MechaSchematicRecipe.SERIALIZER)
+			);
 
 			// region Debug
 			if (FMLEnvironment.production) return;

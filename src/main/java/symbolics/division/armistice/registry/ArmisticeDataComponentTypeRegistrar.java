@@ -1,10 +1,7 @@
 package symbolics.division.armistice.registry;
 
 import net.minecraft.core.component.DataComponentType;
-import symbolics.division.armistice.component.ArmorSchematicComponent;
-import symbolics.division.armistice.component.ChassisSchematicComponent;
-import symbolics.division.armistice.component.HullSchematicComponent;
-import symbolics.division.armistice.component.OrdnanceSchematicComponent;
+import symbolics.division.armistice.component.*;
 import symbolics.division.armistice.util.registrar.DataComponentTypeRegistrar;
 
 public final class ArmisticeDataComponentTypeRegistrar implements DataComponentTypeRegistrar {
@@ -26,5 +23,10 @@ public final class ArmisticeDataComponentTypeRegistrar implements DataComponentT
 	public static final DataComponentType<OrdnanceSchematicComponent> ORDNANCE_SCHEMATIC = DataComponentType.<OrdnanceSchematicComponent>builder()
 		.persistent(OrdnanceSchematicComponent.CODEC)
 		.networkSynchronized(OrdnanceSchematicComponent.STREAM_CODEC)
+		.build();
+
+	public static final DataComponentType<MechaSchematicComponent> MECHA_SCHEMATIC = DataComponentType.<MechaSchematicComponent>builder()
+		.persistent(MechaSchematicComponent.CODEC)
+		.networkSynchronized(MechaSchematicComponent.STREAM_CODEC)
 		.build();
 }
