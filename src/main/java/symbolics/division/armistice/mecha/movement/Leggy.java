@@ -1,37 +1,41 @@
 package symbolics.division.armistice.mecha.movement;
 
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Leggy {
-	protected final List<JointNode> joints = new ArrayList<>();
+	protected final List<IKSegment> segments = new ArrayList<>();
 	protected Vec3 targetPos = Vec3.ZERO;
+	protected LegController controller;
 
-	// max rotation is relative to the line formed between this and its parent.
-	// for now, the line of the root node is considered to be vertical.
-	public final Vec2 maxRotation = new Vec2(25, 25);
-
-	public Leggy(int segments) {
-		if (segments < 1) throw new RuntimeException("leg must have at least one segment");
-		JointNode j = new JointNode();
-		joints.add(j);
-		for (int i = 0; i < segments; i++) {
-			j = new JointNode(j);
-			j.setOffset(1.0);
-			joints.add(j);
+	public Leggy(int nSegments) {
+		if (nSegments < 1) throw new RuntimeException("leg must have at least one segment");
+		for (int i = 0; i < nSegments; i++) {
+			segments.add(IKSegment.of(1));
 		}
-		targetPos = j.getPos();
+		this.controller = new LegController(this);
 	}
 
 	public Vec3 getRootPos() {
-		return joints.get(0).getPos();
+		return segments.getFirst().position();
+	}
+
+	public void setRootPosAll(Vec3 pos) {
+		segments.getFirst().setPosition(pos);
+		for (int i = 1; i < segments.size(); i++) {
+			var parent = segments.get(i - 1);
+			segments.get(i).setPosition(parent.position().add(parent.direction().scale(parent.length())));
+		}
 	}
 
 	public void setRootPos(Vec3 pos) {
-		joints.get(0).setPos(pos);
+		segments.getFirst().setPosition(pos);
+	}
+
+	public void setRootDir(Vec3 dir) {
+		segments.getFirst().setDirection(dir);
 	}
 
 	public Vec3 getTarget() {
@@ -39,22 +43,96 @@ public class Leggy {
 	}
 
 	public void setTarget(Vec3 target) {
+		controller.clearTarget();
 		this.targetPos = target;
 	}
 
-	public double getMaxDistance() {
+	public void setStepTarget(Vec3 target) {
+		controller.setTarget(target);
+	}
+
+	public Vec3 getStepTarget() {
+		return controller.getTarget();
+	}
+
+	public boolean stepping() {
+		return controller.stepping();
+	}
+
+	public double getMaxLength() {
 		double d = 0;
-		for (JointNode joint : joints) {
-			d += joint.getOffset();
+		for (var s : segments) {
+			d += s.length();
 		}
 		return d;
 	}
 
+	public Vec3 getTipPos() {
+		return segments.getLast().endPosition();
+	}
+
 	public void tick() {
-		KinematicsSolver.solve(targetPos, joints.getLast());
+		controller.tick();
+		KinematicsSolver.solve(targetPos, segments, getMaxLength(), new Vec3(0, 0, 1));
 	}
 
 	public List<Vec3> jointPositions() {
-		return joints.stream().map(JointNode::getPos).toList();
+		return jointsOf(segments);
+	}
+
+	public static List<Vec3> jointsOf(List<IKSegment> segments) {
+		List<Vec3> out = new ArrayList<>(segments.size() + 1);
+		for (var s : segments) out.add(s.position());
+		out.add(segments.getLast().endPosition());
+		return out;
+	}
+
+	private static class LegController {
+		private final float ticksToStep;
+		private final Leggy leg;
+		private float ticksLeft = 0;
+		private Vec3 startPos = Vec3.ZERO;
+		private Vec3 endPos = Vec3.ZERO;
+		private float stepHeight = 1.0f;
+
+		public LegController(Leggy l, float stepHeight) {
+			this(l);
+			this.stepHeight = stepHeight;
+		}
+
+		public LegController(Leggy l) {
+			ticksToStep = 10;
+			this.leg = l;
+			this.startPos = l.getTarget();
+		}
+
+		public void setTarget(Vec3 newTarget) {
+			startPos = leg.getTipPos();
+			endPos = newTarget;
+			ticksLeft = ticksToStep;
+		}
+
+		public Vec3 getTarget() {
+			return endPos;
+		}
+
+		public void clearTarget() {
+			ticksLeft = 0;
+		}
+
+		public void tick() {
+			if (ticksLeft <= 0) return;
+			ticksLeft -= 1;
+			var dist = (ticksToStep - ticksLeft) / ticksToStep;
+			var t = startPos.add(endPos.subtract(startPos).scale(dist));
+			if (ticksLeft > 0) t = t.add(0, GeometryUtil.easedCurve(dist) * stepHeight, 0);
+			leg.targetPos = t;
+			//leg.targetPos = KinematicsSolver.adjustRelative(startPos, endPos, startPos.distanceTo(endPos) * dist);
+		}
+
+		public boolean stepping() {
+			return ticksLeft > 0;
+		}
+
 	}
 }

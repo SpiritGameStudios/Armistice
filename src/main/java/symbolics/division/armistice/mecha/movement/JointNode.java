@@ -9,7 +9,10 @@ public class JointNode {
 	protected int depth;
 	protected Vec3 pos = Vec3.ZERO;  // joint pos
 	protected double offset; // distance from parent
-	protected float baseYaw;
+
+	// max rotation is relative to the line formed between this and its parent.
+	// for now, the line of the root node is considered to be vertical.
+	// yaw, pitch
 
 
 	public JointNode() {
@@ -38,7 +41,9 @@ public class JointNode {
 		return this.offset;
 	}
 
-	public boolean root() { return this.parent == null; }
+	public boolean root() {
+		return this.parent == null;
+	}
 
 	public JointNode getRoot() {
 		if (!root()) return parent.getRoot();
@@ -53,9 +58,9 @@ public class JointNode {
 		}
 		JointNode[] nodes = new JointNode[length];
 		JointNode j = this;
-		for (int i=length-1; i>=0; i--) {
+		for (int i = length - 1; i >= 0; i--) {
 			nodes[i] = j;
-			if ((j == null || i==0) && j != relativeRoot) {
+			if ((j == null || i == 0) && j != relativeRoot) {
 				throw new RuntimeException("Attempted to get chain relative to a root not in node's ancestry");
 			}
 			j = j.parent;
