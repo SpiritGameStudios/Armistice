@@ -8,8 +8,11 @@ minecraft = "1.21"
 minecraft_range = "[1.21,1.21.1)"
 parchment = "2024.07.28"
 
+fusion = "1.1.1a-neoforge-mc1.21"
+
 [libraries]
 neoforge = { module = "net.neoforged:neoforge", version.ref = "neoforge" }
+fusion = { module = "maven.modrinth:fusion-connected-textures", version.ref = "fusion" }
 
 [plugins]
 moddevgradle = { id = "net.neoforged.moddev", version.ref = "moddevgradle" }

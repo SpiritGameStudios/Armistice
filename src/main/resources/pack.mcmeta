@@ -1,0 +1,9 @@
+{
+	"pack": {
+		"pack_format": 34,
+		"description": "Armistice Assets"
+	},
+	"fusion": {
+		"overrides_folder": "fusion"
+	}
+}
