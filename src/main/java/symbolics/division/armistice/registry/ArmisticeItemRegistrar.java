@@ -5,6 +5,7 @@ import net.minecraft.world.item.Rarity;
 import symbolics.division.armistice.item.ComponentTooltipItem;
 import symbolics.division.armistice.util.registrar.ItemRegistrar;
 
+@SuppressWarnings("unused")
 public final class ArmisticeItemRegistrar implements ItemRegistrar {
 	public static final Item ARMOR_SCHEMATIC = new ComponentTooltipItem(new Item.Properties()
 		.stacksTo(1)

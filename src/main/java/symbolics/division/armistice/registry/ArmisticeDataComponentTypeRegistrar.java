@@ -4,6 +4,7 @@ import net.minecraft.core.component.DataComponentType;
 import symbolics.division.armistice.component.*;
 import symbolics.division.armistice.util.registrar.DataComponentTypeRegistrar;
 
+@SuppressWarnings("unused")
 public final class ArmisticeDataComponentTypeRegistrar implements DataComponentTypeRegistrar {
 	public static final DataComponentType<ArmorSchematicComponent> ARMOR_SCHEMATIC = DataComponentType.<ArmorSchematicComponent>builder()
 		.persistent(ArmorSchematicComponent.CODEC)

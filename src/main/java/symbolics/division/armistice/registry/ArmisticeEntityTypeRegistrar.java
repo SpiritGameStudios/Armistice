@@ -5,6 +5,7 @@ import net.minecraft.world.entity.MobCategory;
 import symbolics.division.armistice.mecha.MechaEntity;
 import symbolics.division.armistice.util.registrar.EntityTypeRegistrar;
 
+@SuppressWarnings("unused")
 public final class ArmisticeEntityTypeRegistrar implements EntityTypeRegistrar {
 	public static final EntityType<MechaEntity> MECHA = EntityType.Builder.of(
 		MechaEntity::temp, MobCategory.MISC
@@ -18,5 +19,4 @@ public final class ArmisticeEntityTypeRegistrar implements EntityTypeRegistrar {
 //			event.put(MECHA, Mob.createMobAttributes().add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 8.0).add(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE, 4.0).add(FOLLOW_RANGE, 70).build());
 //		}
 //	}
-
 }

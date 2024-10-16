@@ -17,6 +17,7 @@ import symbolics.division.armistice.util.registrar.CreativeModeTabRegistrar;
 
 import java.util.List;
 
+@SuppressWarnings("unused")
 public final class ArmisticeCreativeModeTabRegistrar implements CreativeModeTabRegistrar {
 	public static final CreativeModeTab SCHEMATICS = CreativeModeTab.builder()
 		.title(Component.translatable("itemGroup.armistice.schematics"))

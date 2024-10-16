@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import symbolics.division.armistice.util.registrar.BlockRegistrar;
 
+@SuppressWarnings("unused")
 public final class ArmisticeBlockRegistrar implements BlockRegistrar {
 	public static final Block IRON_GRATE = new WaterloggedTransparentBlock(
 		BlockBehaviour.Properties.of()
