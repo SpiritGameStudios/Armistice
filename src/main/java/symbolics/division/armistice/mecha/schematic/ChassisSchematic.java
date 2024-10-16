@@ -15,7 +15,7 @@ public record ChassisSchematic(
 
 	@Override
 	public ChassisPart make() {
-		return null;
+		return new ChassisPart(this);
 	}
 
 	@Override

@@ -16,7 +16,7 @@ public record HullSchematic(
 
 	@Override
 	public HullPart make() {
-		return null;
+		return new HullPart(this);
 	}
 
 	@Override

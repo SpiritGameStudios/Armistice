@@ -30,7 +30,7 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 		poseStack.pushPose();
 		poseStack.translate(-mecha.getX(), -mecha.getY(), -mecha.getZ());
 		int i = 0;
-		for (var leg : mecha.legs()) {
+		for (var leg : mecha.core().debugGetChassis().debugGetLegs()) {
 			var vc = bufferSource.getBuffer(RenderType.debugLineStrip(2.0));
 			for (var joint : leg.jointPositions()) {
 				vc.addVertex(poseStack.last(), joint.toVector3f()).setColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -38,7 +38,7 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 
 
 			var vc2 = bufferSource.getBuffer(RenderType.debugQuads());
-			Vec3 t = mecha.stepAreas.get(i);
+			Vec3 t = mecha.core().debugGetChassis().debugStepTargets.get(i);
 			i++;
 			vc2.addVertex(poseStack.last(), t.add(-1, 0, -1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
 			vc2.addVertex(poseStack.last(), t.add(1, 0, -1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
@@ -48,7 +48,7 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 		var lookvc = bufferSource.getBuffer(RenderType.debugLineStrip(4.0));
 		Vec3 p = mecha.position().add(0, 1, 0);
 		lookvc.addVertex(poseStack.last(), p.toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
-		Vec3 look = mecha.direction.curDir();
+		Vec3 look = mecha.core().direction();
 		var look_adjusted = p.add(look).toVector3f();
 		lookvc.addVertex(poseStack.last(), look_adjusted).setColor(1.0f, 0.0f, 0.0f, 1.0f);
 		lookvc.addVertex(poseStack.last(), look_adjusted).setColor(0.0f, 1.0f, 0.0f, 1.0f);
