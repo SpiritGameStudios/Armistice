@@ -52,7 +52,7 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 		var look_adjusted = p.add(look).toVector3f();
 		lookvc.addVertex(poseStack.last(), look_adjusted).setColor(1.0f, 0.0f, 0.0f, 1.0f);
 		lookvc.addVertex(poseStack.last(), look_adjusted).setColor(0.0f, 1.0f, 0.0f, 1.0f);
-		lookvc.addVertex(poseStack.last(), mecha.followPos.toVector3f()).setColor(0.0f, 1.0f, 0.0f, 1.0f);
+		lookvc.addVertex(poseStack.last(), mecha.core().debugGetChassis().getPathingTarget().toVector3f()).setColor(0.0f, 1.0f, 0.0f, 1.0f);
 		poseStack.popPose();
 	}
 }

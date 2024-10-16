@@ -2,6 +2,10 @@ package symbolics.division.armistice.mecha;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
+import org.joml.Quaternionfc;
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.movement.DirectionState;
 import symbolics.division.armistice.mecha.movement.GeometryUtil;
 import symbolics.division.armistice.mecha.movement.Leggy;
@@ -15,7 +19,7 @@ import java.util.List;
  * so all other parts have position and rotation defined with this at the base.
  * It also has a separate health pool and hitbox that controls whether it is immobilized.
  */
-public class ChassisPart implements Part {
+public class ChassisPart extends AbstractMechaPart {
 	protected final DirectionState direction = new DirectionState(Math.PI);
 	protected final List<Leggy> legs = new ArrayList<>();
 	protected final ChassisSchematic schematic;
@@ -25,7 +29,6 @@ public class ChassisPart implements Part {
 	protected final double stepTolerance = 2;
 
 	protected Vec3 movement = Vec3.ZERO;
-	protected boolean firstTick = true;
 	protected Vec3 pathingTarget = null;
 
 	public final List<Vec3> debugStepTargets = new ArrayList<>();
@@ -49,16 +52,18 @@ public class ChassisPart implements Part {
 	}
 
 	@Override
-	public void tick(MechaCore core) {
-		if (firstTick) {
-			for (Leggy l : legs) {
-				// temp: leg pos from skeleton etc etc
-				l.setRootPosAll(core.position());
-			}
-			firstTick = false;
+	public void init(MechaCore core) {
+		super.init(core);
+		for (Leggy l : legs) {
+			// temp: leg pos from skeleton etc etc
+			l.setRootPosAll(core.position());
 		}
+	}
 
-		// temp: need non-horizontal only movement
+	@Override
+	public void tick() {
+		super.tick();
+		// temp: need non horizontal-only movement
 		if (pathingTarget != null) {
 			Vec3 horz = pathingTarget.add(0, -pathingTarget.y, 0);
 			if (horz.distanceTo(core.position()) > followTolerance) {
@@ -94,14 +99,45 @@ public class ChassisPart implements Part {
 		}
 	}
 
+	@Override
+	public void serverTick() {
+		tick();
+		core.hull.serverTick();
+	}
+
+	@Override
+	public void clientTick(float tickDelta) {
+		tick();
+		core.hull.clientTick(tickDelta);
+	}
+
+	@Override
+	public Part parent() {
+		return core;
+	}
+
+	@Override
+	public Quaternionfc relRot() {
+		return new Quaternionf().rotateTo(new Vector3f(0, 0, 1), this.direction().toVector3f());
+	}
+
+	public Vector3fc relHullPos() {
+		// temp: change to skeleton based
+		return new Vector3f(0, 1, 0);
+	}
+
 	/**
 	 * @param target the location in the level to path to.
 	 */
-	public void setTarget(Vec3 target) {
+	public void setPathingTarget(Vec3 target) {
 		this.pathingTarget = target;
 	}
 
-	public boolean stepping() {
+	public Vec3 getPathingTarget() {
+		return this.pathingTarget;
+	}
+
+	protected boolean stepping() {
 		boolean s = false;
 		for (Leggy l : legs) s |= l.stepping();
 		return s;
@@ -114,6 +150,7 @@ public class ChassisPart implements Part {
 		return movement;
 	}
 
+	// temp: see where we can replace this with relRot etc
 	public Vec3 direction() {
 		return direction.curDir();
 	}

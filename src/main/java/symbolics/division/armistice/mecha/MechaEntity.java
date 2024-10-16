@@ -5,7 +5,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import symbolics.division.armistice.mecha.schematic.*;
 
 import java.util.ArrayList;
@@ -13,10 +12,6 @@ import java.util.List;
 
 public class MechaEntity extends Entity {
 	protected final MechaCore core;
-
-
-	public Vec3 followPos = Vec3.ZERO;
-	public final float followTolerance = 5;
 
 	protected MechaEntity(EntityType<? extends Entity> entityType, Level level, MechaCore core) {
 		super(entityType, level);
@@ -42,7 +37,7 @@ public class MechaEntity extends Entity {
 		super.tick();
 		if (firstTick) {
 			firstTick = false;
-			this.core.setEntity(this);
+			core.initCore(this);
 		}
 		core.tick();
 	}

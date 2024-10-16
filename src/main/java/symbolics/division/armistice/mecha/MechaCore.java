@@ -7,6 +7,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
+import org.joml.Quaternionfc;
+import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.schematic.MechaSchematic;
 
 /**
@@ -17,7 +20,7 @@ import symbolics.division.armistice.mecha.schematic.MechaSchematic;
  * <p>
  * updates model to reflect state.
  */
-public class MechaCore {
+public class MechaCore implements Part {
 	// codec contains schematic + state data for this specific instance
 	// decoding reconstructs itself from the schem THEN applies state
 	protected final MechaSchematic schematic;
@@ -31,8 +34,14 @@ public class MechaCore {
 		this.hull = schematic.hull().make();
 	}
 
-	public void setEntity(MechaEntity e) {
+	public void initCore(MechaEntity e) {
 		this.entity = e;
+		init(this);
+	}
+
+	@Override
+	public void init(MechaCore core) {
+		chassis.init(core);
 	}
 
 	public void tick() {
@@ -49,22 +58,26 @@ public class MechaCore {
 				player
 			));
 			if (raycast.getType() == HitResult.Type.BLOCK) {
-				chassis.pathingTarget = raycast.getLocation();
+				chassis.setPathingTarget(raycast.getLocation());
 			}
 		}
 		// --------------------------------
 
 		if (entity().level().isClientSide()) {
 			float tickDelta = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
-			chassis.clientTick(this, tickDelta);
-			hull.clientTick(this, tickDelta);
+			chassis.clientTick(tickDelta);
 		} else {
-			chassis.serverTick(this);
-			hull.serverTick(this);
+			chassis.serverTick();
 			entity().setPos(entity.position().add(acceleration().scale(0.1)));
 		}
 
 //		entity().lookAt(EntityAnchorArgument.Anchor.EYES, entity().getEyePosition().add(chassis.direction()));
+	}
+
+	@Override
+	public Part parent() {
+		// todo: better than null for now. consider alternatives.
+		throw new RuntimeException("MechaCore has no parent part");
 	}
 
 	public Vec3 position() {
@@ -85,6 +98,16 @@ public class MechaCore {
 
 	public Vec3 acceleration() {
 		return chassis.movement();
+	}
+
+	@Override
+	public Vector3fc absPos() {
+		return position().toVector3f();
+	}
+
+	@Override
+	public Quaternionfc absRot() {
+		return new Quaternionf().identity();
 	}
 
 	public ChassisPart debugGetChassis() {

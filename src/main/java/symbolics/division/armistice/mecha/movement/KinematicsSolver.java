@@ -14,6 +14,8 @@ public class KinematicsSolver {
 	// Aristidou and Lasenby, 2011
 	// http://www.andreasaristidou.com/publications/papers/FABRIK.pdf
 	// does NOT modify rotation/direction of segment 0.
+	// temp: HEAVILY WIP IF YOU COMMENT ON THIS SECTION YOU WAIVE YOUR RIGHT
+	//       TO NOT BEING ANNIHILATED BY HAMA INDUSTRIES VOID ACTUATOR (C)
 	public static void solve(Vec3 target, List<IKSegment> segments, double maxDist, Vec3 refDir) {
 		final int maxIterations = 50;
 		Vector3f ref = refDir.toVector3f();
