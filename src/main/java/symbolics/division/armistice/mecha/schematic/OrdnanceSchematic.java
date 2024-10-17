@@ -12,7 +12,7 @@ public record OrdnanceSchematic(
 
 	@Override
 	public OrdnancePart make() {
-		return null;
+		return new OrdnancePart(this);
 	}
 
 	@Override

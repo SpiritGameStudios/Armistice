@@ -20,6 +20,7 @@ import java.util.List;
  * It also has a separate health pool and hitbox that controls whether it is immobilized.
  */
 public class ChassisPart extends AbstractMechaPart {
+	public final List<Vec3> debugStepTargets = new ArrayList<>();
 	protected final DirectionState direction = new DirectionState(Math.PI);
 	protected final List<Leggy> legs = new ArrayList<>();
 	protected final ChassisSchematic schematic;
@@ -27,11 +28,8 @@ public class ChassisPart extends AbstractMechaPart {
 	protected final double moveSpeed = 1.0;
 	protected final int numLegs = 6;
 	protected final double stepTolerance = 2;
-
 	protected Vec3 movement = Vec3.ZERO;
-	protected Vec3 pathingTarget = null;
-
-	public final List<Vec3> debugStepTargets = new ArrayList<>();
+	protected Vec3 pathingTarget = Vec3.ZERO;
 
 	// todo notes: chassis schematic/skeleton needs to tell us
 	// - number of legs
@@ -54,6 +52,8 @@ public class ChassisPart extends AbstractMechaPart {
 	@Override
 	public void init(MechaCore core) {
 		super.init(core);
+		core.hull.init(core);
+
 		for (Leggy l : legs) {
 			// temp: leg pos from skeleton etc etc
 			l.setRootPosAll(core.position());
@@ -126,15 +126,15 @@ public class ChassisPart extends AbstractMechaPart {
 		return new Vector3f(0, 1, 0);
 	}
 
+	public Vec3 getPathingTarget() {
+		return this.pathingTarget;
+	}
+
 	/**
 	 * @param target the location in the level to path to.
 	 */
 	public void setPathingTarget(Vec3 target) {
 		this.pathingTarget = target;
-	}
-
-	public Vec3 getPathingTarget() {
-		return this.pathingTarget;
 	}
 
 	protected boolean stepping() {
