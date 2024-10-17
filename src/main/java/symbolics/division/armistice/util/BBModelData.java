@@ -1,5 +1,6 @@
 package symbolics.division.armistice.util;
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.Util;
@@ -11,9 +12,47 @@ import java.util.List;
 import java.util.Map;
 
 public record BBModelData(
-	List<Element> elements
+	List<Element> elements,
+	List<Outline> outliner
 ) {
-	public static final Codec<BBModelData> CODEC = Element.CODEC.listOf().xmap(BBModelData::new, BBModelData::elements);
+	public static final Codec<BBModelData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		Element.CODEC.listOf().fieldOf("elements").forGetter(BBModelData::elements),
+		Outline.CODEC.listOf().lenientOptionalFieldOf("outliner", List.of()).forGetter(BBModelData::outliner)
+	).apply(instance, BBModelData::new));
+
+	public record Outline(
+		String name,
+		Vec3 origin,
+		Vec3 rotation,
+		int color,
+		boolean export,
+		boolean mirrorUv,
+		boolean isOpen,
+		boolean locked,
+		boolean visibility,
+		int autoUv,
+		List<Either<Outline, String>> children,
+		String uuid
+	) {
+		public static final Codec<Outline> CODEC =
+			Codec.recursive(
+				Outline.class.getSimpleName(),
+				outlineCodec -> RecordCodecBuilder.create(instance -> instance.group(
+					Codec.STRING.fieldOf("name").forGetter(Outline::name),
+					Vec3.CODEC.fieldOf("origin").forGetter(Outline::origin),
+					Vec3.CODEC.lenientOptionalFieldOf("rotation", Vec3.ZERO).forGetter(Outline::origin),
+					Codec.INT.fieldOf("color").forGetter(Outline::color),
+					Codec.BOOL.fieldOf("export").forGetter(Outline::export),
+					Codec.BOOL.fieldOf("mirror_uv").forGetter(Outline::mirrorUv),
+					Codec.BOOL.fieldOf("isOpen").forGetter(Outline::isOpen),
+					Codec.BOOL.fieldOf("locked").forGetter(Outline::locked),
+					Codec.BOOL.fieldOf("visibility").forGetter(Outline::visibility),
+					Codec.INT.fieldOf("autouv").forGetter(Outline::autoUv),
+					Codec.either(outlineCodec, Codec.STRING).listOf().lenientOptionalFieldOf("children", List.of()).forGetter(Outline::children),
+					Codec.STRING.fieldOf("uuid").forGetter(Outline::uuid)
+				).apply(instance, Outline::new))
+			);
+	}
 
 	public record Element(
 		String name,
@@ -28,7 +67,8 @@ public record BBModelData(
 		int autoUv,
 		int color,
 		Vec3 origin,
-		Map<Direction, Face> faces
+		Map<Direction, Face> faces,
+		String uuid
 	) {
 		public static final Codec<Element> CODEC = RecordCodecBuilder.create(instance -> instance.group(
 			Codec.STRING.fieldOf("name").forGetter(Element::name),
@@ -43,7 +83,8 @@ public record BBModelData(
 			Codec.INT.fieldOf("autouv").forGetter(Element::autoUv),
 			Codec.INT.fieldOf("color").forGetter(Element::color),
 			Vec3.CODEC.fieldOf("origin").forGetter(Element::origin),
-			Codec.unboundedMap(Direction.CODEC, Face.CODEC).fieldOf("faces").forGetter(Element::faces)
+			Codec.unboundedMap(Direction.CODEC, Face.CODEC).fieldOf("faces").forGetter(Element::faces),
+			Codec.STRING.fieldOf("uuid").forGetter(Element::uuid)
 		).apply(instance, Element::new));
 
 		public enum RenderOrder {
@@ -55,14 +96,20 @@ public record BBModelData(
 		}
 
 		public record Face(
-			Vector4d uv
+			Vector4d uv,
+			int texture,
+			double rotation
 		) {
-			public static final Codec<Face> CODEC = Codec.DOUBLE
-				.listOf()
-				.comapFlatMap(
-					array -> Util.fixedSize(array, 4).map(vec -> new Vector4d(vec.getFirst(), vec.get(1), vec.get(2), vec.get(3))),
-					vec -> List.of(vec.x(), vec.y(), vec.z(), vec.w())
-				).xmap(Face::new, Face::uv);
+			public static final Codec<Face> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+				Codec.DOUBLE
+					.listOf()
+					.comapFlatMap(
+						array -> Util.fixedSize(array, 4).map(vec -> new Vector4d(vec.getFirst(), vec.get(1), vec.get(2), vec.get(3))),
+						vec -> List.of(vec.x(), vec.y(), vec.z(), vec.w())
+					).fieldOf("texture").forGetter(Face::uv),
+				Codec.INT.lenientOptionalFieldOf("texture", -1).forGetter(Face::texture),
+				Codec.DOUBLE.lenientOptionalFieldOf("rotation", -1.0).forGetter(Face::rotation)
+			).apply(instance, Face::new));
 		}
 	}
 }

@@ -14,7 +14,7 @@ import java.util.List;
  */
 public record MechaSchematic(
 	HullSchematic hull,
-	List<OrdnanceSchematic> ordnance, // TODO: figure out how to handle empty slots, Potentially use a DefaultedList?
+	List<OrdnanceSchematic> ordnance,
 	ChassisSchematic chassis,
 	ArmorSchematic armor
 ) implements Schematic<MechaSchematic, MechaCore> {
