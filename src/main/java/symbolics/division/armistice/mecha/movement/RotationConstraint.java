@@ -6,7 +6,7 @@ import org.joml.Matrix4fc;
 // values in radians
 public record RotationConstraint(float minYaw, float maxYaw, float minPitch, float maxPitch, Matrix4fc frustum) {
 	public static RotationConstraint of(float minYaw, float maxYaw, float minPitch, float maxPitch, float length) {
-		var q = new RotationConstraint(
+		return new RotationConstraint(
 			minYaw,
 			maxYaw,
 			minPitch,
@@ -26,7 +26,6 @@ public record RotationConstraint(float minYaw, float maxYaw, float minPitch, flo
 //				999
 //			)
 		);
-		return q;
 	}
 
 	public static RotationConstraint of(float yaw, float pitch, float length) {

@@ -12,12 +12,6 @@ public final class GeometryUtil {
 		throw new UnsupportedOperationException("Cannot instantiate utility class");
 	}
 
-	// obviously not thread safe
-	// (echo) you could use a threadlocal if u need i think
-//	private static final Matrix4f M_view = new Matrix4f();
-//	private static final Matrix4f M_inv = new Matrix4f();
-//	private static final Vector4f transformed = new Vector4f();
-
 	public static Vector3f rotatePitch(Vector3f v, float rad) {
 		var axis = new Vector3f(v.x, 0, v.z).cross(v).normalize();
 		return new Vector3f(v).rotateAxis(rad, axis.x, axis.y, axis.z);
@@ -26,12 +20,6 @@ public final class GeometryUtil {
 	public static Vec3 clampToFrustum(RotationConstraint constraint, Vec3 p, Vec3 p1, Vec3 p2, Vector3f ref) {
 		return new Vec3(clampToFrustum(constraint, p.toVector3f(), p1.toVector3f(), p2.toVector3f(), ref));
 	}
-
-//    public static Vec3 constrain2D() {
-//        // ensure not behind p2. if so, set to straight ahead from it.
-//
-//        // ensure inside constrained  area
-//    }
 
 	/**
 	 * Clamp p to frustum described by constraint, rooted at p2 and pointing towards (p2-p1).
@@ -42,17 +30,10 @@ public final class GeometryUtil {
 	 * p1 is the base of s1, p2 is the tip of s1/base of s2, and p is the unconstrained (desired)
 	 * rotation of the tip of s2. After clamping, the result of this operation must be rescaled
 	 * to ensure s2 retains its correct length.
-	 *
-	 * @param constraint
-	 * @param p
-	 * @param p1
-	 * @param p2
-	 * @return
 	 */
 	public static Vector3f clampToFrustum(RotationConstraint constraint, Vector3f p, Vector3f p1, Vector3f p2, Vector3f ref) {
 		var look = p2.sub(p1, new Vector3f());
-		var eye = p2;
-		var center = eye.add(look, new Vector3f());
+		var center = p2.add(look, new Vector3f());
 
 		Vector3f up;
 		if (Mth.equal(0, look.x) && Mth.equal(0, look.z)) {
@@ -65,12 +46,10 @@ public final class GeometryUtil {
 			);
 		}
 
-//		var up = rotatePitch(look, (float) Math.PI / 2);
-		//rotatePitch(look, (float) Math.PI / 2);
 		var M_view = new Matrix4f().setLookAt(
-			eye.x, eye.y, eye.z, center.x, center.y, center.z, up.x, up.y, up.z
+			p2.x, p2.y, p2.z, center.x, center.y, center.z, up.x, up.y, up.z
 		);
-//		var M_inv = constraint.frustum().invertPerspectiveView(M_view, new Matrix4f());
+
 		// apply view then perspective transformation
 		Vector4f transformed = new Vector4f();
 		var M2 = constraint.frustum().mul(M_view, new Matrix4f());

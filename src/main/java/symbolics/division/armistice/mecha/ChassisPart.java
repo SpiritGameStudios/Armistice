@@ -157,8 +157,6 @@ public class ChassisPart extends AbstractMechaPart {
 	/**
 	 * Assuming bilateral symmetry with two rows of legs
 	 *
-	 * @param core
-	 * @param leg
 	 * @return Expected central target position for leg tip relative to chassis center and direction
 	 */
 	protected Vec3 relStepPos(MechaCore core, int leg) {

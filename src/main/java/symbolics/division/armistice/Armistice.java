@@ -5,7 +5,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
+import symbolics.division.armistice.client.render.debug.MechaDebugRenderer;
 import symbolics.division.armistice.datagen.ArmisticeDatagen;
 import symbolics.division.armistice.event.RegistryEvents;
 
@@ -17,6 +19,8 @@ public class Armistice {
 	public Armistice(IEventBus modEventBus, ModContainer modContainer) {
 		RegistryEvents.init(modEventBus);
 		modEventBus.register(ArmisticeDatagen.class);
+
+		NeoForge.EVENT_BUS.register(MechaDebugRenderer.class);
 	}
 
 	public static ResourceLocation id(String path) {

@@ -5,6 +5,7 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 import symbolics.division.armistice.mecha.schematic.*;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ import java.util.List;
 
 public class MechaEntity extends Entity {
 	protected final MechaCore core;
+	private boolean firstTick = true;
 
 	protected MechaEntity(EntityType<? extends Entity> entityType, Level level, MechaCore core) {
 		super(entityType, level);
@@ -32,8 +34,6 @@ public class MechaEntity extends Entity {
 		return new MechaEntity(entityType, level, new MechaSchematic(hull, ordnance, chassis, armor));
 	}
 
-	private boolean firstTick = true;
-
 	@Override
 	public void tick() {
 		super.tick();
@@ -49,17 +49,17 @@ public class MechaEntity extends Entity {
 	}
 
 	@Override
-	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+	protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
 
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag compound) {
+	protected void readAdditionalSaveData(@NotNull CompoundTag compound) {
 
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag compound) {
+	protected void addAdditionalSaveData(@NotNull CompoundTag compound) {
 
 	}
 }
