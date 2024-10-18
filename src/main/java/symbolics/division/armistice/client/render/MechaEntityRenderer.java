@@ -1,20 +1,26 @@
 package symbolics.division.armistice.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3f;
+import symbolics.division.armistice.client.render.model.TestModel;
 import symbolics.division.armistice.mecha.MechaEntity;
 
 @OnlyIn(Dist.CLIENT)
 public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
-	private static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/cobblestone.png");
+	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("armistice", "textures/block/mecha/skin_test.png");
 
 	public MechaEntityRenderer(EntityRendererProvider.Context context) {
 		super(context);
@@ -27,32 +33,52 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 
 	@Override
 	public void render(MechaEntity mecha, float entityYaw, float partialTick, PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
+
+		BakedModel test = Minecraft.getInstance().getModelManager().getModel(TestModel.TEST_MODEL);
+//		var renderType = RenderType.entityTranslucent(getTextureLocation(mecha));
+		var renderType = RenderType.cutout();
+		var entvc = bufferSource.getBuffer(renderType);
+
 		poseStack.pushPose();
-		poseStack.translate(-mecha.getX(), -mecha.getY(), -mecha.getZ());
-		int i = 0;
-		for (var leg : mecha.core().debugGetChassis().debugGetLegs()) {
-			var vc = bufferSource.getBuffer(RenderType.debugLineStrip(2.0));
-			for (var joint : leg.jointPositions()) {
-				vc.addVertex(poseStack.last(), joint.toVector3f()).setColor(1.0f, 1.0f, 1.0f, 1.0f);
-			}
-
-
-			var vc2 = bufferSource.getBuffer(RenderType.debugQuads());
-			Vec3 t = mecha.core().debugGetChassis().debugStepTargets.get(i);
-			i++;
-			vc2.addVertex(poseStack.last(), t.add(-1, 0, -1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
-			vc2.addVertex(poseStack.last(), t.add(1, 0, -1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
-			vc2.addVertex(poseStack.last(), t.add(1, 0, 1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
-			vc2.addVertex(poseStack.last(), t.add(-1, 0, 1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+		poseStack.scale(5, 5, 5);
+		for (BakedQuad quad : test.getQuads(null, null, mecha.getRandom(), ModelData.EMPTY, null)) {
+			entvc.putBulkData(poseStack.last(), quad, 1f, 1f, 1f, 1f, packedLight, OverlayTexture.NO_OVERLAY);
 		}
-		var lookvc = bufferSource.getBuffer(RenderType.debugLineStrip(4.0));
-		Vec3 p = mecha.position().add(0, 1, 0);
-		lookvc.addVertex(poseStack.last(), p.toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
-		Vec3 look = mecha.core().direction();
-		var look_adjusted = p.add(look).toVector3f();
-		lookvc.addVertex(poseStack.last(), look_adjusted).setColor(1.0f, 0.0f, 0.0f, 1.0f);
-		lookvc.addVertex(poseStack.last(), look_adjusted).setColor(0.0f, 1.0f, 0.0f, 1.0f);
-		lookvc.addVertex(poseStack.last(), mecha.core().debugGetChassis().getPathingTarget().toVector3f()).setColor(0.0f, 1.0f, 0.0f, 1.0f);
 		poseStack.popPose();
+
+		var vvv = bufferSource.getBuffer(RenderType.debugLineStrip(10));
+		vvv.addVertex(poseStack.last(), new Vector3f(0, 0, 0)).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+		vvv.addVertex(poseStack.last(), mecha.core().direction().toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+
+
+//		poseStack.pushPose();
+//		poseStack.translate(-mecha.getX(), -mecha.getY(), -mecha.getZ());
+//		int i = 0;
+//		for (var leg : mecha.core().debugGetChassis().debugGetLegs()) {
+//			var vc = bufferSource.getBuffer(RenderType.debugLineStrip(2.0));
+//			for (var joint : leg.jointPositions()) {
+//				vc.addVertex(poseStack.last(), joint.toVector3f()).setColor(1.0f, 1.0f, 1.0f, 1.0f);
+//			}
+//
+//
+//			var vc2 = bufferSource.getBuffer(RenderType.debugQuads());
+//			Vec3 t = mecha.core().debugGetChassis().debugStepTargets.get(i);
+//			i++;
+//			vc2.addVertex(poseStack.last(), t.add(-1, 0, -1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+//			vc2.addVertex(poseStack.last(), t.add(1, 0, -1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+//			vc2.addVertex(poseStack.last(), t.add(1, 0, 1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+//			vc2.addVertex(poseStack.last(), t.add(-1, 0, 1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+//		}
+//		var lookvc = bufferSource.getBuffer(RenderType.debugLineStrip(4.0));
+//		Vec3 p = mecha.position().add(0, 1, 0);
+//		lookvc.addVertex(poseStack.last(), p.toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+//		Vec3 look = mecha.core().direction();
+//		var look_adjusted = p.add(look).toVector3f();
+//		lookvc.addVertex(poseStack.last(), look_adjusted).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+//		lookvc.addVertex(poseStack.last(), look_adjusted).setColor(0.0f, 1.0f, 0.0f, 1.0f);
+//		lookvc.addVertex(poseStack.last(), mecha.core().debugGetChassis().getPathingTarget().toVector3f()).setColor(0.0f, 1.0f, 0.0f, 1.0f);
+//		poseStack.popPose();
 	}
+
+//	private static void renderObj(Resourcer)
 }

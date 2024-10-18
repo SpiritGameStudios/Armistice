@@ -16,6 +16,8 @@ public class MechaEntity extends Entity {
 	protected MechaEntity(EntityType<? extends Entity> entityType, Level level, MechaCore core) {
 		super(entityType, level);
 		this.core = core;
+		setViewScale(10.0);
+		this.noCulling = true;
 	}
 
 	public MechaEntity(EntityType<? extends Entity> entityType, Level level, MechaSchematic schematic) {
