@@ -10,7 +10,8 @@ import java.util.List;
 
 public record HullSchematic(
 	@Range(from = 1, to = 3) int tier,
-	List<Integer> slots
+	List<Integer> slots,
+	HeatData heat
 ) implements Schematic<HullSchematic, HullPart> {
 	public static final Codec<HullSchematic> REGISTRY_CODEC = ArmisticeRegistries.HULL.byNameCodec();
 

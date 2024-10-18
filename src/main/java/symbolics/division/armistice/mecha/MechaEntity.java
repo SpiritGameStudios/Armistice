@@ -27,7 +27,7 @@ public class MechaEntity extends Entity {
 	}
 
 	public static MechaEntity temp(EntityType<? extends Entity> entityType, Level level) {
-		HullSchematic hull = new HullSchematic(1, List.of(1, 2));
+		HullSchematic hull = new HullSchematic(1, List.of(1, 2), new HeatData(1, 0, 0));
 		ChassisSchematic chassis = new ChassisSchematic(1, 1, 1);
 		List<OrdnanceSchematic> ordnance = new ArrayList<>();
 		ArmorSchematic armor = new ArmorSchematic(1);
