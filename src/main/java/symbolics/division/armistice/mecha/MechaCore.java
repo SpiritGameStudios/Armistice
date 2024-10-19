@@ -123,11 +123,6 @@ public class MechaCore implements Part {
 		return new Quaternionf().identity();
 	}
 
-	public ChassisPart debugGetChassis() {
-		// temp: better encapsulation for renderer access. callback?
-		return chassis;
-	}
-
 	@Override
 	public void renderDebug(MultiBufferSource bufferSource, PoseStack poseStack) {
 		if (this.entity == null) return;
