@@ -97,11 +97,49 @@ public class KinematicsSolver {
 	public static Vec3 adjustRelative(Vec3 a, Vec3 b, double offset) {
 		double li = offset / a.distanceTo(b);
 		double li1 = 1 - li;
-		return a.multiply(li1, li1, li1).add(b.multiply(li, li, li));
+		return a.scale(li1).add(b.scale(li));
 	}
 
 	// projects point onto the plane intersecting anchor with unit vector normal
-	private static Vec3 planarProject(Vec3 point, Vec3 anchor, Vec3 normal) {
-		return point.subtract(normal.scale(point.subtract(anchor).dot(normal)));
+	private static Vec3 planarProject(Vec3 point, Vec3 anchor, Vec3 unitNormal) {
+		return point.subtract(unitNormal.scale(point.subtract(anchor).dot(unitNormal)));
+	}
+
+//	private static void planarConstrain(Vector3f p, Vector3f anchor, Vector3f direction, Vector3f unitNormal, float thetaMax, float thetaMin) {
+//		Vector3f pDirection = p.sub(anchor, new Vector3f());
+//		direction
+//
+//
+//		// given two coplanar vectors a and b, with a as +x and +z relative to normal, constrain b
+//		// so that it is more than thetaMin and less than thetaMax radians away from r radians over the initial.
+//	}
+
+//	private static void extractAngle(Vector3f p, Vector3f pX, Vector3f pZ) {
+//
+//		// px is treated as +x axis and pZ treated as +z (coming out of plane). get xy-rotation of p.
+//	}
+
+	public static Vec3 clampPlanarAngle(Vec3 r, Vec3 dir, Vec3 norm, float maxAngle, float minAngle) {
+		// give a vector r, a coplanar vector dir, and a normal vector,
+		// constrain r so that its within min and max angle (radians)
+		double dp = dir.dot(r);
+		Vec3 dxr = dir.cross(r);
+
+		// projection of p onto dir
+		Vec3 jx = dir.scale(dp / dir.lengthSqr());
+		Vec3 jy = r.subtract(jx);
+
+		// calc and clamp theta if needed
+		double yh = Math.signum(norm.dot(dxr)) * jy.length();
+		double xh = Math.signum(dp) * jx.length();
+		double theta = Math.atan2(yh, xh);
+		double theta2 = Math.clamp(theta, minAngle, maxAngle);
+		if (theta == theta2) return r;
+
+		// otherwise, produce new orthogonal downscaled appropriately.
+		double length = r.length();
+		double yh2 = Math.sin(theta2) * length;
+		Vec3 jy2 = jy.normalize().scale(yh2);
+		return jy2.add(jx);
 	}
 }

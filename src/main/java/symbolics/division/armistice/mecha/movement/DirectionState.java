@@ -27,6 +27,9 @@ public class DirectionState {
 		dir = dir.lengthSqr() != 1 ? dir.normalize() : dir;
 		targetDirection.set(dir.x, dir.y, dir.z);
 		currentDirection.cross(targetDirection, axis).normalize();
+		if (Float.isNaN(axis.y)) {
+			axis = new Vector3f(0, 1, 0);
+		}
 	}
 
 	public void tick() {

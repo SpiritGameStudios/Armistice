@@ -7,6 +7,7 @@ import org.joml.Quaternionfc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.movement.DirectionState;
+import symbolics.division.armistice.mecha.movement.GeometryUtil;
 import symbolics.division.armistice.mecha.movement.Leggy;
 import symbolics.division.armistice.mecha.schematic.ChassisSchematic;
 
@@ -63,39 +64,43 @@ public class ChassisPart extends AbstractMechaPart {
 	public void tick() {
 		super.tick();
 		// temp: need non horizontal-only movement
-//		if (pathingTarget != null) {
-//			Vec3 horz = pathingTarget.add(0, -pathingTarget.y, 0);
-//			if (horz.distanceTo(core.position()) > followTolerance) {
-//				this.direction.setTarget(horz.subtract(core.position()));
-//				if (!stepping()) {
-//					this.movement = horz.subtract(core.position().with(Direction.Axis.Y, 0)).normalize().scale(moveSpeed);
-//				}
-//			}
-//		}
-//
+		if (pathingTarget != null) {
+			var targetXZ = pathingTarget.with(Direction.Axis.Y, 0);
+			var coreXZ = core.position().with(Direction.Axis.Y, 0);
+			if (targetXZ.distanceTo(coreXZ) > followTolerance) {
+				var hdir = targetXZ.subtract(coreXZ);
+				this.direction.setTarget(hdir);
+				if (!stepping()) {
+					this.movement = hdir.normalize().scale(moveSpeed);
+				}
+			} else {
+				this.movement = Vec3.ZERO;
+			}
+		}
+
 //		if (!stepping()) {
-//			this.direction.tick();
+		this.direction.tick();
 //		}
-//
-//		for (int i = 0; i < legs.size(); i++) {
-//			// select locations around this for leg tips
-//			Vec3 stepTarget = relStepPos(core, i);
-//			debugStepTargets.set(i, stepTarget);
-//			Leggy leg = legs.get(i);
-//			// temp: move this logic inside leg controller, only update target pos at each tick
-//			if (!GeometryUtil.inRange(leg.getStepTarget(), stepTarget, stepTolerance)) {
-//				int l = i - 1 < 0 ? legs.size() - 1 : i - 1;
-//				int r = i + 1 >= legs.size() ? 0 : i + 1;
-//				boolean lneighborStepping = legs.get(l).stepping();
-//				boolean rneighborStepping = legs.get(r).stepping();
-//				if (!(lneighborStepping || rneighborStepping)) {
-//					leg.setStepTarget(stepTarget);
-//				}
-//			}
-//			// temp: set based on skeleton
-//			leg.setRootPos(core.position().add(0, 1, 0));
-//			leg.tick();
-//		}
+
+		for (int i = 0; i < legs.size(); i++) {
+			// select locations around this for leg tips
+			Vec3 stepTarget = relStepPos(core, i);
+			debugStepTargets.set(i, stepTarget);
+			Leggy leg = legs.get(i);
+			// temp: move this logic inside leg controller, only update target pos at each tick
+			if (!GeometryUtil.inRange(leg.getStepTarget(), stepTarget, stepTolerance)) {
+				int l = i - 1 < 0 ? legs.size() - 1 : i - 1;
+				int r = i + 1 >= legs.size() ? 0 : i + 1;
+				boolean lneighborStepping = legs.get(l).stepping();
+				boolean rneighborStepping = legs.get(r).stepping();
+				if (!(lneighborStepping || rneighborStepping)) {
+					leg.setStepTarget(stepTarget);
+				}
+			}
+			// temp: set based on skeleton
+			leg.setRootPos(core.position().add(0, 1, 0));
+			leg.tick();
+		}
 	}
 
 	@Override

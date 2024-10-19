@@ -20,7 +20,7 @@ import symbolics.division.armistice.registry.ArmisticeEntityTypeRegistrar;
 import java.util.List;
 
 public final class MechaDebugRenderer {
-	private static boolean enabled = false;
+	private static boolean enabled = true;
 
 	@SubscribeEvent
 	private static void onRenderLevelStage(RenderLevelStageEvent event) {
@@ -39,11 +39,12 @@ public final class MechaDebugRenderer {
 
 			Vec3 offset = mecha.position().subtract(camera);
 			poseStack.translate(offset.x, offset.y, offset.z);
+			poseStack.translate(-mecha.position().x, -mecha.position().y, -mecha.position().z);
 
 			List<Leggy> debugGetLegs = mecha.core().debugGetChassis().debugGetLegs();
 			for (int i = 0; i < debugGetLegs.size(); i++) {
 				Leggy leg = debugGetLegs.get(i);
-				
+
 				VertexConsumer lineStrip2 = bufferSource.getBuffer(RenderType.debugLineStrip(2.0));
 				for (Vec3 joint : leg.jointPositions())
 					lineStrip2.addVertex(poseStack.last(), joint.toVector3f()).setColor(1.0f, 1.0f, 1.0f, 1.0f);
