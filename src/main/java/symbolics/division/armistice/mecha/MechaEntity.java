@@ -30,7 +30,7 @@ public class MechaEntity extends Entity {
 		HullSchematic hull = new HullSchematic(1, List.of(1, 2), new HeatData(1, 0, 0));
 		ChassisSchematic chassis = new ChassisSchematic(1, 1, 1);
 		List<OrdnanceSchematic> ordnance = new ArrayList<>();
-		ArmorSchematic armor = new ArmorSchematic(1);
+		ArmorSchematic armor = new ArmorSchematic(1, 1);
 		return new MechaEntity(entityType, level, new MechaSchematic(hull, ordnance, chassis, armor));
 	}
 

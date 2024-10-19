@@ -49,7 +49,7 @@ public final class RegistryEvents {
 
 			event.register(
 				ArmisticeRegistries.ARMOR_KEY,
-				registry -> registry.register(Armistice.id("test_armor"), new ArmorSchematic(1))
+				registry -> registry.register(Armistice.id("test_armor"), new ArmorSchematic(1, 1))
 			);
 
 			event.register(

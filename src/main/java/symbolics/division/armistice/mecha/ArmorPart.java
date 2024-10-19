@@ -1,13 +1,15 @@
 package symbolics.division.armistice.mecha;
 
+import symbolics.division.armistice.mecha.schematic.ArmorSchematic;
+
 public class ArmorPart extends AbstractMechaPart {
 	protected final int level;
-	protected final int platingAmount;
+	protected final double platingAmount;
 	protected MechaCore core = null;
 
-	ArmorPart(int level, int platingAmount) {
-		this.level = level;
-		this.platingAmount = platingAmount;
+	public ArmorPart(ArmorSchematic schematic) {
+		this.level = schematic.size();
+		this.platingAmount = schematic.plating();
 	}
 
 	@Override

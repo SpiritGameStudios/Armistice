@@ -1,5 +1,9 @@
 package symbolics.division.armistice.mecha;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
@@ -175,7 +179,33 @@ public class ChassisPart extends AbstractMechaPart {
 		return core.position().add(base.scale(legs.get(leg).getMaxLength() / 2).add(0, -1, 0));
 	}
 
-	public List<Leggy> debugGetLegs() {
-		return legs;
+	@Override
+	public void renderDebug(MultiBufferSource bufferSource, PoseStack poseStack) {
+		for (int i = 0; i < legs.size(); i++) {
+			Leggy leg = legs.get(i);
+
+			VertexConsumer lineStrip2 = bufferSource.getBuffer(RenderType.debugLineStrip(2.0));
+			for (Vec3 joint : leg.jointPositions())
+				lineStrip2.addVertex(poseStack.last(), joint.toVector3f()).setColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+			VertexConsumer quad = bufferSource.getBuffer(RenderType.debugQuads());
+			Vec3 target = debugStepTargets.get(i);
+
+			quad.addVertex(poseStack.last(), target.add(-1, 0, -1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+			quad.addVertex(poseStack.last(), target.add(1, 0, -1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+			quad.addVertex(poseStack.last(), target.add(1, 0, 1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+			quad.addVertex(poseStack.last(), target.add(-1, 0, 1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+		}
+
+
+		VertexConsumer lineStrip4 = bufferSource.getBuffer(RenderType.debugLineStrip(4.0));
+		
+		lineStrip4.addVertex(poseStack.last(), core.position().add(0, 1, 0).add(core.direction()).toVector3f())
+			.setColor(0.0f, 1.0f, 0.0f, 1.0f);
+
+		lineStrip4.addVertex(poseStack.last(), pathingTarget.toVector3f())
+			.setColor(0.0f, 1.0f, 0.0f, 1.0f);
+
+		core.hull.renderDebug(bufferSource, poseStack);
 	}
 }

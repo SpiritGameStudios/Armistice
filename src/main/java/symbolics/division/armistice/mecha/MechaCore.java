@@ -1,7 +1,11 @@
 package symbolics.division.armistice.mecha;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -10,6 +14,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Quaternionfc;
+import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.schematic.MechaSchematic;
 import symbolics.division.armistice.mecha.schematic.OrdnanceSchematic;
@@ -121,5 +126,25 @@ public class MechaCore implements Part {
 	public ChassisPart debugGetChassis() {
 		// temp: better encapsulation for renderer access. callback?
 		return chassis;
+	}
+
+	@Override
+	public void renderDebug(MultiBufferSource bufferSource, PoseStack poseStack) {
+		if (this.entity == null) return;
+
+		VertexConsumer lineStrip4 = bufferSource.getBuffer(RenderType.debugLineStrip(4.0));
+
+		Vec3 posUp = position().add(0, 1, 0);
+		Vector3f adjustedDirection = posUp.add(direction()).toVector3f();
+
+		lineStrip4.addVertex(poseStack.last(), posUp.toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+		lineStrip4.addVertex(poseStack.last(), adjustedDirection).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+
+
+		VertexConsumer lineStrip10 = bufferSource.getBuffer(RenderType.debugLineStrip(10));
+		lineStrip10.addVertex(poseStack.last(), new Vector3f(0, 0, 0)).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+		lineStrip10.addVertex(poseStack.last(), direction().toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+
+		chassis.renderDebug(bufferSource, poseStack);
 	}
 }

@@ -1,5 +1,7 @@
 package symbolics.division.armistice.mecha;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
 import org.joml.Quaternionf;
 import org.joml.Quaternionfc;
 import org.joml.Vector3f;
@@ -70,4 +72,8 @@ public interface Part {
 	 * @return parent part, or throw exception if core.
 	 */
 	Part parent();
+
+	default void renderDebug(MultiBufferSource bufferSource, PoseStack poseStack) {
+		
+	}
 }
