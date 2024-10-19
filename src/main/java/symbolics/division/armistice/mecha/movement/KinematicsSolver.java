@@ -18,6 +18,9 @@ public class KinematicsSolver {
 	public static void solve(Vec3 target, List<IKSegment> segments, double maxDist, Leggy leg) {
 		final int maxIterations = 50;
 
+		double minAngle = -Math.PI / 4;
+		double maxAngle = 0;
+
 		IKSegment[] seg = segments.toArray(IKSegment[]::new);
 		// segment i has base at joint i and tip at joint i+1.
 		Vec3[] joints = Leggy.jointsOf(segments).toArray(Vec3[]::new);
@@ -27,6 +30,7 @@ public class KinematicsSolver {
 		// define rotation plane normal unit vec
 		Vec3 dirToTargetFromRoot = target.subtract(root.position()).normalize();
 		Vec3 planeNormal = dirToTargetFromRoot.with(Direction.Axis.Y, 0).cross(new Vec3(0, 1, 0));
+		Vec3 planeNormalInv = planeNormal.scale(-1);
 		// temp: debug render normal
 		leg.rot_normal = planeNormal.scale(0.2);
 		// if behind leg base, flip normal to correct it
@@ -45,7 +49,7 @@ public class KinematicsSolver {
 			for (int i = 2; i <= joints.length - 2; i++) {
 				// from the root, point each segment towards target as far as it goes.
 				Vec3 relativeJointPos = joints[i].subtract(joints[i - 1]);
-				Vec3 constrained = clampPlanarAngle(relativeJointPos, joints[i - 1].subtract(joints[i - 2]), planeNormal, -Math.PI / 4, Math.PI / 4);
+				Vec3 constrained = clampPlanarAngle(relativeJointPos, joints[i - 1].subtract(joints[i - 2]), planeNormal, minAngle, Math.PI / 4);
 				joints[i] = adjustRelative(joints[i - 1], constrained.add(joints[i - 1]), seg[i - 1].length());
 			}
 		} else { // reachable target
@@ -62,7 +66,7 @@ public class KinematicsSolver {
 				// from the second to last segment, adjust the previous segment to the next backwards
 				for (int i = joints.length - 3; i > 0; i--) {
 					Vec3 relativeJointPos = joints[i].subtract(joints[i + 1]);
-					Vec3 constrained = clampPlanarAngle(relativeJointPos, joints[i + 1].subtract(joints[i + 2]), planeNormal, -Math.PI / 4, Math.PI / 4);
+					Vec3 constrained = clampPlanarAngle(relativeJointPos, joints[i + 1].subtract(joints[i + 2]), planeNormalInv, minAngle, maxAngle);
 					joints[i] = adjustRelative(joints[i + 1], constrained.add(joints[i + 1]), seg[i].length());
 				}
 
@@ -72,11 +76,9 @@ public class KinematicsSolver {
 				// for each joint after, restrict it to respect constraints of the tip it represents
 				for (int i = 2; i <= joints.length - 1; i++) {
 					Vec3 relativeJointPos = joints[i].subtract(joints[i - 1]);
-					Vec3 constrained = clampPlanarAngle(relativeJointPos, joints[i - 1].subtract(joints[i - 2]), planeNormal, -Math.PI / 4, Math.PI / 4);
+					Vec3 constrained = clampPlanarAngle(relativeJointPos, joints[i - 1].subtract(joints[i - 2]), planeNormal, minAngle, maxAngle);
 					joints[i] = adjustRelative(joints[i - 1], constrained.add(joints[i - 1]), seg[i - 1].length());
 				}
-
-
 			}
 		}
 

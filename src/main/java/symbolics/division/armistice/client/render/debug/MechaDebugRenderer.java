@@ -3,13 +3,14 @@ package symbolics.division.armistice.client.render.debug;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import symbolics.division.armistice.registry.ArmisticeEntityTypeRegistrar;
 
@@ -43,16 +44,15 @@ public final class MechaDebugRenderer {
 		poseStack.popPose();
 	}
 
-	@SubscribeEvent
-	private static void onRegisterClientCommands(RegisterClientCommandsEvent event) {
-		var cmd = Commands.literal("armistice_debug").then(Commands.literal("mecha")
+	public static LiteralArgumentBuilder<CommandSourceStack> registerClientCommands(LiteralArgumentBuilder<CommandSourceStack> cmd) {
+		var sub = Commands.literal("mecha")
 			.requires(src -> src.hasPermission(Commands.LEVEL_ADMINS))
 			.then(Commands.argument("enable", BoolArgumentType.bool())
 				.executes(ctx -> {
 					enabled = BoolArgumentType.getBool(ctx, "enable");
 					return Command.SINGLE_SUCCESS;
-				})));
-		cmd = GeometryDebugRenderer.registerSubCommands(cmd);
-		event.getDispatcher().register(cmd);
+				}));
+		sub = GeometryDebugRenderer.registerSubCommands(sub);
+		return cmd.then(sub);
 	}
 }
