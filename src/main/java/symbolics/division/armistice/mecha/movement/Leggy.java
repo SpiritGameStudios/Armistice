@@ -11,6 +11,8 @@ public class Leggy {
 	protected Vec3 targetPos = Vec3.ZERO;
 	protected LegController controller;
 
+	public Vec3 rot_normal = Vec3.ZERO;
+
 	public Leggy(int nSegments) {
 		if (nSegments < 1) throw new RuntimeException("leg must have at least one segment");
 		for (int i = 0; i < nSegments; i++) {
@@ -76,7 +78,7 @@ public class Leggy {
 		controller.tick();
 		// point base towards target
 		segments.getFirst().setDirection(targetPos.subtract(segments.getFirst().position()).with(Direction.Axis.Y, 0).normalize().add(0, 0.5, 0).normalize());
-		KinematicsSolver.solve(targetPos, segments, getMaxLength(), new Vec3(0, 0, 1));
+		KinematicsSolver.solve(targetPos, segments, getMaxLength(), this);
 	}
 
 	public List<Vec3> jointPositions() {

@@ -47,7 +47,7 @@ public class ChassisPart extends AbstractMechaPart {
 		this.schematic = schematic;
 		for (int i = 0; i < numLegs; i++) {
 			// temp: Define leg segments and orientation from bone data
-			legs.add(new Leggy(7));
+			legs.add(new Leggy(5));
 			legs.get(i).setRootDir(new Vec3(0, 0, 1));
 			debugStepTargets.add(Vec3.ZERO);
 		}
@@ -195,15 +195,18 @@ public class ChassisPart extends AbstractMechaPart {
 			quad.addVertex(poseStack.last(), target.add(1, 0, -1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
 			quad.addVertex(poseStack.last(), target.add(1, 0, 1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
 			quad.addVertex(poseStack.last(), target.add(-1, 0, 1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+
+			for (Vec3 joint : leg.jointPositions()) {
+				VertexConsumer rotationNormal = bufferSource.getBuffer(RenderType.debugLineStrip(4.0));
+				rotationNormal.addVertex(poseStack.last(), joint.toVector3f()).setColor(0.0f, 1.0f, 1.0f, 1.0f);
+				rotationNormal.addVertex(poseStack.last(), joint.add(leg.rot_normal).toVector3f()).setColor(0.0f, 1.0f, 1.0f, 1.0f);
+			}
 		}
 
-
-		VertexConsumer lineStrip4 = bufferSource.getBuffer(RenderType.debugLineStrip(4.0));
-		
-		lineStrip4.addVertex(poseStack.last(), core.position().add(0, 1, 0).add(core.direction()).toVector3f())
+		VertexConsumer targetLine = bufferSource.getBuffer(RenderType.debugLineStrip(4.0));
+		targetLine.addVertex(poseStack.last(), core.position().add(0, 1, 0).add(core.direction()).toVector3f())
 			.setColor(0.0f, 1.0f, 0.0f, 1.0f);
-
-		lineStrip4.addVertex(poseStack.last(), pathingTarget.toVector3f())
+		targetLine.addVertex(poseStack.last(), pathingTarget.toVector3f())
 			.setColor(0.0f, 1.0f, 0.0f, 1.0f);
 
 		core.hull.renderDebug(bufferSource, poseStack);

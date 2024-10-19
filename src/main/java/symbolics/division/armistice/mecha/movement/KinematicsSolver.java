@@ -2,6 +2,7 @@ package symbolics.division.armistice.mecha.movement;
 
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
 
 import java.util.List;
 
@@ -9,22 +10,13 @@ import java.util.List;
 public class KinematicsSolver {
 	final static double IK_TOLERANCE = 0.3;
 
-
 	// FABRIK: A fast, iterative solver for the Inverse Kinematics problem
 	// Aristidou and Lasenby, 2011
 	// http://www.andreasaristidou.com/publications/papers/FABRIK.pdf
-	// does NOT modify rotation/direction of segment 0.
 	// temp: HEAVILY WIP IF YOU COMMENT ON THIS SECTION YOU WAIVE YOUR RIGHT
 	//       TO NOT BEING ANNIHILATED BY HAMA INDUSTRIES VOID ACTUATOR (C)
-	public static void solve(Vec3 target, List<IKSegment> segments, double maxDist, Vec3 refDir) {
+	public static void solve(Vec3 target, List<IKSegment> segments, double maxDist, Leggy leg) {
 		final int maxIterations = 50;
-
-		// reset all to above (temp remove, try constraints!)
-//		Vec3 tilt = new Vec3(0, 10, 0).add(target.subtract(segments.getFirst().position()).normalize().scale(1)).normalize();
-//		for (int i = 1; i < segments.size(); i++) {
-//			segments.get(i).setDirection(tilt);
-//			segments.get(i).setPosition(segments.get(i - 1).endPosition());
-//		}
 
 		IKSegment[] seg = segments.toArray(IKSegment[]::new);
 		// segment i has base at joint i and tip at joint i+1.
@@ -35,6 +27,8 @@ public class KinematicsSolver {
 		// define rotation plane normal unit vec
 		Vec3 dirToTargetFromRoot = target.subtract(root.position()).normalize();
 		Vec3 planeNormal = dirToTargetFromRoot.with(Direction.Axis.Y, 0).cross(new Vec3(0, 1, 0));
+		// temp: debug render normal
+		leg.rot_normal = planeNormal.scale(0.2);
 		// if behind leg base, flip normal to correct it
 		if (seg[0].direction().dot(dirToTargetFromRoot) < 0) planeNormal = planeNormal.scale(-1).normalize();
 		// project all joints onto the plane
@@ -48,14 +42,11 @@ public class KinematicsSolver {
 		// check if in reach
 		if (dist > maxDist) { // unreachable target
 			joints[1] = seg[0].endPosition();
-			for (int i = 1; i <= joints.length - 2; i++) {
+			for (int i = 2; i <= joints.length - 2; i++) {
 				// from the root, point each segment towards target as far as it goes.
-				// point end joint of segment i at target
-//				joints[i + 1] = adjustRelative(joints[i], target, seg[i].length());
-				// apply constraints: clamp to rotation range of segment i
-//				joints[i + 1] = GeometryUtil.clampToFrustum(seg[i].constraint(), joints[i + 1], joints[i - 1], joints[i], ref);
-				// re-scale to correct length
-				joints[i + 1] = adjustRelative(joints[i], joints[i + 1], seg[i].length());
+				Vec3 relativeJointPos = joints[i].subtract(joints[i - 1]);
+				Vec3 constrained = clampPlanarAngle(relativeJointPos, joints[i - 1].subtract(joints[i - 2]), planeNormal, -Math.PI / 4, Math.PI / 4);
+				joints[i] = adjustRelative(joints[i - 1], constrained.add(joints[i - 1]), seg[i - 1].length());
 			}
 		} else { // reachable target
 			double dif = joints[joints.length - 1].distanceTo(target);
@@ -67,36 +58,25 @@ public class KinematicsSolver {
 				// set end segment to target
 				joints[joints.length - 1] = target;
 				joints[joints.length - 2] = adjustRelative(joints[joints.length - 2], target, seg[joints.length - 2].length());
+
 				// from the second to last segment, adjust the previous segment to the next backwards
 				for (int i = joints.length - 3; i > 0; i--) {
-					// constrain joint i to be in correct rotation relative to i+2 pointing towards i+1.
-					// technically incorrect, needs to be mirrored. todo.
-//					Vec3 constrained = GeometryUtil.clampToFrustum(seg[i + 1].constraint(), joints[i], joints[i + 2], joints[i + 1], ref);
-					// fix segment length
-//					joints[i] = adjustRelative(joints[i + 1], constrained, seg[i].length());
-
-//					Vec3 relativeJointPos = joints[i].subtract(joints[i + 1]);
-//					Vec3 constrained = clampPlanarAngle(relativeJointPos, joints[i + 1].subtract(joints[i + 2]), planeNormal, -Math.PI / 4, Math.PI / 4);
-//					joints[i] = adjustRelative(joints[i + 1], constrained.add(joints[i + 1]), seg[i].length());
-					joints[i] = adjustRelative(joints[i + 1], joints[i], seg[i].length());
+					Vec3 relativeJointPos = joints[i].subtract(joints[i + 1]);
+					Vec3 constrained = clampPlanarAngle(relativeJointPos, joints[i + 1].subtract(joints[i + 2]), planeNormal, -Math.PI / 4, Math.PI / 4);
+					joints[i] = adjustRelative(joints[i + 1], constrained.add(joints[i + 1]), seg[i].length());
 				}
 
 				// BACKWARDS PHASE
 				// reset root of segment 1 to touch end of segment 0
 				joints[1] = rootPos;
 				// for each joint after, restrict it to respect constraints of the tip it represents
-				for (int i = 2; i <= joints.length - 2; i++) {
-					// constrain ideal value for valid rotation
-//					Vec3 constrained = GeometryUtil.clampToFrustum(seg[i - 1].constraint(), joints[i], joints[i - 2], joints[i - 1], ref);
-					// rescale appropriately
-//					joints[i] = adjustRelative(joints[i - 1], constrained, seg[i - 1].length());
-
-//					Vec3 relativeJointPos = joints[i].subtract(joints[i - 1]);
-//					Vec3 constrained = clampPlanarAngle(relativeJointPos, joints[i - 1].subtract(joints[i - 2]), planeNormal, -Math.PI / 4, Math.PI / 4);
-//					joints[i] = adjustRelative(joints[i - 1], constrained.add(joints[i - 1]), seg[i - 1].length());
-					joints[i] = adjustRelative(joints[i - 1], joints[i], seg[i - 1].length());
+				for (int i = 2; i <= joints.length - 1; i++) {
+					Vec3 relativeJointPos = joints[i].subtract(joints[i - 1]);
+					Vec3 constrained = clampPlanarAngle(relativeJointPos, joints[i - 1].subtract(joints[i - 2]), planeNormal, -Math.PI / 4, Math.PI / 4);
+					joints[i] = adjustRelative(joints[i - 1], constrained.add(joints[i - 1]), seg[i - 1].length());
 				}
-				dif = joints[joints.length - 1].distanceTo(target);
+
+
 			}
 		}
 
@@ -118,20 +98,14 @@ public class KinematicsSolver {
 		return point.subtract(unitNormal.scale(point.subtract(anchor).dot(unitNormal)));
 	}
 
-//	private static void planarConstrain(Vector3f p, Vector3f anchor, Vector3f direction, Vector3f unitNormal, float thetaMax, float thetaMin) {
-//		Vector3f pDirection = p.sub(anchor, new Vector3f());
-//		direction
-//
-//
-//		// given two coplanar vectors a and b, with a as +x and +z relative to normal, constrain b
-//		// so that it is more than thetaMin and less than thetaMax radians away from r radians over the initial.
-//	}
-
-//	private static void extractAngle(Vector3f p, Vector3f pX, Vector3f pZ) {
-//
-//		// px is treated as +x axis and pZ treated as +z (coming out of plane). get xy-rotation of p.
-//	}
-
+	/**
+	 * @param r        any vector
+	 * @param dir      another vector coplanar to r
+	 * @param norm     UNIT vector normal to the plane r and dir are on
+	 * @param minAngle minimum angle in radians
+	 * @param maxAngle maximum angle in radians
+	 * @return a vector with angle from dir towards r around norm clamped between minAngle and maxAngle
+	 */
 	public static Vec3 clampPlanarAngle(Vec3 r, Vec3 dir, Vec3 norm, double minAngle, double maxAngle) {
 		// give a vector r, a coplanar vector dir, and a normal vector,
 		// constrain r so that its within min and max angle (radians)
@@ -151,8 +125,7 @@ public class KinematicsSolver {
 
 		// otherwise, produce new orthogonal downscaled appropriately.
 		double length = r.length();
-		double yh2 = Math.sin(theta2) * length;
-		Vec3 jy2 = jy.normalize().scale(yh2);
-		return jy2.add(jx);
+		var fixed = new Vector3f(dir.toVector3f()).rotateAxis((float) theta2, (float) norm.x, (float) norm.y, (float) norm.z).normalize((float) length);
+		return new Vec3(fixed);
 	}
 }

@@ -39,19 +39,20 @@ public final class MechaDebugRenderer {
 			poseStack.popPose();
 		});
 
+		GeometryDebugRenderer.render(event, player, bufferSource, camera, poseStack);
 		poseStack.popPose();
 	}
 
 	@SubscribeEvent
 	private static void onRegisterClientCommands(RegisterClientCommandsEvent event) {
-		event.getDispatcher().register(
-			Commands.literal("armistice_debug")
-				.then(Commands.literal("mecha")
-					.requires(src -> src.hasPermission(Commands.LEVEL_ADMINS))
-					.then(Commands.argument("enable", BoolArgumentType.bool())
-						.executes(ctx -> {
-							enabled = BoolArgumentType.getBool(ctx, "enable");
-							return Command.SINGLE_SUCCESS;
-						}))));
+		var cmd = Commands.literal("armistice_debug").then(Commands.literal("mecha")
+			.requires(src -> src.hasPermission(Commands.LEVEL_ADMINS))
+			.then(Commands.argument("enable", BoolArgumentType.bool())
+				.executes(ctx -> {
+					enabled = BoolArgumentType.getBool(ctx, "enable");
+					return Command.SINGLE_SUCCESS;
+				})));
+		cmd = GeometryDebugRenderer.registerSubCommands(cmd);
+		event.getDispatcher().register(cmd);
 	}
 }
