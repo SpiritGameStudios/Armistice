@@ -1,7 +1,7 @@
 package symbolics.division.armistice.mecha.movement;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Vector3f;
 
 import java.util.List;
 
@@ -18,13 +18,13 @@ public class KinematicsSolver {
 	//       TO NOT BEING ANNIHILATED BY HAMA INDUSTRIES VOID ACTUATOR (C)
 	public static void solve(Vec3 target, List<IKSegment> segments, double maxDist, Vec3 refDir) {
 		final int maxIterations = 50;
-		Vector3f ref = refDir.toVector3f();
 
-		Vec3 tilt = new Vec3(0, 10, 0).add(target.subtract(segments.getFirst().position()).normalize().scale(1)).normalize();
-		for (int i = 1; i < segments.size(); i++) {
-			segments.get(i).setDirection(tilt);
-			segments.get(i).setPosition(segments.get(i - 1).endPosition());
-		}
+		// reset all to above (temp remove, try constraints!)
+//		Vec3 tilt = new Vec3(0, 10, 0).add(target.subtract(segments.getFirst().position()).normalize().scale(1)).normalize();
+//		for (int i = 1; i < segments.size(); i++) {
+//			segments.get(i).setDirection(tilt);
+//			segments.get(i).setPosition(segments.get(i - 1).endPosition());
+//		}
 
 		IKSegment[] seg = segments.toArray(IKSegment[]::new);
 		// segment i has base at joint i and tip at joint i+1.
@@ -32,10 +32,15 @@ public class KinematicsSolver {
 		if (joints.length < 1) return;
 		final IKSegment root = seg[1]; // root segment that is allowed to move
 
-//		// define vector for rotation plane
-//		// treat root as hinge joint around y axis
-//		Vec3 planeNormal = target.subtract(root.getPos()).with(Direction.Axis.Y, 0).cross(new Vec3(0, 1, 0));
-//		planeNormal = planeNormal.length() == 0 ? new Vec3(1, 0, 0) : planeNormal.normalize();
+		// define rotation plane normal unit vec
+		Vec3 dirToTargetFromRoot = target.subtract(root.position()).normalize();
+		Vec3 planeNormal = dirToTargetFromRoot.with(Direction.Axis.Y, 0).cross(new Vec3(0, 1, 0));
+		// if behind leg base, flip normal to correct it
+		if (seg[0].direction().dot(dirToTargetFromRoot) < 0) planeNormal = planeNormal.scale(-1).normalize();
+		// project all joints onto the plane
+		for (int i = 0; i < segments.size(); i++) {
+			joints[i] = planarProject(joints[i], target, planeNormal);
+		}
 
 		// distance between nodes[i] and nodes[i+1];
 		double dist = target.distanceTo(root.position());

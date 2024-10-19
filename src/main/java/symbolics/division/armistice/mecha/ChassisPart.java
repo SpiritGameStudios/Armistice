@@ -44,7 +44,7 @@ public class ChassisPart extends AbstractMechaPart {
 		for (int i = 0; i < numLegs; i++) {
 			// temp: Define leg segments and orientation from bone data
 			legs.add(new Leggy(7));
-			legs.get(i).setRootDir(new Vec3(0, 1, 0));
+			legs.get(i).setRootDir(new Vec3(0, 0, 1));
 			debugStepTargets.add(Vec3.ZERO);
 		}
 	}
@@ -53,7 +53,6 @@ public class ChassisPart extends AbstractMechaPart {
 	public void init(MechaCore core) {
 		super.init(core);
 		core.hull.init(core);
-
 		for (Leggy l : legs) {
 			// temp: leg pos from skeleton etc etc
 			l.setRootPosAll(core.position());
@@ -98,7 +97,8 @@ public class ChassisPart extends AbstractMechaPart {
 				}
 			}
 			// temp: set based on skeleton
-			leg.setRootPos(core.position().add(0, 1, 0));
+			leg.setRootPosAll(core.position().add(0, 1, 0));
+//			leg.setRootDir(new Vec3(0, 0, 1));//stepTarget.subtract(leg.getRootPos().with(Direction.Axis.Y, 0)).normalize());
 			leg.tick();
 		}
 	}
