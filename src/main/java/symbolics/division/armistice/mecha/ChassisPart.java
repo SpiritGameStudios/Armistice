@@ -98,6 +98,7 @@ public class ChassisPart extends AbstractMechaPart {
 			}
 			// temp: set based on skeleton
 			leg.setRootPosAll(core.position().add(0, 1, 0));
+//			leg.setRootDir(stepTarget.subtract(core.position().add(0, 1, 0)).with(Direction.Axis.Y, 0).normalize());
 //			leg.setRootDir(new Vec3(0, 0, 1));//stepTarget.subtract(leg.getRootPos().with(Direction.Axis.Y, 0)).normalize());
 			leg.tick();
 		}

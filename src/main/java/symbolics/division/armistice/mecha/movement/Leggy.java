@@ -1,5 +1,6 @@
 package symbolics.division.armistice.mecha.movement;
 
+import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
@@ -73,6 +74,8 @@ public class Leggy {
 
 	public void tick() {
 		controller.tick();
+		// point base towards target
+		segments.getFirst().setDirection(targetPos.subtract(segments.getFirst().position()).with(Direction.Axis.Y, 0).normalize().add(0, 0.5, 0).normalize());
 		KinematicsSolver.solve(targetPos, segments, getMaxLength(), new Vec3(0, 0, 1));
 	}
 

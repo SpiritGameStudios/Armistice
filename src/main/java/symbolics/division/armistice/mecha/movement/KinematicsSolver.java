@@ -74,6 +74,10 @@ public class KinematicsSolver {
 //					Vec3 constrained = GeometryUtil.clampToFrustum(seg[i + 1].constraint(), joints[i], joints[i + 2], joints[i + 1], ref);
 					// fix segment length
 //					joints[i] = adjustRelative(joints[i + 1], constrained, seg[i].length());
+
+//					Vec3 relativeJointPos = joints[i].subtract(joints[i + 1]);
+//					Vec3 constrained = clampPlanarAngle(relativeJointPos, joints[i + 1].subtract(joints[i + 2]), planeNormal, -Math.PI / 4, Math.PI / 4);
+//					joints[i] = adjustRelative(joints[i + 1], constrained.add(joints[i + 1]), seg[i].length());
 					joints[i] = adjustRelative(joints[i + 1], joints[i], seg[i].length());
 				}
 
@@ -81,12 +85,16 @@ public class KinematicsSolver {
 				// reset root of segment 1 to touch end of segment 0
 				joints[1] = rootPos;
 				// for each joint after, restrict it to respect constraints of the tip it represents
-				for (int i = 1; i <= joints.length - 2; i++) {
+				for (int i = 2; i <= joints.length - 2; i++) {
 					// constrain ideal value for valid rotation
 //					Vec3 constrained = GeometryUtil.clampToFrustum(seg[i - 1].constraint(), joints[i], joints[i - 2], joints[i - 1], ref);
 					// rescale appropriately
 //					joints[i] = adjustRelative(joints[i - 1], constrained, seg[i - 1].length());
-					joints[i + 1] = adjustRelative(joints[i], joints[i + 1], seg[i].length());
+
+//					Vec3 relativeJointPos = joints[i].subtract(joints[i - 1]);
+//					Vec3 constrained = clampPlanarAngle(relativeJointPos, joints[i - 1].subtract(joints[i - 2]), planeNormal, -Math.PI / 4, Math.PI / 4);
+//					joints[i] = adjustRelative(joints[i - 1], constrained.add(joints[i - 1]), seg[i - 1].length());
+					joints[i] = adjustRelative(joints[i - 1], joints[i], seg[i - 1].length());
 				}
 				dif = joints[joints.length - 1].distanceTo(target);
 			}
@@ -124,7 +132,7 @@ public class KinematicsSolver {
 //		// px is treated as +x axis and pZ treated as +z (coming out of plane). get xy-rotation of p.
 //	}
 
-	public static Vec3 clampPlanarAngle(Vec3 r, Vec3 dir, Vec3 norm, float maxAngle, float minAngle) {
+	public static Vec3 clampPlanarAngle(Vec3 r, Vec3 dir, Vec3 norm, double minAngle, double maxAngle) {
 		// give a vector r, a coplanar vector dir, and a normal vector,
 		// constrain r so that its within min and max angle (radians)
 		double dp = dir.dot(r);
