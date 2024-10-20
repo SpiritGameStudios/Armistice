@@ -18,6 +18,7 @@ import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.schematic.MechaSchematic;
 import symbolics.division.armistice.mecha.schematic.OrdnanceSchematic;
+import symbolics.division.armistice.model.MechaModelData;
 
 import java.util.List;
 
@@ -35,12 +36,14 @@ public class MechaCore implements Part {
 	protected final MechaSchematic schematic;
 	protected final ChassisPart chassis;
 	protected final HullPart hull;
+	protected final MechaModelData model;
 	private MechaEntity entity = null;
 
 	public MechaCore(MechaSchematic schematic) {
 		this.schematic = schematic;
 		this.chassis = schematic.chassis().make();
 		this.hull = schematic.hull().make();
+		this.model = new MechaModelData(schematic);
 	}
 
 	public void initCore(MechaEntity e) {
@@ -111,6 +114,10 @@ public class MechaCore implements Part {
 
 	public List<OrdnanceSchematic> ordnance() {
 		return ImmutableList.copyOf(schematic.ordnance());
+	}
+
+	public MechaModelData model() {
+		return model;
 	}
 
 	@Override

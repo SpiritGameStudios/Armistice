@@ -13,7 +13,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.model.BBModelData;
-import symbolics.division.armistice.model.MechaModelData;
 
 import java.io.IOException;
 
@@ -36,13 +35,11 @@ public class TestModel {
 	}
 
 	public static boolean loadModel() {
-
 		var resource = Minecraft.getInstance().getResourceManager().getResource(ResourceLocation.fromNamespaceAndPath("armistice", "models/chassis/ref_mech.bbmodel"));
 		return resource.map(r -> {
 			Minecraft.getInstance().execute(() -> {
 				try {
 					var bb = BBModelData.CODEC.decode(JsonOps.INSTANCE, JsonParser.parseReader(r.openAsReader())).getOrThrow(IOException::new);
-					MechaModelData.of(bb.getFirst());
 				} catch (IOException e) {
 					Armistice.LOGGER.error("failed to load resource: ", e);
 				}
