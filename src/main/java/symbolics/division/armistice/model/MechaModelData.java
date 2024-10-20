@@ -7,28 +7,32 @@ import symbolics.division.armistice.mecha.schematic.MechaSchematic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class MechaModelData {
 	public final int numLegs;
-	public final List<OutlinerNode> hull;
-	public final List<OutlinerNode> chassis;
+	public final OutlinerNode hull;
+	public final OutlinerNode chassis;
 	private final List<Bone> ordnanceInfo = new ArrayList<>();
 	private final List<Bone> legInfo = new ArrayList<>();
 
 	public MechaModelData(MechaSchematic schematic) {
-		hull = ModelOutlinerReloadListener.getNode(schematic.hull().id().withPrefix("hull/"));
-		chassis = ModelOutlinerReloadListener.getNode(schematic.chassis().id().withPrefix("chassis/"));
+		var loc = schematic.hull().id().withPrefix("hull/");
+		var h = ModelOutlinerReloadListener.getNode(loc);
+		hull = Objects.requireNonNull(h).stream().filter(n -> n.name().equals("root")).findAny().orElseThrow();
+		chassis = Objects.requireNonNull(ModelOutlinerReloadListener.getNode(schematic.chassis().id().withPrefix("chassis/")))
+			.stream().filter(n -> n.name().equals("root")).findAny().orElseThrow();
 //		armor = BBModelTree.loadArmorModel(schematic.armor().id());
 
-		for (int i = 0; i < schematic.ordnance().size(); i++) {
-			var gun = hull.("ordnance" + i);
-			ordnanceInfo.add(Bone.of(gun.node));
+		for (int i = 1; i < schematic.ordnance().size(); i++) {
+			ordnanceInfo.add(Bone.of(getChild(hull, "ordnance" + i)));
 		}
 
-		numLegs = (int) chassis.stream().filter(c -> c.name().startsWith("leg")).count();
+		numLegs = (int) chassis.children().stream()
+			.filter(c -> c.left().map(n -> n.name().startsWith("leg")).orElse(false))
+			.count();
 		for (int i = 1; i <= numLegs; i++) {
-			var leg = chassis.child("leg" + i);
-			legInfo.add(Bone.of(leg.node));
+			legInfo.add(Bone.of(getChild(chassis, "leg" + i)));
 		}
 	}
 
@@ -52,5 +56,12 @@ public class MechaModelData {
 		public static Bone of(OutlinerNode node) {
 			return new Bone(node.origin(), node.rotation(), bbRot2Direction(node.rotation()));
 		}
+	}
+
+	private static OutlinerNode getChild(OutlinerNode node, String id) {
+		return node.children().stream()
+			.filter(c -> c.left().map(n -> n.name().equals(id)).orElse(false))
+			.map(c -> c.left().get())
+			.findAny().orElseThrow();
 	}
 }

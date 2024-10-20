@@ -4,12 +4,10 @@ import net.minecraft.core.NonNullList;
 import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.schematic.HeatData;
 import symbolics.division.armistice.mecha.schematic.HullSchematic;
-import symbolics.division.armistice.mecha.schematic.OrdnanceSchematic;
 
 public class HullPart extends AbstractMechaPart {
 	protected final NonNullList<OrdnancePart> ordnance;
 	protected final HeatData heatData;
-	protected MechaCore core = null;
 
 	protected int heat;
 	protected int coolingDelay;
@@ -23,9 +21,9 @@ public class HullPart extends AbstractMechaPart {
 	public void init(MechaCore core) {
 		super.init(core);
 
-		core.ordnance().stream()
-			.map(OrdnanceSchematic::make)
-			.forEach(ordnance::add);
+		for (int i = 0; i < core.schematic.ordnance().size(); i++) {
+			ordnance.set(i, core.schematic.ordnance().get(i).make());
+		}
 
 		ordnance.forEach(part -> part.init(core));
 	}

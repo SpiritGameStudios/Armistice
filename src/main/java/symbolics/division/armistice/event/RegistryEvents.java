@@ -41,7 +41,7 @@ public final class RegistryEvents {
 	private static void onAddReloadListener(AddReloadListenerEvent event) {
 		event.addListener(ModelOutlinerReloadListener.INSTANCE);
 	}
-	
+
 	private static final class ModEvents {
 		@SubscribeEvent
 		private static void onRegister(RegisterEvent event) {

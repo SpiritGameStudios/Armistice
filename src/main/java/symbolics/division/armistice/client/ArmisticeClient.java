@@ -11,7 +11,6 @@ import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.client.render.MechaEntityRenderer;
 import symbolics.division.armistice.client.render.debug.MechaDebugRenderer;
-import symbolics.division.armistice.client.render.model.TestModel;
 import symbolics.division.armistice.registry.ArmisticeEntityTypeRegistrar;
 
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
@@ -32,7 +31,6 @@ public class ArmisticeClient {
 		private static void onRegisterClientCommands(RegisterClientCommandsEvent event) {
 			var cmd = Commands.literal("armistice_debug");
 			cmd = MechaDebugRenderer.registerClientCommands(cmd);
-			cmd = TestModel.registerClientCommands(cmd);
 			event.getDispatcher().register(cmd);
 		}
 	}

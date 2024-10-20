@@ -58,7 +58,7 @@ public class ModelOutlinerReloadListener implements PreparableReloadListener {
 		return CompletableFuture.supplyAsync(() -> {
 			Map<ResourceLocation, List<OutlinerNode>> data = new Object2ObjectOpenHashMap<>();
 
-			FileToIdConverter filetoidconverter = FileToIdConverter.json("model_outliners");
+			FileToIdConverter filetoidconverter = FileToIdConverter.json("model_bones");
 
 			for (Map.Entry<ResourceLocation, Resource> entry : filetoidconverter.listMatchingResources(resourceManager).entrySet()) {
 				ResourceLocation file = entry.getKey();

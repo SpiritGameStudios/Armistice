@@ -6,9 +6,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
+import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.mecha.schematic.*;
+import symbolics.division.armistice.registry.ArmisticeRegistries;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MechaEntity extends Entity {
@@ -27,10 +28,10 @@ public class MechaEntity extends Entity {
 	}
 
 	public static MechaEntity temp(EntityType<? extends Entity> entityType, Level level) {
-		HullSchematic hull = new HullSchematic(1, List.of(1, 2), new HeatData(1, 0, 0));
-		ChassisSchematic chassis = new ChassisSchematic(1, 1, 1);
-		List<OrdnanceSchematic> ordnance = new ArrayList<>();
-		ArmorSchematic armor = new ArmorSchematic(1, 1);
+		HullSchematic hull = ArmisticeRegistries.HULL.get(Armistice.id("test_hull"));
+		ChassisSchematic chassis = ArmisticeRegistries.CHASSIS.get(Armistice.id("test_chassis"));
+		List<OrdnanceSchematic> ordnance = List.of(ArmisticeRegistries.ORDNANCE.get(Armistice.id("test_ordnance")));
+		ArmorSchematic armor = ArmisticeRegistries.ARMOR.get(Armistice.id("test_armor"));
 		return new MechaEntity(entityType, level, new MechaSchematic(hull, ordnance, chassis, armor));
 	}
 
