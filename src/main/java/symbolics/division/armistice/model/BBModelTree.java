@@ -2,6 +2,8 @@ package symbolics.division.armistice.model;
 
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.Collection;
 import java.util.Map;
@@ -9,6 +11,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 // bbmodel data transformed in tree representation
+@OnlyIn(Dist.CLIENT)
 public class BBModelTree {
 
 	public final OutlinerNode node;
