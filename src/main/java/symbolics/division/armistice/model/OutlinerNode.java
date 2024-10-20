@@ -3,6 +3,9 @@ package symbolics.division.armistice.model;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
 import symbolics.division.armistice.util.CodecHelper;
 
@@ -35,4 +38,6 @@ public record OutlinerNode(
 				Codec.either(outlineCodec, Codec.STRING).listOf().lenientOptionalFieldOf("children", List.of()).forGetter(OutlinerNode::children)
 			).apply(instance, OutlinerNode::new))
 		);
+
+	public static final StreamCodec<ByteBuf, OutlinerNode> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 }

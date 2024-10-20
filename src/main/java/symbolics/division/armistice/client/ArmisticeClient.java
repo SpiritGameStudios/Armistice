@@ -24,7 +24,7 @@ public class ArmisticeClient {
 
 	@SubscribeEvent
 	public static void handleRegisterAdditionalModelsEvent(ModelEvent.RegisterAdditional event) {
-		TestModel.loadTestModel(event);
+//		TestModel.loadTestModel(event);
 	}
 
 	public static class GameEvents {

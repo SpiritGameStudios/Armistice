@@ -35,5 +35,15 @@ public final class ArmisticeDatagen {
 			event.includeServer(),
 			new ArmisticeRecipeProvider(output, lookupProvider)
 		);
+
+		generator.addProvider(
+			event.includeClient(),
+			new ArmisticeElementsProvider(output, lookupProvider, existingFileHelper)
+		);
+
+		generator.addProvider(
+			event.includeServer(),
+			new ArmisticeOutlinerProvider(output, lookupProvider, existingFileHelper)
+		);
 	}
 }

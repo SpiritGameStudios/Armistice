@@ -1,0 +1,12 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"compatibilityLevel": "JAVA_21",
+	"package": "symbolics.division.armistice.mixin",
+	"mixins": [
+		"ExistingFileHelperAccessor"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

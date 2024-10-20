@@ -1,10 +1,9 @@
 package symbolics.division.armistice.model;
 
 import com.mojang.datafixers.util.Either;
-import net.minecraft.resources.ResourceLocation;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -12,25 +11,13 @@ import java.util.stream.Stream;
 // bbmodel data transformed in tree representation
 public class BBModelTree {
 
-	public static BBModelTree loadHull(ResourceLocation id) {
-		return null;
-	}
-
-	public static BBModelTree loadChassis(ResourceLocation id) {
-		return null;
-	}
-
-	public static BBModelTree loadOrdnance(ResourceLocation id) {
-		return null;
-	}
-
-	public static BBModelTree loadArmorModel(ResourceLocation id) {
-		return null;
-	}
-
 	public final OutlinerNode node;
-	protected final Map<String, Element> elements = new HashMap<>();
-	protected final Map<String, BBModelTree> children = new HashMap<>();
+	protected final Map<String, Element> elements = new Object2ObjectOpenHashMap<>();
+	protected final Map<String, BBModelTree> children = new Object2ObjectOpenHashMap<>();
+
+	public BBModelTree(BBModelData source) {
+		this(source, "root");
+	}
 
 	public BBModelTree(BBModelData source, String root) {
 		this(source, source.nodeByName(root));
