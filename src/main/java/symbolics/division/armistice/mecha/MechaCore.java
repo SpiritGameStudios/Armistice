@@ -120,6 +120,10 @@ public class MechaCore implements Part {
 		return model;
 	}
 
+	public MechaSchematic schematic() {
+		return schematic;
+	}
+
 	@Override
 	public Vector3fc absPos() {
 		return position().toVector3f();

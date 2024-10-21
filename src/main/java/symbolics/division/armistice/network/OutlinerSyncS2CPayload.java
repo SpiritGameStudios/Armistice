@@ -15,6 +15,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 import symbolics.division.armistice.Armistice;
+import symbolics.division.armistice.client.render.model.HullModel;
 import symbolics.division.armistice.model.*;
 
 import java.util.List;
@@ -50,6 +51,8 @@ public record OutlinerSyncS2CPayload(Map<ResourceLocation, List<OutlinerNode>> n
 		});
 
 		models = builder.build();
+
+		HullModel.compileModels();
 	}
 
 	@SubscribeEvent

@@ -26,6 +26,7 @@ public record Element(
 	Vec3 to,
 	int autoUv,
 	int color,
+	Optional<Vec3> rotation,
 	Vec3 origin,
 	Map<Direction, Face> faces,
 	UUID uuid
@@ -42,6 +43,7 @@ public record Element(
 		Vec3.CODEC.fieldOf("to").forGetter(Element::to),
 		Codec.INT.fieldOf("autouv").forGetter(Element::autoUv),
 		Codec.INT.fieldOf("color").forGetter(Element::color),
+		Vec3.CODEC.lenientOptionalFieldOf("rotation").forGetter(Element::rotation),
 		Vec3.CODEC.fieldOf("origin").forGetter(Element::origin),
 		Codec.unboundedMap(Direction.CODEC, Face.CODEC).fieldOf("faces").forGetter(Element::faces),
 		CodecHelper.UUID.fieldOf("uuid").forGetter(Element::uuid)

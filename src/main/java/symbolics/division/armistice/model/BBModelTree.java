@@ -7,13 +7,12 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.function.Predicate;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 // bbmodel data transformed in tree representation
 @OnlyIn(Dist.CLIENT)
 public class BBModelTree {
-
 	public final OutlinerNode node;
 	protected final Map<String, Element> elements = new Object2ObjectOpenHashMap<>();
 	protected final Map<String, BBModelTree> children = new Object2ObjectOpenHashMap<>();
@@ -34,11 +33,11 @@ public class BBModelTree {
 		}
 	}
 
-	public Collection<Element> cubes() {
+	public Collection<Element> elements() {
 		return elements.values();
 	}
 
-	public Element cube(String uuid) {
+	public Element elements(String uuid) {
 		return elements.get(uuid);
 	}
 
@@ -50,11 +49,10 @@ public class BBModelTree {
 		return children.get(name);
 	}
 
-	public Stream<OutlinerNode> walk(Predicate<OutlinerNode> predicate) {
+	public <T> Stream<T> walk(Function<OutlinerNode, T> func) {
 		return Stream.concat(
-			Stream.of(node),
-			children.values().stream().flatMap(c -> c.walk(predicate))
+			Stream.of(func.apply(node)),
+			children.values().stream().flatMap(c -> c.walk(func))
 		);
 	}
-
 }

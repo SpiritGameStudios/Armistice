@@ -65,7 +65,7 @@ neoForge {
 		mappingsVersion = libs.versions.parchment.get()
 		minecraftVersion = libs.versions.minecraft.asProvider().get()
 	}
-	
+
 	runs {
 		register("client") {
 			client()

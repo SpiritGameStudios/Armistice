@@ -17,12 +17,10 @@ public class MechaModelData {
 	private final List<Bone> legInfo = new ArrayList<>();
 
 	public MechaModelData(MechaSchematic schematic) {
-		var loc = schematic.hull().id().withPrefix("hull/");
-		var h = ModelOutlinerReloadListener.getNode(loc);
-		hull = Objects.requireNonNull(h).stream().filter(n -> n.name().equals("root")).findAny().orElseThrow();
+		hull = Objects.requireNonNull(ModelOutlinerReloadListener.getNode(schematic.hull().id().withPrefix("hull/")))
+			.stream().filter(n -> n.name().equals("root")).findAny().orElseThrow();
 		chassis = Objects.requireNonNull(ModelOutlinerReloadListener.getNode(schematic.chassis().id().withPrefix("chassis/")))
 			.stream().filter(n -> n.name().equals("root")).findAny().orElseThrow();
-//		armor = BBModelTree.loadArmorModel(schematic.armor().id());
 
 		for (int i = 1; i < schematic.ordnance().size(); i++) {
 			ordnanceInfo.add(Bone.of(getChild(hull, "ordnance" + i)));
