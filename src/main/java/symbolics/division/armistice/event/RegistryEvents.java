@@ -20,7 +20,7 @@ import symbolics.division.armistice.model.ModelOutlinerReloadListener;
 import symbolics.division.armistice.network.OutlinerSyncS2CPayload;
 import symbolics.division.armistice.recipe.MechaSchematicRecipe;
 import symbolics.division.armistice.registry.*;
-import symbolics.division.armistice.util.registrar.Registrar;
+import symbolics.division.armistice.util.registrar.*;
 
 import java.util.List;
 
@@ -50,6 +50,11 @@ public final class RegistryEvents {
 			Registrar.process(ArmisticeEntityTypeRegistrar.class, MODID, event);
 			Registrar.process(ArmisticeItemRegistrar.class, MODID, event);
 			Registrar.process(ArmisticeCreativeModeTabRegistrar.class, MODID, event);
+
+			Registrar.process(ChassisRegistrar.class, MODID, event);
+			Registrar.process(HullRegistrar.class, MODID, event);
+			Registrar.process(OrdnanceRegistrar.class, MODID, event);
+			Registrar.process(ArmorRegistrar.class, MODID, event);
 
 			event.register(
 				Registries.RECIPE_SERIALIZER,
