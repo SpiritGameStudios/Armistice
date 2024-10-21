@@ -7,9 +7,11 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FastColor;
+import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Quaternionf;
 import symbolics.division.armistice.client.render.model.HullModel;
 import symbolics.division.armistice.mecha.MechaEntity;
 
@@ -31,6 +33,9 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 		poseStack.pushPose();
 		float scale = 1f / 16;
 		poseStack.scale(scale, scale, scale);
+		var d = mecha.core().direction().toVector3f();
+		var angle = Mth.atan2(d.x, d.z);
+		poseStack.mulPose(new Quaternionf().rotationZYX(0, (float) angle, 0));
 		int color = FastColor.ARGB32.color(255, 255, 255, 255);
 		HullModel.render(mecha, poseStack.last(), bufferSource, color, packedLight, OverlayTexture.NO_OVERLAY);
 		poseStack.popPose();

@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -60,8 +61,8 @@ public class HullModel {
 		Vector3f pos = new Vector3f();
 		for (Quad face : quads) {
 			pose.transformNormal(face.nx, face.ny, face.nz, norm);
-			// temp: did we get the winding order wrong?
-			for (int i = 3; i >= 0; i--) {
+			// todo: winding order compiled backwards, should be cw not ccw
+			for (int i = face.vertices.length - 1; i >= 0; i--) {
 				Vertex v = face.vertices[i];
 				pose.pose().transformPosition(v.x, v.y, v.z, pos);
 				vc.addVertex(pos.x, pos.y, pos.z, color, v.u, v.v, packedOverlay, packedLight, norm.x, norm.y, norm.z);
@@ -85,7 +86,7 @@ public class HullModel {
 
 		// rotate around this node's axis (vertex coordinates are global)
 		poseStack.translate(origin.x(), origin.y(), origin.z());
-		poseStack.mulPose(new Quaternionf().rotationZYX(rotation.x(), rotation.y(), rotation.z()));
+		poseStack.mulPose(new Quaternionf().rotationZYX(rotation.z() * Mth.DEG_TO_RAD, rotation.y() * Mth.DEG_TO_RAD, rotation.x() * Mth.DEG_TO_RAD));
 		poseStack.translate(-origin.x(), -origin.y(), -origin.z());
 
 		for (Element element : tree.elements()) addElement(quads, poseStack, element);
@@ -105,21 +106,22 @@ public class HullModel {
       0-------4     +--x
 	 */
 
-	private static final int[][] VERTEX_INDICES = {
+	public static final int[][] VERTEX_INDICES = {
 		new int[]{1, 5, 4, 0},
 		new int[]{2, 6, 7, 3},
-		new int[]{5, 1, 3, 7},
-		new int[]{0, 4, 6, 2},
-		new int[]{1, 0, 2, 3},
-		new int[]{4, 5, 7, 6},
+		new int[]{6, 2, 0, 4},
+		new int[]{3, 7, 5, 1},
+		new int[]{2, 3, 1, 0},
+		new int[]{7, 6, 4, 5},
 	};
 
 	private static void addElement(List<Quad> quads, PoseStack poseStack, Element element) {
 		poseStack.pushPose();
 		poseStack.translate(element.origin().x, element.origin().y, element.origin().z);
-		element.rotation().ifPresent(r -> {
-			poseStack.mulPose(new Quaternionf().rotationZYX((float) r.x, (float) r.y, (float) r.z));
-		});
+		element.rotation().ifPresent(r ->
+			poseStack.mulPose(new Quaternionf().rotationZYX((float) r.z * Mth.DEG_TO_RAD, (float) r.y * Mth.DEG_TO_RAD, (float) r.x * Mth.DEG_TO_RAD))
+		);
+		poseStack.translate(-element.origin().x, -element.origin().y, -element.origin().z);
 
 		PoseStack.Pose transform = poseStack.last();
 
@@ -139,10 +141,10 @@ public class HullModel {
 			Element.Face face = entry.getValue();
 			int[] ix = VERTEX_INDICES[dir.get3DDataValue()];
 			Vertex[] vertices = {
-				Vertex.of(points[ix[0]], face.uv().w / 256f, face.uv().x / 256f),
-				Vertex.of(points[ix[1]], face.uv().y / 256f, face.uv().x / 256f),
-				Vertex.of(points[ix[2]], face.uv().y / 256f, face.uv().z / 256f),
-				Vertex.of(points[ix[3]], face.uv().w / 256f, face.uv().z / 256f),
+				Vertex.of(points[ix[0]], face.uv().x / 256f, face.uv().y / 256f),
+				Vertex.of(points[ix[1]], face.uv().z / 256f, face.uv().y / 256f),
+				Vertex.of(points[ix[2]], face.uv().z / 256f, face.uv().w / 256f),
+				Vertex.of(points[ix[3]], face.uv().x / 256f, face.uv().w / 256f),
 			};
 			Vector3f normal = transform.transformNormal(dir.step(), new Vector3f());
 			quads.add(new Quad(vertices, normal.x, normal.y, normal.z));

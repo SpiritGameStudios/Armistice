@@ -493,6 +493,11 @@
     ],
     "render_order": "default",
     "rescale": false,
+    "rotation": [
+      -35.0,
+      0.0,
+      0.0
+    ],
     "to": [
       18.5,
       -22.3,
@@ -576,6 +581,11 @@
     ],
     "render_order": "default",
     "rescale": false,
+    "rotation": [
+      -35.0,
+      0.0,
+      0.0
+    ],
     "to": [
       17.5,
       -14.299999999999992,
@@ -659,6 +669,11 @@
     ],
     "render_order": "default",
     "rescale": false,
+    "rotation": [
+      -35.0,
+      0.0,
+      0.0
+    ],
     "to": [
       18.5,
       -12.299999999999995,
@@ -908,6 +923,11 @@
     ],
     "render_order": "default",
     "rescale": false,
+    "rotation": [
+      45.0,
+      0.0,
+      0.0
+    ],
     "to": [
       20.9,
       -34.8,
@@ -1491,6 +1511,11 @@
     ],
     "render_order": "default",
     "rescale": false,
+    "rotation": [
+      -35.0,
+      0.0,
+      0.0
+    ],
     "to": [
       -14.638849147755318,
       -11.78256671739074,
@@ -1574,6 +1599,11 @@
     ],
     "render_order": "default",
     "rescale": false,
+    "rotation": [
+      -35.0,
+      0.0,
+      0.0
+    ],
     "to": [
       -14.638849147755318,
       -21.78256671739074,
@@ -1657,6 +1687,11 @@
     ],
     "render_order": "default",
     "rescale": false,
+    "rotation": [
+      -35.0,
+      0.0,
+      0.0
+    ],
     "to": [
       -15.638849147755318,
       -13.782566717390736,
@@ -1740,6 +1775,11 @@
     ],
     "render_order": "default",
     "rescale": false,
+    "rotation": [
+      45.0,
+      0.0,
+      0.0
+    ],
     "to": [
       -11.238849147755321,
       -34.282566717390736,

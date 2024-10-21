@@ -33,11 +33,6 @@
       4.0,
       0.0
     ],
-    "rotation": [
-      0.0,
-      4.0,
-      0.0
-    ],
     "uuid": "b9b05ff0-47ee-87bf-8e04-e83d5046d880",
     "visibility": true
   },
@@ -52,9 +47,9 @@
       1.0
     ],
     "rotation": [
-      28.0,
-      18.0,
-      1.0
+      0.0,
+      0.0,
+      -90.0
     ],
     "uuid": "fe6d2ff9-48f9-c846-5e08-4bc7fbe51675",
     "visibility": true
@@ -70,9 +65,9 @@
       -21.0
     ],
     "rotation": [
-      28.0,
-      18.0,
-      -21.0
+      0.0,
+      0.0,
+      -90.0
     ],
     "uuid": "b27fe175-5882-009d-e9a3-1cf23fe98acb",
     "visibility": true
@@ -88,9 +83,9 @@
       -21.0
     ],
     "rotation": [
-      -28.0,
-      18.0,
-      -21.0
+      0.0,
+      0.0,
+      90.0
     ],
     "uuid": "c60eac4e-857b-76e9-5625-e9fc4cf4b57a",
     "visibility": true
@@ -106,9 +101,9 @@
       1.0
     ],
     "rotation": [
-      -28.0,
-      18.0,
-      1.0
+      0.0,
+      0.0,
+      90.0
     ],
     "uuid": "45e61886-ac9b-e439-a511-0075ab8bc4ff",
     "visibility": true
