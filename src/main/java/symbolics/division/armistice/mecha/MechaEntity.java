@@ -3,14 +3,17 @@ package symbolics.division.armistice.mecha;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.mecha.schematic.*;
 import symbolics.division.armistice.registry.ArmisticeRegistries;
 
 import java.util.List;
+import java.util.Optional;
 
 public class MechaEntity extends Entity {
 	protected final MechaCore core;
@@ -62,5 +65,12 @@ public class MechaEntity extends Entity {
 	@Override
 	protected void addAdditionalSaveData(@NotNull CompoundTag compound) {
 
+	}
+
+	@NotNull
+	@Override
+	protected Vec3 getPassengerAttachmentPoint(@NotNull Entity entity, @NotNull EntityDimensions dimensions, float partialTick) {
+		return Optional.ofNullable(core.model().seatOffset())
+			.orElse(super.getPassengerAttachmentPoint(entity, dimensions, partialTick));
 	}
 }
