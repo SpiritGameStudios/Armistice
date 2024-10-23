@@ -114,6 +114,10 @@ public class MechaCore implements Part {
 		return hull.ordnance;
 	}
 
+	public int ordnanceIndex(OrdnancePart part) {
+		return ordnance().indexOf(part);
+	}
+
 	public MechaModelData model() {
 		return model;
 	}
@@ -158,5 +162,9 @@ public class MechaCore implements Part {
 
 	public Euclidean chassisEuclidean() {
 		return chassis;
+	}
+
+	public Euclidean ordnanceEuclidean(int index) {
+		return ordnance().get(index);
 	}
 }

@@ -3,6 +3,8 @@ package symbolics.division.armistice.model;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
+import org.joml.Quaternionfc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.schematic.MechaSchematic;
@@ -29,7 +31,7 @@ public class MechaModelData {
 		chassis = Objects.requireNonNull(ModelOutlinerReloadListener.getNode(schematic.chassis().id().withPrefix("chassis/")))
 			.stream().filter(n -> n.name().equals("root")).findAny().orElseThrow();
 
-		for (int i = 1; i < schematic.ordnance().size(); i++) {
+		for (int i = 1; i <= schematic.ordnance().size(); i++) {
 			ordnanceInfo.add(Bone.of(getChild(hull, "ordnance" + i).orElseThrow()));
 		}
 
@@ -43,7 +45,6 @@ public class MechaModelData {
 		// temp: also include scale per-part
 		// bbmodels are by default 16x actual coordinates, so all distances emitted by this
 		// class need to be divided by 16.
-
 		relativeHullPosition = getChild(chassis, "hull").orElseThrow().origin().toVector3f().mul(BBModelData.BASE_SCALE_FACTOR);
 
 		seatOffset = getChild(hull, "seat").map(seat -> seat.origin().scale(BBModelData.BASE_SCALE_FACTOR)).orElse(null);
@@ -59,6 +60,12 @@ public class MechaModelData {
 		);
 	}
 
+	private static Quaternionfc bbRot2Quaternion(Vec3 xyz) {
+		// bb model rotations are in zyx order, and performed in sequence from the root.
+		Vec3 rad = deg2rad(xyz);
+		return new Quaternionf().rotateZYX((float) rad.z, (float) rad.y, (float) rad.x);
+	}
+
 	private static Vec3 deg2rad(Vec3 deg) {
 		return new Vec3(deg.x * Mth.DEG_TO_RAD, deg.y * Mth.DEG_TO_RAD, deg.z * Mth.DEG_TO_RAD);
 	}
@@ -71,7 +78,12 @@ public class MechaModelData {
 	}
 
 	public Vector3fc relativeHullPosition() {
+		// change to Bone
 		return relativeHullPosition;
+	}
+
+	public Bone ordnance(int i) {
+		return ordnanceInfo.get(i);
 	}
 
 	@Nullable
@@ -80,10 +92,10 @@ public class MechaModelData {
 	}
 
 	// position, xyz rotation, and 3d direction unit vector
-	public record Bone(Vec3 pos, Vec3 rot, Vec3 dir) {
+	public record Bone(Vec3 pos, Vec3 rot, Vec3 dir, Quaternionfc quat) {
 		// only works for top-level nodes, ie those directly under the root.
 		public static Bone of(OutlinerNode node) {
-			return new Bone(node.origin(), node.rotation(), bbRot2Direction(node.rotation()));
+			return new Bone(node.origin().scale(BBModelData.BASE_SCALE_FACTOR), node.rotation(), bbRot2Direction(node.rotation()), bbRot2Quaternion(node.rotation()));
 		}
 	}
 }
