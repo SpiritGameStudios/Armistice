@@ -2,6 +2,7 @@ package symbolics.division.armistice.model;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.schematic.MechaSchematic;
@@ -9,6 +10,7 @@ import symbolics.division.armistice.mecha.schematic.MechaSchematic;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class MechaModelData {
 	public final int numLegs;
@@ -18,6 +20,8 @@ public class MechaModelData {
 	private final List<Bone> legInfo = new ArrayList<>();
 
 	private final Vector3fc relativeHullPosition;
+	@Nullable
+	private final Vec3 seatOffset;
 
 	public MechaModelData(MechaSchematic schematic) {
 		hull = Objects.requireNonNull(ModelOutlinerReloadListener.getNode(schematic.hull().id().withPrefix("hull/")))
@@ -26,24 +30,23 @@ public class MechaModelData {
 			.stream().filter(n -> n.name().equals("root")).findAny().orElseThrow();
 
 		for (int i = 1; i < schematic.ordnance().size(); i++) {
-			ordnanceInfo.add(Bone.of(getChild(hull, "ordnance" + i)));
+			ordnanceInfo.add(Bone.of(getChild(hull, "ordnance" + i).orElseThrow()));
 		}
 
 		numLegs = (int) chassis.children().stream()
 			.filter(c -> c.left().map(n -> n.name().startsWith("leg")).orElse(false))
 			.count();
 		for (int i = 1; i <= numLegs; i++) {
-			legInfo.add(Bone.of(getChild(chassis, "leg" + i)));
+			legInfo.add(Bone.of(getChild(chassis, "leg" + i).orElseThrow()));
 		}
 
 		// temp: also include scale per-part
 		// bbmodels are by default 16x actual coordinates, so all distances emitted by this
 		// class need to be divided by 16.
-		relativeHullPosition = getChild(chassis, "hull").origin().toVector3f().mul(1f / 16);
-	}
 
-	public Vector3fc relativeHullPosition() {
-		return relativeHullPosition;
+		relativeHullPosition = getChild(chassis, "hull").orElseThrow().origin().toVector3f().mul(BBModelData.BASE_SCALE_FACTOR);
+
+		seatOffset = getChild(hull, "seat").map(seat -> seat.origin().scale(BBModelData.BASE_SCALE_FACTOR)).orElse(null);
 	}
 
 	private static Vec3 bbRot2Direction(Vec3 xyz) {
@@ -60,18 +63,27 @@ public class MechaModelData {
 		return new Vec3(deg.x * Mth.DEG_TO_RAD, deg.y * Mth.DEG_TO_RAD, deg.z * Mth.DEG_TO_RAD);
 	}
 
+	private static Optional<OutlinerNode> getChild(OutlinerNode node, String id) {
+		return node.children().stream()
+			.filter(c -> c.left().map(n -> n.name().equals(id)).orElse(false))
+			.map(c -> c.left())
+			.findFirst().orElse(Optional.empty());
+	}
+
+	public Vector3fc relativeHullPosition() {
+		return relativeHullPosition;
+	}
+
+	@Nullable
+	public Vec3 seatOffset() {
+		return seatOffset;
+	}
+
 	// position, xyz rotation, and 3d direction unit vector
 	public record Bone(Vec3 pos, Vec3 rot, Vec3 dir) {
 		// only works for top-level nodes, ie those directly under the root.
 		public static Bone of(OutlinerNode node) {
 			return new Bone(node.origin(), node.rotation(), bbRot2Direction(node.rotation()));
 		}
-	}
-
-	private static OutlinerNode getChild(OutlinerNode node, String id) {
-		return node.children().stream()
-			.filter(c -> c.left().map(n -> n.name().equals(id)).orElse(false))
-			.map(c -> c.left().get())
-			.findAny().orElseThrow();
 	}
 }
