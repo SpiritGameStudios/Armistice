@@ -12,9 +12,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
-import org.joml.Quaternionfc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import symbolics.division.armistice.mecha.movement.Euclidean;
 import symbolics.division.armistice.mecha.schematic.MechaSchematic;
 import symbolics.division.armistice.model.MechaModelData;
 
@@ -128,7 +128,7 @@ public class MechaCore implements Part {
 	}
 
 	@Override
-	public Quaternionfc absRot() {
+	public Quaternionf absRot() {
 		return new Quaternionf().identity();
 	}
 
@@ -150,5 +150,13 @@ public class MechaCore implements Part {
 		lineStrip10.addVertex(poseStack.last(), direction().toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
 
 		chassis.renderDebug(bufferSource, poseStack);
+	}
+
+	public Euclidean hullEuclidean() {
+		return hull;
+	}
+
+	public Euclidean chassisEuclidean() {
+		return chassis;
 	}
 }

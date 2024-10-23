@@ -39,7 +39,12 @@ public class PartRenderer {
 	}
 
 	public static void renderParts(MechaEntity mecha, PoseStack pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
+		// render in absolute space to ensure we match internal representation
+		pose.pushPose();
+		pose.translate(-mecha.core().position().x(), -mecha.core().position().y(), -mecha.core().position().z());
 		ChassisRenderer.dispatch(mecha, pose, bufferSource, color, packedLight, packedOverlay);
+		HullRenderer.dispatch(mecha, pose, bufferSource, color, packedLight, packedOverlay);
+		pose.popPose();
 	}
 
 	public static void renderQuads(ModelBaker.Quad[] quads, ResourceLocation texture, PoseStack.Pose pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {

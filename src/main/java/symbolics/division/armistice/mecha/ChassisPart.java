@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
-import org.joml.Quaternionfc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.movement.DirectionState;
@@ -126,13 +125,12 @@ public class ChassisPart extends AbstractMechaPart {
 	}
 
 	@Override
-	public Quaternionfc relRot() {
+	public Quaternionf relRot() {
 		return new Quaternionf().rotateTo(new Vector3f(0, 0, 1), this.direction().toVector3f());
 	}
 
-	public Vector3fc relHullPos() {
-		// temp: change to skeleton based
-		return new Vector3f(0, 1, 0);
+	Vector3fc relHullPos() {
+		return core.model().relativeHullPosition();
 	}
 
 	public Vec3 getPathingTarget() {

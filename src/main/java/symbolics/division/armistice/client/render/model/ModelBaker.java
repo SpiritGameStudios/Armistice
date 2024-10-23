@@ -8,6 +8,7 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import symbolics.division.armistice.model.BBModelData;
 import symbolics.division.armistice.model.BBModelTree;
 import symbolics.division.armistice.model.Element;
 
@@ -24,7 +25,10 @@ public class ModelBaker {
 		}
 	}
 
-	public static List<Quad> bake(BBModelTree tree, PoseStack poseStack) {
+	public static List<Quad> bake(BBModelTree tree) {
+		var poseStack = new PoseStack();
+		var s = BBModelData.BASE_SCALE_FACTOR;
+		poseStack.scale(s, s, s);
 		return bake(new ArrayList<>(), tree, poseStack);
 	}
 

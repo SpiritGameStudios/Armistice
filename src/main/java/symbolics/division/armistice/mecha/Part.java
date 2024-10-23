@@ -3,14 +3,11 @@ package symbolics.division.armistice.mecha;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import org.joml.Quaternionf;
-import org.joml.Quaternionfc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import symbolics.division.armistice.mecha.movement.Euclidean;
 
-public interface Part {
-	// maybe codec, ill leave this in for now
-//    public Codec<T> codec() { throw new NotImplementedException(); }
-
+public interface Part extends Euclidean {
 	/**
 	 * Guaranteed to be called before the first tick, and after core has been
 	 * associated with a loaded entity. All children must also be initialized
@@ -48,7 +45,7 @@ public interface Part {
 	 *
 	 * @return absolute rotation relative to <0, 0, 1> in world space along the shortest arc.
 	 */
-	default Quaternionfc absRot() {
+	default Quaternionf absRot() {
 		return parent().absRot().mul(relRot(), new Quaternionf());
 	}
 
@@ -64,7 +61,7 @@ public interface Part {
 	 *
 	 * @return rotation in model space (aka relative to <0, 0, 1>)
 	 */
-	default Quaternionfc relRot() {
+	default Quaternionf relRot() {
 		return new Quaternionf().identity();
 	}
 
@@ -74,6 +71,6 @@ public interface Part {
 	Part parent();
 
 	default void renderDebug(MultiBufferSource bufferSource, PoseStack poseStack) {
-		
+
 	}
 }

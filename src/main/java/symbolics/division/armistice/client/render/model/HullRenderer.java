@@ -16,10 +16,7 @@ public class HullRenderer {
 
 	public static void dispatch(MechaEntity mecha, PoseStack poseStack, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
 		poseStack.pushPose();
-//		PartRenderer.hull.get(mecha.core().schematic().hull().id())
-//			.render(poseStack.last(), bufferSource, color, packedLight, packedOverlay);
-		// for each ordnance, translate and draw
-		poseStack.translate(0, 5, 0);
+		mecha.core().hullEuclidean().transformAbsolute(poseStack);
 		for (int i = 0; i < mecha.core().ordnance().size(); i++) {
 			if (mecha.core().ordnance().get(i) instanceof NullOrdnancePart) continue;
 			OrdnanceRenderer.dispatch(mecha, i, poseStack, bufferSource, color, packedLight, packedOverlay);
@@ -30,7 +27,7 @@ public class HullRenderer {
 	private final ModelBaker.Quad[] quads;
 
 	public HullRenderer(BBModelTree tree) {
-		quads = ModelBaker.bake(tree, new PoseStack()).toArray(ModelBaker.Quad[]::new);
+		quads = ModelBaker.bake(tree).toArray(ModelBaker.Quad[]::new);
 	}
 
 	public void render(PoseStack.Pose pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {

@@ -11,22 +11,23 @@ public class ChassisRenderer {
 	private static final ResourceLocation TEST_TEXTURE = Armistice.id("textures/mecha/skin/chassis_skin_test.png");
 
 	public static void dispatch(MechaEntity mecha, PoseStack poseStack, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
-		poseStack.pushPose();
 		// draw self, calls armor render, calls hull render
+
 		var chassis = PartRenderer.chassis.get(mecha.core().schematic().chassis().id());
 		if (chassis != null) {
+			poseStack.pushPose();
+			mecha.core().chassisEuclidean().transformAbsolute(poseStack);
 			chassis.render(poseStack.last(), bufferSource, color, packedLight, packedOverlay);
-			HullRenderer.dispatch(mecha, poseStack, bufferSource, color, packedLight, packedOverlay);
+			poseStack.popPose();
 		} else if (mecha.tickCount % 20 == 0) {
-			Armistice.LOGGER.error("chassis model not available");
+			Armistice.LOGGER.error("chassis model not found: {}", mecha.core().schematic().chassis().id());
 		}
-		poseStack.popPose();
 	}
 
 	private final ModelBaker.Quad[] quads;
 
 	public ChassisRenderer(BBModelTree tree) {
-		quads = ModelBaker.bake(tree, new PoseStack()).toArray(ModelBaker.Quad[]::new);
+		quads = ModelBaker.bake(tree).toArray(ModelBaker.Quad[]::new);
 	}
 
 	public void render(PoseStack.Pose pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {

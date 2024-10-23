@@ -20,7 +20,7 @@ public class OrdnanceRenderer {
 	private final ModelBaker.Quad[] quads;
 
 	public OrdnanceRenderer(BBModelTree tree) {
-		quads = ModelBaker.bake(tree, new PoseStack()).toArray(ModelBaker.Quad[]::new);
+		quads = ModelBaker.bake(tree).toArray(ModelBaker.Quad[]::new);
 	}
 
 	public void render(PoseStack.Pose pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {

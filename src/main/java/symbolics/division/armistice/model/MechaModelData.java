@@ -3,6 +3,7 @@ package symbolics.division.armistice.model;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.schematic.MechaSchematic;
 
 import java.util.ArrayList;
@@ -11,10 +12,12 @@ import java.util.Objects;
 
 public class MechaModelData {
 	public final int numLegs;
-	public final OutlinerNode hull;
-	public final OutlinerNode chassis;
+	private final OutlinerNode hull;
+	private final OutlinerNode chassis;
 	private final List<Bone> ordnanceInfo = new ArrayList<>();
 	private final List<Bone> legInfo = new ArrayList<>();
+
+	private final Vector3fc relativeHullPosition;
 
 	public MechaModelData(MechaSchematic schematic) {
 		hull = Objects.requireNonNull(ModelOutlinerReloadListener.getNode(schematic.hull().id().withPrefix("hull/")))
@@ -32,6 +35,15 @@ public class MechaModelData {
 		for (int i = 1; i <= numLegs; i++) {
 			legInfo.add(Bone.of(getChild(chassis, "leg" + i)));
 		}
+
+		// temp: also include scale per-part
+		// bbmodels are by default 16x actual coordinates, so all distances emitted by this
+		// class need to be divided by 16.
+		relativeHullPosition = getChild(chassis, "hull").origin().toVector3f().mul(1f / 16);
+	}
+
+	public Vector3fc relativeHullPosition() {
+		return relativeHullPosition;
 	}
 
 	private static Vec3 bbRot2Direction(Vec3 xyz) {
