@@ -2,9 +2,9 @@ package symbolics.division.armistice.model;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Quaternionfc;
-import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.schematic.MechaSchematic;
@@ -45,18 +45,9 @@ public class MechaModelData {
 		// temp: also include scale per-part
 		// bbmodels are by default 16x actual coordinates, so all distances emitted by this
 		// class need to be divided by 16.
-    relativeHullPosition = getChild(chassis, "hull").orElseThrow().origin().toVector3f().mul(BBModelData.BASE_SCALE_FACTOR);
+		relativeHullPosition = getChild(chassis, "hull").orElseThrow().origin().toVector3f().mul(BBModelData.BASE_SCALE_FACTOR);
 
 		seatOffset = getChild(hull, "seat").map(seat -> seat.origin().scale(BBModelData.BASE_SCALE_FACTOR)).orElse(null);
-  }
-
-	public Vector3fc relativeHullPosition() {
-		// change to Bone
-		return relativeHullPosition;
-	}
-
-	public Bone ordnance(int i) {
-		return ordnanceInfo.get(i);
 	}
 
 	private static Vec3 bbRot2Direction(Vec3 xyz) {
@@ -87,7 +78,12 @@ public class MechaModelData {
 	}
 
 	public Vector3fc relativeHullPosition() {
+		// change to Bone
 		return relativeHullPosition;
+	}
+
+	public Bone ordnance(int i) {
+		return ordnanceInfo.get(i);
 	}
 
 	@Nullable
