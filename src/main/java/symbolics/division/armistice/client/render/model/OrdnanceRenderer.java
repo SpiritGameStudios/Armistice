@@ -12,6 +12,8 @@ public class OrdnanceRenderer {
 
 	public static void dispatch(MechaEntity mecha, int ordnance, PoseStack poseStack, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
 		poseStack.pushPose();
+		mecha.core().ordnanceEuclidean(ordnance)
+			.transformAbsolute(poseStack);
 		PartRenderer.ordnance.get(mecha.core().schematic().ordnance().get(ordnance).id())
 			.render(poseStack.last(), bufferSource, color, packedLight, packedOverlay);
 		poseStack.popPose();

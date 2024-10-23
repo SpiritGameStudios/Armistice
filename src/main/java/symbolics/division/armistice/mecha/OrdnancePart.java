@@ -1,10 +1,19 @@
 package symbolics.division.armistice.mecha;
 
+import org.joml.Quaternionf;
+import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.schematic.OrdnanceSchematic;
 
 public class OrdnancePart extends AbstractMechaPart {
-	public OrdnancePart(OrdnanceSchematic schematic) {
+	private MechaCore core;
 
+	public OrdnancePart(OrdnanceSchematic schematic) {
+	}
+
+	@Override
+	public void init(MechaCore core) {
+		super.init(core);
+		this.core = core;
 	}
 
 	// TODO: Implement ordnance heat
@@ -15,5 +24,15 @@ public class OrdnancePart extends AbstractMechaPart {
 	@Override
 	public Part parent() {
 		return core.hull;
+	}
+
+	@Override
+	public Quaternionf relRot() {
+		return new Quaternionf(core.model().ordnance(core.ordnanceIndex(this)).quat());
+	}
+
+	@Override
+	public Vector3fc relPos() {
+		return core.model().ordnance(core.ordnanceIndex(this)).pos().toVector3f();
 	}
 }

@@ -10,6 +10,7 @@ import net.minecraft.util.FastColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
+import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.client.render.model.PartRenderer;
 import symbolics.division.armistice.mecha.MechaEntity;
 
@@ -36,7 +37,12 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 //		var angle = Mth.atan2(d.x, d.z);
 //		poseStack.mulPose(new Quaternionf().rotationZYX(0, (float) angle, 0));
 
-
+		if (mecha.core().entity() == null) {
+			if (mecha.tickCount % 20 == 0) {
+				Armistice.LOGGER.error("trying to render mecha without entity set -- core must not have been initialized.");
+			}
+			return;
+		}
 		PartRenderer.renderParts(mecha, poseStack, bufferSource, color, packedLight, OverlayTexture.NO_OVERLAY);
 	}
 }

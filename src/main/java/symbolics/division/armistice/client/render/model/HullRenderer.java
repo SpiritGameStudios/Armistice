@@ -7,7 +7,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.mecha.MechaEntity;
-import symbolics.division.armistice.mecha.NullOrdnancePart;
 import symbolics.division.armistice.model.BBModelTree;
 
 @OnlyIn(Dist.CLIENT)
@@ -15,13 +14,16 @@ public class HullRenderer {
 	private static final ResourceLocation TEST_TEXTURE = Armistice.id("textures/mecha/skin/skin_template.png");
 
 	public static void dispatch(MechaEntity mecha, PoseStack poseStack, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
-		poseStack.pushPose();
-		mecha.core().hullEuclidean().transformAbsolute(poseStack);
-		for (int i = 0; i < mecha.core().ordnance().size(); i++) {
-			if (mecha.core().ordnance().get(i) instanceof NullOrdnancePart) continue;
-			OrdnanceRenderer.dispatch(mecha, i, poseStack, bufferSource, color, packedLight, packedOverlay);
+		var id = mecha.core().schematic().hull().id();
+		var renderer = PartRenderer.hull.get(id);
+		if (renderer != null) {
+			poseStack.pushPose();
+			mecha.core().hullEuclidean().transformAbsolute(poseStack);
+			renderer.render(poseStack.last(), bufferSource, color, packedLight, packedOverlay);
+			poseStack.popPose();
+		} else if (mecha.tickCount % 20 == 0) {
+			Armistice.LOGGER.error("hull model not found: {}", mecha.core().schematic().hull().id());
 		}
-		poseStack.popPose();
 	}
 
 	private final ModelBaker.Quad[] quads;
