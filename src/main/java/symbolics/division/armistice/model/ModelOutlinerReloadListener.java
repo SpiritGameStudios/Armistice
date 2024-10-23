@@ -72,8 +72,9 @@ public class ModelOutlinerReloadListener implements PreparableReloadListener {
 					Armistice.LOGGER.error("Couldn't parse data file {} from {}", id, file, e);
 				}
 
-				if (nodeData == null || nodeData.isError()) {
+				if (nodeData == null || nodeData.error().isPresent()) {
 					Armistice.LOGGER.error("Couldn't parse data file {} from {}", id, file);
+					if (nodeData != null) Armistice.LOGGER.error("{}", nodeData.error().get());
 					continue;
 				}
 

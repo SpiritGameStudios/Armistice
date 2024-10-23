@@ -4,12 +4,15 @@ import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
+import it.unimi.dsi.fastutil.Hash;
+import it.unimi.dsi.fastutil.objects.Object2ReferenceLinkedOpenHashMap;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
 import symbolics.division.armistice.util.CodecHelper;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public record OutlinerNode(
@@ -21,7 +24,8 @@ public record OutlinerNode(
 	boolean mirrorUv,
 	boolean visibility,
 	int autoUv,
-	List<Either<OutlinerNode, String>> children
+	List<Either<OutlinerNode, String>> children,
+	Map<String, Double> parameters
 ) {
 	public static final Codec<OutlinerNode> CODEC =
 		Codec.recursive(
@@ -35,7 +39,11 @@ public record OutlinerNode(
 				Codec.BOOL.fieldOf("mirror_uv").forGetter(OutlinerNode::mirrorUv),
 				Codec.BOOL.fieldOf("visibility").forGetter(OutlinerNode::visibility),
 				Codec.INT.fieldOf("autouv").forGetter(OutlinerNode::autoUv),
-				Codec.either(outlineCodec, Codec.STRING).listOf().lenientOptionalFieldOf("children", List.of()).forGetter(OutlinerNode::children)
+				Codec.either(outlineCodec, Codec.STRING).listOf().lenientOptionalFieldOf("children", List.of()).forGetter(OutlinerNode::children),
+				Codec.unboundedMap(Codec.STRING, Codec.DOUBLE).lenientOptionalFieldOf("parameters", Map.of()).xmap(
+					m -> (Map<String, Double>) new Object2ReferenceLinkedOpenHashMap<>(m, Hash.DEFAULT_LOAD_FACTOR),
+					m -> m
+				).forGetter(OutlinerNode::parameters)
 			).apply(instance, OutlinerNode::new))
 		);
 

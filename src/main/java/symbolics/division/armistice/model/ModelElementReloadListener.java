@@ -68,8 +68,9 @@ public class ModelElementReloadListener implements PreparableReloadListener {
 					Armistice.LOGGER.error("Couldn't parse data file {} from {}", id, file, e);
 				}
 
-				if (modelData == null || modelData.isError()) {
+				if (modelData == null || modelData.error().isPresent()) {
 					Armistice.LOGGER.error("Couldn't parse data file {} from {}", id, file);
+					if (modelData != null) Armistice.LOGGER.error("{}", modelData.error().get());
 					continue;
 				}
 
