@@ -1,85 +1,34 @@
 package symbolics.division.armistice.client.render.model;
 
-
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
-import symbolics.division.armistice.Armistice;
-import symbolics.division.armistice.mecha.MechaEntity;
-import symbolics.division.armistice.model.*;
+import symbolics.division.armistice.model.BBModelTree;
+import symbolics.division.armistice.model.Element;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-@OnlyIn(Dist.CLIENT)
-public class HullModel {
-	/*
-		Take model data, retrieve elements and bake into vertices
-	 */
-
-	private static final ResourceLocation TEXTURE = Armistice.id("textures/mecha/skin/skin_test.png");
-
-	private static final Map<ResourceLocation, HullModel> models = new Object2ObjectLinkedOpenHashMap<>();
-
-	public static void compileModels() {
-		models.clear();
-		for (ResourceLocation id : ModelOutlinerReloadListener.getNodes().keySet()) {
-			models.put(id, new HullModel(id));
-		}
+public class ModelBaker {
+	public record Quad(Vertex[] vertices, float nx, float ny, float nz) {
 	}
 
-	public static void render(MechaEntity mecha, PoseStack.Pose pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
-		models.get(mecha.core().schematic().chassis().id().withPrefix("chassis/"))
-			.render(pose, bufferSource, color, packedLight, packedOverlay);
-	}
-
-	private final Quad[] quads;
-
-	public HullModel(ResourceLocation hullId) {
-		List<Element> elements = ModelElementReloadListener.getModel(hullId);
-		List<OutlinerNode> nodes = ModelOutlinerReloadListener.getNode(hullId);
-		BBModelTree tree = new BBModelTree(new BBModelData(elements, nodes));
-		quads = compile(new ArrayList<>(), tree, new PoseStack()).toArray(Quad[]::new);
-	}
-
-	public void render(PoseStack.Pose pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
-		VertexConsumer vc = bufferSource.getBuffer(RenderType.entityCutout(TEXTURE));
-		Vector3f norm = new Vector3f();
-		Vector3f pos = new Vector3f();
-		for (Quad face : quads) {
-			pose.transformNormal(face.nx, face.ny, face.nz, norm);
-			// todo: winding order compiled backwards, should be cw not ccw
-			for (int i = face.vertices.length - 1; i >= 0; i--) {
-				Vertex v = face.vertices[i];
-				pose.pose().transformPosition(v.x, v.y, v.z, pos);
-				vc.addVertex(pos.x, pos.y, pos.z, color, v.u, v.v, packedOverlay, packedLight, norm.x, norm.y, norm.z);
-			}
-		}
-	}
-
-	private record Quad(Vertex[] vertices, float nx, float ny, float nz) {
-	}
-
-	private record Vertex(float x, float y, float z, float u, float v) {
+	public record Vertex(float x, float y, float z, float u, float v) {
 		public static Vertex of(Vector3fc vx, double u, double v) {
 			return new Vertex(vx.x(), vx.y(), vx.z(), (float) u, (float) v);
 		}
 	}
 
-	private static List<Quad> compile(List<Quad> quads, BBModelTree tree, PoseStack poseStack) {
+	public static List<Quad> bake(BBModelTree tree, PoseStack poseStack) {
+		return bake(new ArrayList<>(), tree, poseStack);
+	}
+
+	private static List<Quad> bake(List<Quad> quads, BBModelTree tree, PoseStack poseStack) {
 		Vector3fc origin = tree.node.origin().toVector3f();
 		Vector3fc rotation = tree.node.rotation().toVector3f();
 		poseStack.pushPose();
@@ -90,7 +39,7 @@ public class HullModel {
 		poseStack.translate(-origin.x(), -origin.y(), -origin.z());
 
 		for (Element element : tree.elements()) addElement(quads, poseStack, element);
-		for (BBModelTree child : tree.children()) compile(quads, child, poseStack);
+		for (BBModelTree child : tree.children()) bake(quads, child, poseStack);
 
 		poseStack.popPose();
 		return quads;
@@ -139,6 +88,11 @@ public class HullModel {
 		for (var entry : element.faces().entrySet()) {
 			Direction dir = entry.getKey();
 			Element.Face face = entry.getValue();
+			if (face.texture().isEmpty()) {
+				int a = 1;
+				continue;
+			}
+			; // null face, will have invalid uv
 			int[] ix = VERTEX_INDICES[dir.get3DDataValue()];
 			Vertex[] vertices = {
 				Vertex.of(points[ix[0]], face.uv().x / 256f, face.uv().y / 256f),

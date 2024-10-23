@@ -1,6 +1,5 @@
 package symbolics.division.armistice.mecha;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
@@ -17,7 +16,6 @@ import org.joml.Quaternionfc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.schematic.MechaSchematic;
-import symbolics.division.armistice.mecha.schematic.OrdnanceSchematic;
 import symbolics.division.armistice.model.MechaModelData;
 
 import java.util.List;
@@ -112,8 +110,8 @@ public class MechaCore implements Part {
 		return chassis.movement();
 	}
 
-	public List<OrdnanceSchematic> ordnance() {
-		return ImmutableList.copyOf(schematic.ordnance());
+	public List<OrdnancePart> ordnance() {
+		return hull.ordnance;
 	}
 
 	public MechaModelData model() {

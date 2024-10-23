@@ -12,7 +12,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
-import symbolics.division.armistice.client.render.model.HullModel;
+import symbolics.division.armistice.client.render.model.PartRenderer;
 import symbolics.division.armistice.mecha.MechaEntity;
 
 @OnlyIn(Dist.CLIENT)
@@ -37,7 +37,7 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 		var angle = Mth.atan2(d.x, d.z);
 		poseStack.mulPose(new Quaternionf().rotationZYX(0, (float) angle, 0));
 		int color = FastColor.ARGB32.color(255, 255, 255, 255);
-		HullModel.render(mecha, poseStack.last(), bufferSource, color, packedLight, OverlayTexture.NO_OVERLAY);
+		PartRenderer.renderParts(mecha, poseStack, bufferSource, color, packedLight, OverlayTexture.NO_OVERLAY);
 		poseStack.popPose();
 //		BakedModel test = Minecraft.getInstance().getModelManager().getModel(TestModel.TEST_MODEL);
 //
