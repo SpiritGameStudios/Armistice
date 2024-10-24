@@ -45,12 +45,12 @@ group = mod.group
 base.archivesName.set(mod.id)
 
 repositories {
-	repositories {
-		exclusiveContent {
-			forRepository { maven("https://api.modrinth.com/maven") }
-			filter { includeGroup("maven.modrinth") }
-		}
+	exclusiveContent {
+		forRepository { maven("https://api.modrinth.com/maven") }
+		filter { includeGroup("maven.modrinth") }
 	}
+
+	maven("https://maven.callmeecho.dev/releases")
 
 	mavenLocal()
 }
@@ -117,6 +117,15 @@ sourceSets.main.get().resources.srcDir("src/generated/resources")
 
 dependencies {
 	implementation(libs.fusion)
+
+	jarJar(libs.caliko) {
+		version {
+			strictly("[1.3.8]")
+			prefer("1.3.8")
+		}
+	}
+	implementation(libs.caliko)
+	additionalRuntimeClasspath(libs.caliko)
 }
 
 tasks.withType<JavaCompile>().configureEach {

@@ -21,7 +21,7 @@ public class Armistice {
 	public Armistice(IEventBus modEventBus, ModContainer modContainer) {
 		RegistryEvents.init(modEventBus);
 		modEventBus.register(ArmisticeDatagen.class);
-		
+
 		NeoForge.EVENT_BUS.register(OutlinerSyncS2CPayload.class);
 		NeoForge.EVENT_BUS.register(ArmisticeClient.GameEvents.class);
 		NeoForge.EVENT_BUS.register(MechaDebugRenderer.class);

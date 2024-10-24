@@ -10,9 +10,12 @@ parchment = "2024.07.28"
 
 fusion = "1.1.1a-neoforge-mc1.21"
 
+caliko = "1.3.8"
+
 [libraries]
 neoforge = { module = "net.neoforged:neoforge", version.ref = "neoforge" }
 fusion = { module = "maven.modrinth:fusion-connected-textures", version.ref = "fusion" }
+caliko = { module = "au.edu.federation.caliko:caliko", version.ref = "caliko" }
 
 [plugins]
 moddevgradle = { id = "net.neoforged.moddev", version.ref = "moddevgradle" }
