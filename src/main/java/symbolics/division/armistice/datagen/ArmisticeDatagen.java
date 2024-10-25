@@ -42,6 +42,12 @@ public final class ArmisticeDatagen {
 		);
 
 		generator.addProvider(
+			event.includeClient(),
+			new ArmisticeSoundDefinitionsProvider(output, existingFileHelper)
+		);
+
+
+		generator.addProvider(
 			event.includeServer(),
 			new ArmisticeOutlinerProvider(output, lookupProvider, existingFileHelper)
 		);

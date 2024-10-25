@@ -50,6 +50,7 @@ public final class RegistryEvents {
 			Registrar.process(ArmisticeEntityTypeRegistrar.class, MODID, event);
 			Registrar.process(ArmisticeItemRegistrar.class, MODID, event);
 			Registrar.process(ArmisticeCreativeModeTabRegistrar.class, MODID, event);
+			Registrar.process(ArmisticeSoundEventRegistrar.class, MODID, event);
 
 			Registrar.process(ChassisRegistrar.class, MODID, event);
 			Registrar.process(HullRegistrar.class, MODID, event);

@@ -1,0 +1,27 @@
+{
+  "ambient.mecha1": {
+    "sounds": [
+      "armistice:ambient/mecha1"
+    ],
+    "subtitle": "sound.armistice.ambient.mecha1"
+  },
+  "ambient.mecha2": {
+    "sounds": [
+      "armistice:ambient/mecha2"
+    ],
+    "subtitle": "sound.armistice.ambient.mecha2"
+  },
+  "entity.mecha.step": {
+    "sounds": [
+      "armistice:entity/mecha/step1",
+      "armistice:entity/mecha/step2"
+    ],
+    "subtitle": "sound.armistice.entity.mecha.step"
+  },
+  "music.recalled": {
+    "sounds": [
+      "armistice:music/recalled"
+    ],
+    "subtitle": "sound.armistice.music.recalled"
+  }
+}
