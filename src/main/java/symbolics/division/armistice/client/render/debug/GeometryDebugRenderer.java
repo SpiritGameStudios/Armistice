@@ -12,7 +12,6 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import symbolics.division.armistice.mecha.movement.KinematicsSolver;
 
 import java.util.function.Consumer;
 
@@ -60,9 +59,6 @@ public class GeometryDebugRenderer {
 	}
 
 	public static void update() {
-		var s2dir = b3.subtract(b2);
-		var s1dir = b2.subtract(b1);
-		b3 = b2.add(KinematicsSolver.clampPlanarAngle(s2dir, s1dir, norm, min, max));
 	}
 
 	public static LiteralArgumentBuilder<CommandSourceStack> registerSubCommands(LiteralArgumentBuilder<CommandSourceStack> cmd) {

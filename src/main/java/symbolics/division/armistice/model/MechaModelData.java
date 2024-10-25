@@ -1,5 +1,6 @@
 package symbolics.division.armistice.model;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +20,7 @@ public class MechaModelData {
 	private final OutlinerNode hull;
 	private final OutlinerNode chassis;
 	private final List<Bone> ordnanceInfo = new ArrayList<>();
-	private final List<Bone> legInfo = new ArrayList<>();
+	private final List<LegInfo> legInfo = new ArrayList<>();
 
 	private final Vector3fc relativeHullPosition;
 	@Nullable
@@ -36,10 +37,10 @@ public class MechaModelData {
 		}
 
 		numLegs = (int) chassis.children().stream()
-			.filter(c -> c.left().map(n -> n.name().startsWith("leg")).orElse(false))
+			.filter(c -> c.left().map(n -> n.name().matches("^leg[0-9]$")).orElse(false))
 			.count();
 		for (int i = 1; i <= numLegs; i++) {
-			legInfo.add(Bone.of(getChild(chassis, "leg" + i).orElseThrow()));
+			legInfo.add(LegInfo.of(chassis, "leg" + i));
 		}
 
 		// temp: also include scale per-part
@@ -48,6 +49,24 @@ public class MechaModelData {
 		relativeHullPosition = getChild(chassis, "hull").orElseThrow().origin().toVector3f().mul(BBModelData.BASE_SCALE_FACTOR);
 
 		seatOffset = getChild(hull, "seat").map(seat -> seat.origin().scale(BBModelData.BASE_SCALE_FACTOR)).orElse(null);
+	}
+
+	public Bone ordnance(int i) {
+		return ordnanceInfo.get(i);
+	}
+
+	@Nullable
+	public Vec3 seatOffset() {
+		return seatOffset;
+	}
+
+	public List<LegInfo> legInfo() {
+		return ImmutableList.copyOf(legInfo);
+	}
+
+	public Vector3fc relativeHullPosition() {
+		// change to Bone
+		return relativeHullPosition;
 	}
 
 	private static Vec3 bbRot2Direction(Vec3 xyz) {
@@ -77,18 +96,17 @@ public class MechaModelData {
 			.findFirst().orElse(Optional.empty());
 	}
 
-	public Vector3fc relativeHullPosition() {
-		// change to Bone
-		return relativeHullPosition;
-	}
-
-	public Bone ordnance(int i) {
-		return ordnanceInfo.get(i);
-	}
-
-	@Nullable
-	public Vec3 seatOffset() {
-		return seatOffset;
+	private static Optional<OutlinerNode> getChild(OutlinerNode node, int index) {
+		for (var child : node.children()) {
+			if (child.left().isPresent()) {
+				if (index > 0) {
+					index--;
+				} else {
+					return child.left();
+				}
+			}
+		}
+		return Optional.empty();
 	}
 
 	// position, xyz rotation, and 3d direction unit vector
@@ -97,5 +115,32 @@ public class MechaModelData {
 		public static Bone of(OutlinerNode node) {
 			return new Bone(node.origin().scale(BBModelData.BASE_SCALE_FACTOR), node.rotation(), bbRot2Direction(node.rotation()), bbRot2Quaternion(node.rotation()));
 		}
+	}
+
+	public record LegInfo(Vec3 rootOffset, Vec3 tip, double rootYawDegrees, List<SegmentInfo> segments) {
+		// we don't consider joint offset in the IK calc right now;
+		// we'll have to assume that we can fudge it and the angles will
+		// look right when they're applied to the model after solving.
+		public static LegInfo of(OutlinerNode root, String id) {
+			OutlinerNode rootSegment = getChild(root, id).orElseThrow();
+			List<SegmentInfo> segments = new ArrayList<>();
+			Vec3 prevPos = rootSegment.origin();
+			Optional<OutlinerNode> segmentOptional = getChild(root, 0);
+			while (segmentOptional.isPresent()) {
+				OutlinerNode segment = segmentOptional.get();
+				segments.add(new SegmentInfo(
+					prevPos.distanceTo(segment.origin()),
+					segment.rotation().x,
+					segment.parameters().getOrDefault("maxAngle", 90d),
+					segment.parameters().getOrDefault("minAngle", 90d)
+				));
+				prevPos = segment.origin();
+				segmentOptional = getChild(segment, 0);
+			}
+			return new LegInfo(root.origin(), getChild(root, id + "_tip").orElseThrow().origin(), root.rotation().y, segments);
+		}
+	}
+
+	public record SegmentInfo(double length, double baseAngleDeg, double maxAngleDeg, double minAngleDeg) {
 	}
 }
