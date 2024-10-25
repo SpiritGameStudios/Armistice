@@ -9,7 +9,7 @@ import symbolics.division.armistice.util.registrar.EntityTypeRegistrar;
 public final class ArmisticeEntityTypeRegistrar implements EntityTypeRegistrar {
 	public static final EntityType<MechaEntity> MECHA = EntityType.Builder.of(
 		MechaEntity::temp, MobCategory.MISC
-	).build("peace_engine");
+	).sized(5, 5).build("mecha");
 
 //	@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 //	public static final class Attributes {

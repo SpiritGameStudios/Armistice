@@ -1,6 +1,7 @@
 package symbolics.division.armistice.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -43,6 +44,8 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 			}
 			return;
 		}
-		PartRenderer.renderParts(mecha, poseStack, bufferSource, color, packedLight, OverlayTexture.NO_OVERLAY);
+		if (Minecraft.getInstance().player == null) return;
+		if (!mecha.core().entity().hasPassenger(Minecraft.getInstance().player))
+			PartRenderer.renderParts(mecha, poseStack, bufferSource, color, packedLight, OverlayTexture.NO_OVERLAY);
 	}
 }
