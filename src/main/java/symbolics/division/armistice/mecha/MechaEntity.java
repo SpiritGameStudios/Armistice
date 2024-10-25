@@ -7,6 +7,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -49,6 +50,8 @@ public class MechaEntity extends Entity {
 			core.initCore(this);
 		}
 		core.tick();
+
+		this.move(MoverType.SELF, this.getDeltaMovement());
 	}
 
 	public MechaCore core() {
@@ -86,6 +89,13 @@ public class MechaEntity extends Entity {
 	@NotNull
 	@Override
 	public InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
+		InteractionResult result = super.interact(player, hand);
+		if (result.consumesAction()) return result;
+		if (player.isSecondaryUseActive() || this.isVehicle()) return InteractionResult.PASS;
+
+		if (this.level().isClientSide)
+			return InteractionResult.SUCCESS;
+
 		return player.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
 	}
 }

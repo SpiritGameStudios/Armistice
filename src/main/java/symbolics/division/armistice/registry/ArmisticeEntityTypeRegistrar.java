@@ -10,13 +10,4 @@ public final class ArmisticeEntityTypeRegistrar implements EntityTypeRegistrar {
 	public static final EntityType<MechaEntity> MECHA = EntityType.Builder.of(
 		MechaEntity::temp, MobCategory.MISC
 	).sized(5, 5).build("mecha");
-
-//	@EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
-//	public static final class Attributes {
-//		@SubscribeEvent
-//		public static void addDefaultAttributes(EntityAttributeCreationEvent event) {
-//
-//			event.put(MECHA, Mob.createMobAttributes().add(net.minecraft.world.entity.ai.attributes.Attributes.MAX_HEALTH, 8.0).add(net.minecraft.world.entity.ai.attributes.Attributes.ATTACK_DAMAGE, 4.0).add(FOLLOW_RANGE, 70).build());
-//		}
-//	}
 }

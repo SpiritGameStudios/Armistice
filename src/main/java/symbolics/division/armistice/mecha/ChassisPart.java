@@ -45,6 +45,13 @@ public class ChassisPart extends AbstractMechaPart {
 		this.schematic = schematic;
 	}
 
+	private static void drawLoc(Vector3f p, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
+		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
+		vc.addVertex(poseStack.last(), p).setColor(r, g, b, 1.0f);
+		vc.addVertex(poseStack.last(), p.add(0, 1, 0, new Vector3f()))
+			.setColor(r, g, b, 1.0f);
+	}
+
 	@Override
 	public void init(MechaCore core) {
 		super.init(core);
@@ -109,6 +116,9 @@ public class ChassisPart extends AbstractMechaPart {
 	public void serverTick() {
 		tick();
 		core.hull.serverTick();
+
+		if (!core.entity().onGround()) movement = movement.subtract(0, 0.1, 0);
+		else movement = new Vec3(movement.x, 0, movement.z);
 	}
 
 	@Override
@@ -201,12 +211,5 @@ public class ChassisPart extends AbstractMechaPart {
 			.setColor(0.0f, 1.0f, 0.0f, 1.0f);
 
 		core.hull.renderDebug(bufferSource, poseStack);
-	}
-
-	private static void drawLoc(Vector3f p, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
-		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
-		vc.addVertex(poseStack.last(), p).setColor(r, g, b, 1.0f);
-		vc.addVertex(poseStack.last(), p.add(0, 1, 0, new Vector3f()))
-			.setColor(r, g, b, 1.0f);
 	}
 }

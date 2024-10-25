@@ -78,7 +78,7 @@ public class MechaCore implements Part {
 			chassis.clientTick(tickDelta);
 		} else {
 			chassis.serverTick();
-			entity().setPos(entity.position().add(acceleration().scale(0.1)));
+			entity.setDeltaMovement(acceleration());
 		}
 
 //		entity().lookAt(EntityAnchorArgument.Anchor.EYES, entity().getEyePosition().add(chassis.direction()));
