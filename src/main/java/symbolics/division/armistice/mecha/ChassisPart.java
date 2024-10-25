@@ -27,7 +27,7 @@ public class ChassisPart extends AbstractMechaPart {
 	protected final DirectionState direction = new DirectionState(Math.PI);
 	protected final ChassisSchematic schematic;
 	protected final double followTolerance = 4; // temp: related to model diameter
-	protected final double moveSpeed = 1.0;
+	protected final double moveSpeed;
 	protected List<ChassisLeg> legs;
 	protected Vec3 movement = Vec3.ZERO;
 	protected Vec3 pathingTarget = Vec3.ZERO;
@@ -43,6 +43,7 @@ public class ChassisPart extends AbstractMechaPart {
 
 	public ChassisPart(ChassisSchematic schematic) {
 		this.schematic = schematic;
+		moveSpeed = schematic.moveSpeed();
 	}
 
 	private static void drawLoc(Vector3f p, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
@@ -114,7 +115,8 @@ public class ChassisPart extends AbstractMechaPart {
 
 	@Override
 	public void serverTick() {
-		tick();
+		super.serverTick();
+
 		core.hull.serverTick();
 
 		if (!core.entity().onGround()) movement = movement.subtract(0, 0.1, 0);
@@ -123,7 +125,8 @@ public class ChassisPart extends AbstractMechaPart {
 
 	@Override
 	public void clientTick(float tickDelta) {
-		tick();
+		super.clientTick(tickDelta);
+		
 		core.hull.clientTick(tickDelta);
 	}
 
@@ -176,7 +179,6 @@ public class ChassisPart extends AbstractMechaPart {
 
 	@Override
 	public void renderDebug(MultiBufferSource bufferSource, PoseStack poseStack) {
-		if (true) return;
 		for (int i = 0; i < legs.size(); i++) {
 			ChassisLeg leg = legs.get(i);
 

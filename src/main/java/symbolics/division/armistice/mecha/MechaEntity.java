@@ -1,5 +1,6 @@
 package symbolics.division.armistice.mecha;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.InteractionHand;
@@ -49,7 +50,10 @@ public class MechaEntity extends Entity {
 			firstTick = false;
 			core.initCore(this);
 		}
-		core.tick();
+
+		if (this.level().isClientSide())
+			core.clientTick(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true));
+		else core.serverTick();
 
 		this.move(MoverType.SELF, this.getDeltaMovement());
 	}

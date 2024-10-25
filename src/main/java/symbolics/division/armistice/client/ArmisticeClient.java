@@ -1,5 +1,7 @@
 package symbolics.division.armistice.client;
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -29,7 +31,7 @@ public class ArmisticeClient {
 	public static class GameEvents {
 		@SubscribeEvent
 		private static void onRegisterClientCommands(RegisterClientCommandsEvent event) {
-			var cmd = Commands.literal("armistice_debug");
+			LiteralArgumentBuilder<CommandSourceStack> cmd = Commands.literal("armistice_debug");
 			cmd = MechaDebugRenderer.registerClientCommands(cmd);
 			event.getDispatcher().register(cmd);
 		}

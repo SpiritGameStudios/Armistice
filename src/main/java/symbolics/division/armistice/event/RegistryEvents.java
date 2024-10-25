@@ -72,7 +72,7 @@ public final class RegistryEvents {
 
 			event.register(
 				ArmisticeRegistries.CHASSIS_KEY,
-				registry -> registry.register(Armistice.id("test_chassis"), new ChassisSchematic(1, 1, 2))
+				registry -> registry.register(Armistice.id("test_chassis"), new ChassisSchematic(1, 1, 2, 4))
 			);
 
 			event.register(

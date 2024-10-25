@@ -2,7 +2,6 @@ package symbolics.division.armistice.mecha;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.entity.player.Player;
@@ -54,12 +53,28 @@ public class MechaCore implements Part {
 		chassis.init(core);
 	}
 
+	@Override
+	public void clientTick(float tickDelta) {
+		Part.super.clientTick(tickDelta);
+
+		chassis.clientTick(tickDelta);
+	}
+
+	@Override
+	public void serverTick() {
+		Part.super.serverTick();
+
+		chassis.serverTick();
+		entity.setDeltaMovement(acceleration());
+	}
+
+	@Override
 	public void tick() {
-		// temp: debug pathing -----------
+		// region temp: debug pathing
 		Player player = level().getNearestPlayer(entity(), 100);
 		if (player != null) {
-			var eye = player.getEyePosition();
-			var limit = eye.add(player.getLookAngle().scale(30));
+			Vec3 eye = player.getEyePosition();
+			Vec3 limit = eye.add(player.getLookAngle().scale(30));
 			BlockHitResult raycast = level().clip(new ClipContext(
 				player.getEyePosition(),
 				limit,
@@ -67,21 +82,9 @@ public class MechaCore implements Part {
 				ClipContext.Fluid.NONE,
 				player
 			));
-			if (raycast.getType() == HitResult.Type.BLOCK) {
-				chassis.setPathingTarget(raycast.getLocation());
-			}
+			if (raycast.getType() == HitResult.Type.BLOCK) chassis.setPathingTarget(raycast.getLocation());
 		}
-		// --------------------------------
-
-		if (entity().level().isClientSide()) {
-			float tickDelta = Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true);
-			chassis.clientTick(tickDelta);
-		} else {
-			chassis.serverTick();
-			entity.setDeltaMovement(acceleration());
-		}
-
-//		entity().lookAt(EntityAnchorArgument.Anchor.EYES, entity().getEyePosition().add(chassis.direction()));
+		// endregion
 	}
 
 	@Override

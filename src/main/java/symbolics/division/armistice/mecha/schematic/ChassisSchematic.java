@@ -9,7 +9,8 @@ import symbolics.division.armistice.registry.ArmisticeRegistries;
 public record ChassisSchematic(
 	@Range(from = 1, to = 3) int tier,
 	int minArmorLevel,
-	int maxArmorLevel
+	int maxArmorLevel,
+	double moveSpeed
 ) implements Schematic<ChassisSchematic, ChassisPart> {
 	public static final Codec<ChassisSchematic> REGISTRY_CODEC = ArmisticeRegistries.CHASSIS.byNameCodec();
 
