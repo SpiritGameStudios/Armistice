@@ -1,76 +1,114 @@
 package symbolics.division.armistice.mecha.movement;
 
+import au.edu.federation.caliko.FabrikBone3D;
 import au.edu.federation.caliko.FabrikChain3D;
+import au.edu.federation.caliko.FabrikJoint3D;
 import au.edu.federation.utils.Vec3f;
+import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import symbolics.division.armistice.mecha.ChassisPart;
 import symbolics.division.armistice.model.MechaModelData;
 
 public class ChassisLeg {
 
-	protected final double stepTolerance = 2; // temp: get from leginfo
+	protected final int legIndex;
 	protected ChassisPart chassis;
-	protected FabrikChain3D chain;
+	protected FabrikChain3D chain = IKUtil.defaultChain();
 
-	private static final Vec3f X_AXIS = new Vec3f(1, 0, 0);
-	private static final Vec3f Y_AXIS = new Vec3f(0, 1, 0);
-	private static final Vec3f Z_AXIS = new Vec3f(0, 0, 1);
+	protected Vec3 tickTarget = Vec3.ZERO;
+	protected Vec3 prevStepTarget = Vec3.ZERO;
+	protected Vec3 nextStepTarget = Vec3.ZERO;
+	protected Vec3 finalStepTarget = Vec3.ZERO;
 
-	public ChassisLeg(MechaModelData.LegInfo info, ChassisPart chassis) {
+	/*
+	Idea:
+
+	starfish-shape: absolute root has a vertical bone, and all legs
+	extend from this such that the angle is maintained as chassis rotates.
+
+	n legs, n chains + 1 tiny bone that tries to solve for leg centroid + standing height at each step.
+	leg chains have embedded targets for step positions.
+	chassis should rotate to allow for leg rotations.
+	absolute root is unfixed and points horizontally, like a tail.
+	central tiny bone points directly vertical
+	 */
+
+	public ChassisLeg(MechaModelData.LegInfo info, ChassisPart chassis, int index) {
 		this.chassis = chassis;
+		this.legIndex = index;
 		// model format:
 		// leg1 -> seg1: yaw bone. get default yaw and limits
 		// seg1 -> seg2: get x-axis rotation and limits
 
-
-		// legs only calculate positions etc relative to chassis
-	}
-
-	/*
-	public Leggy(int nSegments) {
-		if (nSegments < 1) throw new RuntimeException("leg must have at least one segment");
-		chain = new FabrikChain3D();
-
-		Vec3f root = new Vec3f();
-		Vec3f end = root.plus(Z_AXIS);
-		FabrikBone3D baseBone = new FabrikBone3D(root, end);
+		// bone from center of model to base of leg. must always be a fixed yaw from "nose" direction.
+		Vec3f base = new Vec3f();
+		Vec3f end = base.plus(IKUtil.Z_AXIS);
+		FabrikBone3D baseBone = new FabrikBone3D(base, end);
 		chain.addBone(baseBone);
-		chain.setBaseLocation(baseLocation);
-		chain.setGlobalHingedBasebone(
-			new Vec3f(Y_AXIS), 180, 180, new Vec3f(Z_AXIS)
+		chain.setRotorBaseboneConstraint(
+			FabrikChain3D.BaseboneConstraintType3D.LOCAL_ROTOR,
+			IKUtil.mc2fab(info.rootOffset().with(Direction.Axis.Y, 0).normalize()),
+			0
 		);
-		chain.setMinIterationChange(0.1f);
-		chain.setSolveDistanceThreshold(0.1f);
-		chain.setMaxIterationAttempts(500);
+//		chain.setLocalHingedBasebone(
+//			new Vec3f(IKUtil.Y_AXIS), 0, 0, IKUtil.mc2fab(info.rootOffset().with(Direction.Axis.Y, 0))
+//		);
+		chain.setEmbeddedTargetMode(true);
 
-		for (int i = 0; i<3; i++) {
-			float cw = i % 2 == 0 ? 45 : 45;
-			float ccw = i % 2 == 0 ? 45 : 45;
+		// yaw bone: base of leg in the actual model. Only bone allowed to rotate around y.
+		MechaModelData.SegmentInfo yawBone = info.segments().getFirst();
+		chain.addConsecutiveHingedBone(
+			IKUtil.Z_AXIS, (float) yawBone.length(),
+			FabrikJoint3D.JointType.LOCAL_HINGE, IKUtil.Y_AXIS,
+			(float) yawBone.minAngleDeg(), (float) yawBone.maxAngleDeg(),
+			Vec3f.rotateAboutAxisDegs(IKUtil.Z_AXIS, (float) yawBone.baseAngleDeg(), IKUtil.Y_AXIS)
+		);
+
+		for (var segment : info.segments().subList(1, info.segments().size())) {
 			chain.addConsecutiveHingedBone(
-				Z_AXIS, 1f, FabrikJoint3D.JointType.LOCAL_HINGE, X_AXIS, 160, 160, Z_AXIS
+				IKUtil.Z_AXIS, (float) segment.length(),
+				FabrikJoint3D.JointType.LOCAL_HINGE, IKUtil.X_AXIS,
+				(float) segment.minAngleDeg(), (float) segment.maxAngleDeg(),
+				Vec3f.rotateAboutAxisDegs(IKUtil.Z_AXIS, (float) segment.baseAngleDeg(), IKUtil.X_AXIS)
 			);
 		}
 
-		chain.addConsecutiveHingedBone(
-			Z_AXIS, 1f, FabrikJoint3D.JointType.LOCAL_HINGE, X_AXIS, 0, 160, Z_AXIS
-		);
+		String legName = "leg" + legIndex;
+		chain.setName(legName);
+		baseBone.setName(legName + "_base");
+		for (int i = 1; i < chain.getChain().size(); i++) {
+			chain.getBone(i).setName(legName + "_seg" + i);
+		}
 
-
-		this.controller = new LegController(this);
 	}
-	 */
 
-	public void setStepTarget(Vec3 location) {
-		// this is a world location that we need to transform into model space
+	public FabrikChain3D getChain() {
+		return chain;
 	}
 
 	public void tick() {
+		// there are 4 types of targets:
+		/*
+			tick target: position that the chain should be targeting in during this tick.
+			previous step target: previous location this leg is stepping from
+			next step target: new location this leg is stepping to
+			final step target: ultimate location this leg will try to step to until in range.
+		 */
+		double tempBlocksPerTick = 0.05f;
+		tickTarget = chassis.legMap().legTarget(legIndex);
+		chain.updateEmbeddedTarget(IKUtil.mc2fab(tickTarget));
+		chain.solveForEmbeddedTarget();
+	}
 
+	private double stepTolerance() {
+		// current step tolerance based on chassis state
+		// when chassis doesn't want to move, should be small
+		// temp: should be fed in from chassis model data, requested from chassis
+		return 1.0;
 	}
 
 	public boolean stepping() {
 		return false;
 	}
-
 
 }

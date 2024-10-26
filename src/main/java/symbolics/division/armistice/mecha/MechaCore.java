@@ -12,7 +12,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.movement.Euclidean;
 import symbolics.division.armistice.mecha.schematic.MechaSchematic;
 import symbolics.division.armistice.model.MechaModelData;
@@ -130,7 +129,7 @@ public class MechaCore implements Part {
 	}
 
 	@Override
-	public Vector3fc absPos() {
+	public Vector3f absPos() {
 		return position().toVector3f();
 	}
 

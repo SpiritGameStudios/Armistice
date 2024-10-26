@@ -3,9 +3,7 @@ package symbolics.division.armistice.mecha.movement;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 
 public final class GeometryUtil {
 	private GeometryUtil() {
@@ -17,12 +15,18 @@ public final class GeometryUtil {
 		return new Vector3f(v).rotateAxis(rad, axis.x, axis.y, axis.z);
 	}
 
-
-
-
 	public static Vec2 dir2Rad(Vec3 dir) {
 		// yaw (x: positive z, y: positive x), pitch (x: horizontal length, y: positive y)
 		return new Vec2((float) Math.atan(dir.x / dir.z), (float) Math.atan(dir.y / Math.sqrt(dir.x * dir.x + dir.z * dir.z)));
+	}
+
+	public static double yaw(Vec3 dir) {
+		return Math.atan2(dir.x, dir.z);
+	}
+
+	public static Vec3 rotateYR(Vec3 vec, float yaw) {
+		// because moj loves degrees :/
+		return vec.yRot(yaw * 180f / Mth.PI);
 	}
 
 	public static double chord(double radians) {

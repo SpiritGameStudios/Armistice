@@ -117,27 +117,32 @@ public class MechaModelData {
 		}
 	}
 
-	public record LegInfo(Vec3 rootOffset, Vec3 tip, double rootYawDegrees, List<SegmentInfo> segments) {
+	public record LegInfo(Vec3 rootOffset, Vec3 tip, double rootYawDegrees, double minYawDegrees, double maxYawDegrees,
+						  List<SegmentInfo> segments) {
 		// we don't consider joint offset in the IK calc right now;
 		// we'll have to assume that we can fudge it and the angles will
 		// look right when they're applied to the model after solving.
 		public static LegInfo of(OutlinerNode root, String id) {
 			OutlinerNode rootSegment = getChild(root, id).orElseThrow();
 			List<SegmentInfo> segments = new ArrayList<>();
-			Vec3 prevPos = rootSegment.origin();
+			Vec3 rootOrigin = rootSegment.origin().scale(BBModelData.BASE_SCALE_FACTOR);
+			Vec3 prevPos = rootOrigin;
 			Optional<OutlinerNode> segmentOptional = getChild(root, 0);
 			while (segmentOptional.isPresent()) {
 				OutlinerNode segment = segmentOptional.get();
+				Vec3 segmentOrigin = segment.origin().scale(BBModelData.BASE_SCALE_FACTOR);
 				segments.add(new SegmentInfo(
-					prevPos.distanceTo(segment.origin()),
+					Math.max(prevPos.distanceTo(segmentOrigin), 0.001), // treat 0-length bones as really really small bones instead
 					segment.rotation().x,
 					segment.parameters().getOrDefault("maxAngle", 90d),
 					segment.parameters().getOrDefault("minAngle", 90d)
 				));
-				prevPos = segment.origin();
+				prevPos = segmentOrigin;
 				segmentOptional = getChild(segment, 0);
 			}
-			return new LegInfo(root.origin(), getChild(root, id + "_tip").orElseThrow().origin(), root.rotation().y, segments);
+			double maxYaw = rootSegment.parameters().getOrDefault("minAngle", 90d);
+			double minYaw = rootSegment.parameters().getOrDefault("maxAngle", 90d);
+			return new LegInfo(rootOrigin, getChild(root, id + "_tip").orElseThrow().origin().scale(BBModelData.BASE_SCALE_FACTOR), root.rotation().y, minYaw, maxYaw, segments);
 		}
 	}
 

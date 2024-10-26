@@ -1,16 +1,23 @@
 package symbolics.division.armistice.mecha;
 
+import au.edu.federation.caliko.BoneConnectionPoint;
+import au.edu.federation.caliko.FabrikBone3D;
+import au.edu.federation.caliko.FabrikChain3D;
+import au.edu.federation.caliko.FabrikStructure3D;
+import au.edu.federation.utils.Vec3f;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.movement.ChassisLeg;
 import symbolics.division.armistice.mecha.movement.DirectionState;
+import symbolics.division.armistice.mecha.movement.IKUtil;
 import symbolics.division.armistice.mecha.movement.LegMap;
 import symbolics.division.armistice.mecha.schematic.ChassisSchematic;
 
@@ -32,6 +39,7 @@ public class ChassisPart extends AbstractMechaPart {
 	protected Vec3 movement = Vec3.ZERO;
 	protected Vec3 pathingTarget = Vec3.ZERO;
 	protected LegMap legMap;
+	protected FabrikStructure3D skeleton;
 
 	// todo notes: chassis schematic/skeleton needs to tell us
 	// - number of legs
@@ -46,19 +54,32 @@ public class ChassisPart extends AbstractMechaPart {
 		moveSpeed = schematic.moveSpeed();
 	}
 
-	private static void drawLoc(Vector3f p, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
-		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
-		vc.addVertex(poseStack.last(), p).setColor(r, g, b, 1.0f);
-		vc.addVertex(poseStack.last(), p.add(0, 1, 0, new Vector3f()))
-			.setColor(r, g, b, 1.0f);
-	}
-
 	@Override
 	public void init(MechaCore core) {
 		super.init(core);
 		core.hull.init(core);
 		this.legMap = new LegMap(core.model(), this);
-		this.legs = core.model.legInfo().stream().map(info -> new ChassisLeg(info, this)).toList();
+		this.legs = new ArrayList<>();
+		for (int i = 0; i < core.model().legInfo().size(); i++) {
+			legs.add(new ChassisLeg(core.model().legInfo().get(i), this, i));
+		}
+
+		// the skeleton appears
+		this.skeleton = new FabrikStructure3D();
+		var p = absPos();
+		FabrikBone3D rootBone = new FabrikBone3D(new Vec3f(p.x, p.y, p.z), new Vec3f(p.x, p.y, p.z + 1));
+		rootBone.setName("root");
+		FabrikChain3D rootChain = IKUtil.defaultChain();
+		rootChain.addBone(rootBone);
+		rootChain.setFixedBaseMode(false);
+		rootChain.setFreelyRotatingGlobalHingedBasebone(IKUtil.Y_AXIS);
+		this.skeleton.addChain(rootChain);
+
+		// root bone is like the "nose" of the skeleton, guides the center towards desired position.
+		// each leg has already determined its own fixed rotation relative to the nose.
+		for (ChassisLeg leg : this.legs) {
+			this.skeleton.connectChain(leg.getChain(), 0, 0, BoneConnectionPoint.START);
+		}
 	}
 
 	@Override
@@ -66,25 +87,32 @@ public class ChassisPart extends AbstractMechaPart {
 		super.tick();
 		// temp: need non horizontal-only movement
 		// update desired movement
-		if (pathingTarget != null) {
+		if (pathingTarget != null && !pathingTarget.closerThan(new Vec3(absPos()), followTolerance)) {
 			// if we're not facing the target, try to rotate towards it.
 			Vec3 targetHorizontalDir = pathingTarget.subtract(core.position()).with(Direction.Axis.Y, 0).normalize();
 			if (direction().dot(targetHorizontalDir) < 0.9) {
-				direction.setTarget(targetHorizontalDir);
-				if (!stepping()) {
-					this.direction.tick();
-				}
+				// kindly ask out legs to rotate us
+				legMap.setMapRotation(-Mth.PI / 6);
+
+//				direction.setTarget(targetHorizontalDir);
+//				if (!stepping()) {
+//					this.direction.tick();
+//				}
 			} else {
 				// otherwise we are facing it, so we ask our legs to move us towards it.
+				// temp: set from model data
 				float stepOffsetDistance = 1f;
 				legMap.setMapOffset(new Vec3(0, 0, stepOffsetDistance));
 			}
 		} else {
 			// don't need to go anywhere, give our legs a rest
 			legMap.setMapOffset(Vec3.ZERO);
+			legMap.setMapRotation(0);
 		}
 
 		for (int i = 0; i < legs.size(); i++) {
+			legs.get(i).tick();
+
 //			// select locations around this for leg tips
 //			Vec3 stepTarget = relStepPos(core, i);
 //			debugStepTargets.set(i, stepTarget);
@@ -111,6 +139,8 @@ public class ChassisPart extends AbstractMechaPart {
 ////			leg.setRootDir(new Vec3(0, 0, 1));//stepTarget.subtract(leg.getRootPos().with(Direction.Axis.Y, 0)).normalize());
 //			leg.tick();
 		}
+		var targetCenter = legMap.targetCentroid();
+		skeleton.solveForTarget(IKUtil.mc2fab(targetCenter));
 	}
 
 	@Override
@@ -119,14 +149,15 @@ public class ChassisPart extends AbstractMechaPart {
 
 		core.hull.serverTick();
 
-		if (!core.entity().onGround()) movement = movement.subtract(0, 0.1, 0);
-		else movement = new Vec3(movement.x, 0, movement.z);
+		// debug disable :PPPPP
+//		if (!core.entity().onGround()) movement = movement.subtract(0, 0.1, 0);
+//		else movement = new Vec3(movement.x, 0, movement.z);
 	}
 
 	@Override
 	public void clientTick(float tickDelta) {
 		super.clientTick(tickDelta);
-		
+
 		core.hull.clientTick(tickDelta);
 	}
 
@@ -174,25 +205,35 @@ public class ChassisPart extends AbstractMechaPart {
 
 	// temp: see where we can replace this with relRot etc
 	public Vec3 direction() {
-		return direction.curDir();
+		return IKUtil.fab2mc(skeleton.getChain(0).getBone(0).getDirectionUV());
+//		return direction.curDir();
+	}
+
+	public List<Vec3> effectors() {
+		return legs.stream().map(l -> IKUtil.fab2mc(l.getChain().getEffectorLocation())).toList();
 	}
 
 	@Override
 	public void renderDebug(MultiBufferSource bufferSource, PoseStack poseStack) {
+		for (int i = 0; i < skeleton.getNumChains(); i++) {
+			skeleton.getChain(i).getChain()
+				.stream().forEach(
+					bone -> {
+						drawSeg(new Vector3f(bone.getStartLocationAsArray()), new Vector3f(bone.getEndLocationAsArray()), 1, 1, 1, poseStack, bufferSource);
+					}
+				);
+		}
+
 		for (int i = 0; i < legs.size(); i++) {
 			ChassisLeg leg = legs.get(i);
 
-//			VertexConsumer lineStrip2 = bufferSource.getBuffer(RenderType.debugLineStrip(2.0));
-//			for (Vec3 joint : leg.jointPositions())
-//				lineStrip2.addVertex(poseStack.last(), joint.toVector3f()).setColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-			VertexConsumer quad = bufferSource.getBuffer(RenderType.debugQuads());
-			Vec3 target = debugStepTargets.get(i);
-
-			quad.addVertex(poseStack.last(), target.add(-1, 0, -1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
-			quad.addVertex(poseStack.last(), target.add(1, 0, -1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
-			quad.addVertex(poseStack.last(), target.add(1, 0, 1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
-			quad.addVertex(poseStack.last(), target.add(-1, 0, 1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+			// draw leg map
+//			VertexConsumer quad = bufferSource.getBuffer(RenderType.debugQuads());
+//			Vec3 target = debugStepTargets.get(i);
+//			quad.addVertex(poseStack.last(), target.add(-1, 0, -1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+//			quad.addVertex(poseStack.last(), target.add(1, 0, -1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+//			quad.addVertex(poseStack.last(), target.add(1, 0, 1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+//			quad.addVertex(poseStack.last(), target.add(-1, 0, 1).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
 
 //			for (Vec3 joint : leg.jointPositions()) {
 //				VertexConsumer rotationNormal = bufferSource.getBuffer(RenderType.debugLineStrip(4.0));
@@ -213,5 +254,18 @@ public class ChassisPart extends AbstractMechaPart {
 			.setColor(0.0f, 1.0f, 0.0f, 1.0f);
 
 		core.hull.renderDebug(bufferSource, poseStack);
+	}
+
+	private static void drawLoc(Vector3f p, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
+		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
+		vc.addVertex(poseStack.last(), p).setColor(r, g, b, 1.0f);
+		vc.addVertex(poseStack.last(), p.add(0, 1, 0, new Vector3f()))
+			.setColor(r, g, b, 1.0f);
+	}
+
+	private static void drawSeg(Vector3f p1, Vector3f p2, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
+		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
+		vc.addVertex(poseStack.last(), p1).setColor(r, g, b, 1.0f);
+		vc.addVertex(poseStack.last(), p2).setColor(r, g, b, 1.0f);
 	}
 }

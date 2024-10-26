@@ -35,7 +35,7 @@ public interface Part extends Euclidean {
 	 *
 	 * @return Absolute position in world space
 	 */
-	default Vector3fc absPos() {
+	default Vector3f absPos() {
 		Vector3f r = relPos().rotate(parent().absRot(), new Vector3f());
 		return r.add(parent().absPos());
 	}
