@@ -5,14 +5,17 @@ import net.minecraft.resources.ResourceLocation;
 import symbolics.division.armistice.mecha.OrdnancePart;
 import symbolics.division.armistice.registry.ArmisticeRegistries;
 
+import java.util.function.Supplier;
+
 public record OrdnanceSchematic(
-	int size
+	int size,
+	Supplier<OrdnancePart> supplier
 ) implements Schematic<OrdnanceSchematic, OrdnancePart> {
 	public static final Codec<OrdnanceSchematic> REGISTRY_CODEC = ArmisticeRegistries.ORDNANCE.byNameCodec();
 
 	@Override
 	public OrdnancePart make() {
-		return new OrdnancePart(this);
+		return supplier.get();
 	}
 
 	@Override

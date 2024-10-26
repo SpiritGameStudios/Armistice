@@ -54,6 +54,19 @@ public class ChassisPart extends AbstractMechaPart {
 		moveSpeed = schematic.moveSpeed();
 	}
 
+	private static void drawLoc(Vector3f p, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
+		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
+		vc.addVertex(poseStack.last(), p).setColor(r, g, b, 1.0f);
+		vc.addVertex(poseStack.last(), p.add(0, 1, 0, new Vector3f()))
+			.setColor(r, g, b, 1.0f);
+	}
+
+	private static void drawSeg(Vector3f p1, Vector3f p2, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
+		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
+		vc.addVertex(poseStack.last(), p1).setColor(r, g, b, 1.0f);
+		vc.addVertex(poseStack.last(), p2).setColor(r, g, b, 1.0f);
+	}
+
 	@Override
 	public void init(MechaCore core) {
 		super.init(core);
@@ -140,7 +153,7 @@ public class ChassisPart extends AbstractMechaPart {
 //			leg.tick();
 		}
 		var targetCenter = legMap.targetCentroid();
-		skeleton.solveForTarget(IKUtil.mc2fab(targetCenter));
+//		skeleton.solveForTarget(IKUtil.mc2fab(targetCenter));
 	}
 
 	@Override
@@ -254,18 +267,5 @@ public class ChassisPart extends AbstractMechaPart {
 			.setColor(0.0f, 1.0f, 0.0f, 1.0f);
 
 		core.hull.renderDebug(bufferSource, poseStack);
-	}
-
-	private static void drawLoc(Vector3f p, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
-		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
-		vc.addVertex(poseStack.last(), p).setColor(r, g, b, 1.0f);
-		vc.addVertex(poseStack.last(), p.add(0, 1, 0, new Vector3f()))
-			.setColor(r, g, b, 1.0f);
-	}
-
-	private static void drawSeg(Vector3f p1, Vector3f p2, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
-		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
-		vc.addVertex(poseStack.last(), p1).setColor(r, g, b, 1.0f);
-		vc.addVertex(poseStack.last(), p2).setColor(r, g, b, 1.0f);
 	}
 }

@@ -1,28 +1,55 @@
 package symbolics.division.armistice.client.render.model;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
-import org.joml.Quaternionf;
-import org.joml.Vector3f;
-import org.joml.Vector3fc;
+import org.joml.*;
 import symbolics.division.armistice.model.BBModelData;
 import symbolics.division.armistice.model.BBModelTree;
 import symbolics.division.armistice.model.Element;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class ModelBaker {
-	public record Quad(Vertex[] vertices, float nx, float ny, float nz) {
-	}
+	public static final int[][] VERTEX_INDICES = {
+		new int[]{1, 5, 4, 0},
+		new int[]{2, 6, 7, 3},
+		new int[]{6, 2, 0, 4},
+		new int[]{3, 7, 5, 1},
+		new int[]{2, 3, 1, 0},
+		new int[]{7, 6, 4, 5},
+	};
+	public static final List<Quad> DEBUG_QUADS;
 
-	public record Vertex(float x, float y, float z, float u, float v) {
-		public static Vertex of(Vector3fc vx, double u, double v) {
-			return new Vertex(vx.x(), vx.y(), vx.z(), (float) u, (float) v);
-		}
+	static {
+		Element nullCube = new Element(
+			"debug",
+			false,
+			false,
+			false,
+			0,
+			Element.RenderOrder.DEFAULT,
+			false,
+			new Vec3(-16, -16, -16),
+			new Vec3(16, 16, 16),
+			0,
+			0, Optional.empty(), Vec3.ZERO,
+			Map.of(
+				Direction.NORTH, new Element.Face(new Vector4d(0, 0, 256, 256), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()),
+				Direction.EAST, new Element.Face(new Vector4d(0, 0, 256, 256), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()),
+				Direction.SOUTH, new Element.Face(new Vector4d(0, 0, 256, 256), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()),
+				Direction.WEST, new Element.Face(new Vector4d(0, 0, 256, 256), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()),
+				Direction.UP, new Element.Face(new Vector4d(0, 0, 256, 256), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()),
+				Direction.DOWN, new Element.Face(new Vector4d(0, 0, 256, 256), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty())
+			),
+			UUID.randomUUID()
+		);
+
+		List<Quad> quads = new ArrayList<>();
+		addElement(quads, new PoseStack(), nullCube);
+		DEBUG_QUADS = ImmutableList.copyOf(quads);
 	}
 
 	public static List<Quad> bake(BBModelTree tree) {
@@ -48,25 +75,6 @@ public class ModelBaker {
 		poseStack.popPose();
 		return quads;
 	}
-
-	/*
-	    3-------7
-       /|      /|
-      2-+-----6 |
-      | |     | |   y
-      | 1-----+-5   | z
-      |/      |/    |/
-      0-------4     +--x
-	 */
-
-	public static final int[][] VERTEX_INDICES = {
-		new int[]{1, 5, 4, 0},
-		new int[]{2, 6, 7, 3},
-		new int[]{6, 2, 0, 4},
-		new int[]{3, 7, 5, 1},
-		new int[]{2, 3, 1, 0},
-		new int[]{7, 6, 4, 5},
-	};
 
 	private static void addElement(List<Quad> quads, PoseStack poseStack, Element element) {
 		poseStack.pushPose();
@@ -96,7 +104,7 @@ public class ModelBaker {
 				int a = 1;
 				continue;
 			}
-			; // null face, will have invalid uv
+			// null face, will have invalid uv
 			int[] ix = VERTEX_INDICES[dir.get3DDataValue()];
 			Vertex[] vertices = {
 				Vertex.of(points[ix[0]], face.uv().x / 256f, face.uv().y / 256f),
@@ -110,6 +118,16 @@ public class ModelBaker {
 		poseStack.popPose();
 	}
 
+	/*
+	    3-------7
+       /|      /|
+      2-+-----6 |
+      | |     | |   y
+      | 1-----+-5   | z
+      |/      |/    |/
+      0-------4     +--x
+	 */
+
 	private static Vector3f vertex(int ordinal, Vec3 from, Vec3 to, Matrix4f transform) {
 		return transform.transformPosition(
 			(ordinal & 0b100) == 0 ? (float) from.x : (float) to.x,
@@ -117,5 +135,14 @@ public class ModelBaker {
 			(ordinal & 0b001) == 0 ? (float) from.z : (float) to.z,
 			new Vector3f()
 		);
+	}
+
+	public record Quad(Vertex[] vertices, float nx, float ny, float nz) {
+	}
+
+	public record Vertex(float x, float y, float z, float u, float v) {
+		public static Vertex of(Vector3fc vx, double u, double v) {
+			return new Vertex(vx.x(), vx.y(), vx.z(), (float) u, (float) v);
+		}
 	}
 }

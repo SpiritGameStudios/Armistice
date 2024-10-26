@@ -9,23 +9,32 @@ import symbolics.division.armistice.model.BBModelTree;
 
 public class OrdnanceRenderer {
 	private static final ResourceLocation TEST_TEXTURE = Armistice.id("textures/mecha/skin/ordnance_skin_test.png");
+	private static final OrdnanceRenderer MISSING = new OrdnanceRenderer();
+
+	private final ResourceLocation texture;
+	private final ModelBaker.Quad[] quads;
+
+	public OrdnanceRenderer(BBModelTree tree) {
+		quads = ModelBaker.bake(tree).toArray(ModelBaker.Quad[]::new);
+		texture = TEST_TEXTURE;
+	}
+
+	private OrdnanceRenderer() {
+		this.quads = ModelBaker.DEBUG_QUADS.toArray(new ModelBaker.Quad[0]);
+		texture = TEST_TEXTURE;
+	}
 
 	public static void dispatch(MechaEntity mecha, int ordnance, PoseStack poseStack, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
 		poseStack.pushPose();
 		mecha.core().ordnanceEuclidean(ordnance)
 			.transformAbsolute(poseStack);
-		PartRenderer.ordnance.get(mecha.core().schematic().ordnance().get(ordnance).id())
+
+		PartRenderer.ordnance.getOrDefault(mecha.core().schematic().ordnance().get(ordnance).id(), MISSING)
 			.render(poseStack.last(), bufferSource, color, packedLight, packedOverlay);
 		poseStack.popPose();
 	}
 
-	private final ModelBaker.Quad[] quads;
-
-	public OrdnanceRenderer(BBModelTree tree) {
-		quads = ModelBaker.bake(tree).toArray(ModelBaker.Quad[]::new);
-	}
-
 	public void render(PoseStack.Pose pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
-		PartRenderer.renderQuads(quads, TEST_TEXTURE, pose, bufferSource, color, packedLight, packedOverlay);
+		PartRenderer.renderQuads(quads, texture, pose, bufferSource, color, packedLight, packedOverlay);
 	}
 }

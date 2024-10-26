@@ -15,6 +15,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.mecha.schematic.*;
+import symbolics.division.armistice.registry.ArmisticeOrdnanceRegistrar;
 import symbolics.division.armistice.registry.ArmisticeRegistries;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class MechaEntity extends Entity {
 	public static MechaEntity temp(EntityType<? extends Entity> entityType, Level level) {
 		HullSchematic hull = ArmisticeRegistries.HULL.get(Armistice.id("test_hull"));
 		ChassisSchematic chassis = ArmisticeRegistries.CHASSIS.get(Armistice.id("test_chassis"));
-		List<OrdnanceSchematic> ordnance = List.of(ArmisticeRegistries.ORDNANCE.get(Armistice.id("test_ordnance")));
+		List<OrdnanceSchematic> ordnance = List.of(ArmisticeOrdnanceRegistrar.CROSSBOW);
 		ArmorSchematic armor = ArmisticeRegistries.ARMOR.get(Armistice.id("test_armor"));
 		return new MechaEntity(entityType, level, new MechaSchematic(hull, ordnance, chassis, armor));
 	}

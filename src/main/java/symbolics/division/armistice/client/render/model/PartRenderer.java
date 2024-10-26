@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.joml.Vector3f;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.mecha.MechaEntity;
-import symbolics.division.armistice.mecha.NullOrdnancePart;
+import symbolics.division.armistice.mecha.ordnance.NullOrdnancePart;
 import symbolics.division.armistice.model.BBModelTree;
 
 import java.util.Map;

@@ -14,13 +14,19 @@ import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.debug.command.HealCommand;
-import symbolics.division.armistice.mecha.schematic.*;
+import symbolics.division.armistice.mecha.schematic.ArmorSchematic;
+import symbolics.division.armistice.mecha.schematic.ChassisSchematic;
+import symbolics.division.armistice.mecha.schematic.HeatData;
+import symbolics.division.armistice.mecha.schematic.HullSchematic;
 import symbolics.division.armistice.model.ModelElementReloadListener;
 import symbolics.division.armistice.model.ModelOutlinerReloadListener;
 import symbolics.division.armistice.network.OutlinerSyncS2CPayload;
 import symbolics.division.armistice.recipe.MechaSchematicRecipe;
 import symbolics.division.armistice.registry.*;
-import symbolics.division.armistice.util.registrar.*;
+import symbolics.division.armistice.util.registrar.ArmorRegistrar;
+import symbolics.division.armistice.util.registrar.ChassisRegistrar;
+import symbolics.division.armistice.util.registrar.HullRegistrar;
+import symbolics.division.armistice.util.registrar.Registrar;
 
 import java.util.List;
 
@@ -54,7 +60,7 @@ public final class RegistryEvents {
 
 			Registrar.process(ChassisRegistrar.class, MODID, event);
 			Registrar.process(HullRegistrar.class, MODID, event);
-			Registrar.process(OrdnanceRegistrar.class, MODID, event);
+			Registrar.process(ArmisticeOrdnanceRegistrar.class, MODID, event);
 			Registrar.process(ArmorRegistrar.class, MODID, event);
 
 			event.register(
@@ -78,11 +84,6 @@ public final class RegistryEvents {
 			event.register(
 				ArmisticeRegistries.HULL_KEY,
 				registry -> registry.register(Armistice.id("test_hull"), new HullSchematic(1, List.of(1, 2, 3), new HeatData(1, 0, 0)))
-			);
-
-			event.register(
-				ArmisticeRegistries.ORDNANCE_KEY,
-				registry -> registry.register(Armistice.id("test_ordnance"), new OrdnanceSchematic(1))
 			);
 
 			// endregion
