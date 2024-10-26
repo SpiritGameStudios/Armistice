@@ -44,7 +44,7 @@ public class PartRenderer {
 		pose.pushPose();
 		pose.translate(-mecha.core().position().x(), -mecha.core().position().y(), -mecha.core().position().z());
 		ChassisRenderer.dispatch(mecha, pose, bufferSource, color, packedLight, packedOverlay);
-		HullRenderer.dispatch(mecha, pose, bufferSource, color, packedLight, packedOverlay);
+//		HullRenderer.dispatch(mecha, pose, bufferSource, color, packedLight, packedOverlay);
 		for (int i = 0; i < mecha.core().ordnance().size(); i++) {
 			if (mecha.core().ordnance().get(i) instanceof NullOrdnancePart) continue;
 			OrdnanceRenderer.dispatch(mecha, i, pose, bufferSource, color, packedLight, packedOverlay);

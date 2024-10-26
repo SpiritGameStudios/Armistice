@@ -1,6 +1,6 @@
 package symbolics.division.armistice.mecha.movement;
 
-import net.minecraft.util.Mth;
+import au.edu.federation.utils.Vec3f;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
@@ -24,9 +24,8 @@ public final class GeometryUtil {
 		return Math.atan2(dir.x, dir.z);
 	}
 
-	public static Vec3 rotateYR(Vec3 vec, float yaw) {
-		// because moj loves degrees :/
-		return vec.yRot(yaw * 180f / Mth.PI);
+	public static double yaw(Vec3f dir) {
+		return Math.atan2(dir.x, dir.z);
 	}
 
 	public static double chord(double radians) {

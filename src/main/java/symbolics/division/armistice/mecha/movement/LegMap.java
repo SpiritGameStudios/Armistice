@@ -15,7 +15,7 @@ public class LegMap {
 	protected final Vec3 centroidOffset;
 	protected Vec3 mapOffset = Vec3.ZERO;
 	protected float mapYaw = 0;
-	protected double stepTolerance = 1;
+	protected double stepTolerance = 0.5;
 
 	public LegMap(MechaModelData data, ChassisPart chassis) {
 		this.chassis = chassis;
@@ -36,13 +36,19 @@ public class LegMap {
 		// leg target in world-space.
 		// special case: we *do* want to offset then rotate unlike usual,
 		// based on how we wish for legs to  move
-		return model2world(
-			GeometryUtil.rotateYR(legTipOffsets.get(leg).add(mapOffset), mapYaw)
-		);
+		return model2world(legTipOffsets.get(leg).yRot(mapYaw));
 	}
 
 	public Vec3 targetCentroid() {
 		return centroid(chassis.effectors()).add(model2world(centroidOffset));
+	}
+
+	public void setStepTolerance(double v) {
+		this.stepTolerance = v;
+	}
+
+	public double stepTolerance() {
+		return stepTolerance;
 	}
 
 	private Vec3 model2world(Vec3 modelSpacePosition) {

@@ -117,35 +117,51 @@ public class MechaModelData {
 		}
 	}
 
-	public record LegInfo(Vec3 rootOffset, Vec3 tip, double rootYawDegrees, double minYawDegrees, double maxYawDegrees,
-						  List<SegmentInfo> segments) {
+	public record LegInfo(Vec3 rootOffset, Vec3 tip, List<SegmentInfo> segments) {
 		// we don't consider joint offset in the IK calc right now;
 		// we'll have to assume that we can fudge it and the angles will
 		// look right when they're applied to the model after solving.
 		public static LegInfo of(OutlinerNode root, String id) {
-			OutlinerNode rootSegment = getChild(root, id).orElseThrow();
+			OutlinerNode rootLegSegment = getChild(root, id).orElseThrow();
 			List<SegmentInfo> segments = new ArrayList<>();
-			Vec3 rootOrigin = rootSegment.origin().scale(BBModelData.BASE_SCALE_FACTOR);
-			Vec3 prevPos = rootOrigin;
-			Optional<OutlinerNode> segmentOptional = getChild(root, 0);
-			while (segmentOptional.isPresent()) {
-				OutlinerNode segment = segmentOptional.get();
-				Vec3 segmentOrigin = segment.origin().scale(BBModelData.BASE_SCALE_FACTOR);
-				segments.add(new SegmentInfo(
-					Math.max(prevPos.distanceTo(segmentOrigin), 0.001), // treat 0-length bones as really really small bones instead
-					segment.rotation().x,
-					segment.parameters().getOrDefault("maxAngle", 90d),
-					segment.parameters().getOrDefault("minAngle", 90d)
+
+			// first segment rotation is yaw
+			Vec3 rootOrigin = rootLegSegment.origin().scale(BBModelData.BASE_SCALE_FACTOR);
+			Optional<OutlinerNode> segmentOptional = getChild(rootLegSegment, 0);
+			segments.add(
+				new SegmentInfo(
+					Math.max(0.01, segmentOptional.orElseThrow(() -> new RuntimeException("Legs must have at least one segment")).origin().scale(BBModelData.BASE_SCALE_FACTOR).distanceTo(rootOrigin)),
+					rootLegSegment.rotation().y,
+					rootLegSegment.parameters().getOrDefault("minAngle", 1d),
+					rootLegSegment.parameters().getOrDefault("maxAngle", 1d)
 				));
-				prevPos = segmentOrigin;
-				segmentOptional = getChild(segment, 0);
+
+			OutlinerNode segment = segmentOptional.get();
+			Optional<OutlinerNode> nextNode = getChild(segment, 0);
+			while (nextNode.isPresent()) {
+				segments.add(
+					new SegmentInfo(
+						Math.max(0.01, segment.origin().scale(BBModelData.BASE_SCALE_FACTOR).distanceTo(nextNode.get().origin().scale(BBModelData.BASE_SCALE_FACTOR))),
+						segment.rotation().x,
+						segment.parameters().getOrDefault("minAngle", 1d),
+						segment.parameters().getOrDefault("maxAngle", 1d)
+					)
+				);
+				segment = nextNode.get();
+				nextNode = getChild(segment, 0);
 			}
-			double maxYaw = rootSegment.parameters().getOrDefault("minAngle", 90d);
-			double minYaw = rootSegment.parameters().getOrDefault("maxAngle", 90d);
-			return new LegInfo(rootOrigin, getChild(root, id + "_tip").orElseThrow().origin().scale(BBModelData.BASE_SCALE_FACTOR), root.rotation().y, minYaw, maxYaw, segments);
+
+			Vec3 tip = getChild(root, id + "_tip").orElseThrow().origin().scale(BBModelData.BASE_SCALE_FACTOR);
+			segments.add(new SegmentInfo(
+				segment.origin().scale(BBModelData.BASE_SCALE_FACTOR).distanceTo(tip),
+				segment.rotation().x,
+				segment.parameters().getOrDefault("minAngle", 1d),
+				segment.parameters().getOrDefault("maxAngle", 1d)
+			));
+			return new LegInfo(rootOrigin, tip, segments);
 		}
 	}
 
-	public record SegmentInfo(double length, double baseAngleDeg, double maxAngleDeg, double minAngleDeg) {
+	public record SegmentInfo(double length, double baseAngleDeg, double minAngleDeg, double maxAngleDeg) {
 	}
 }

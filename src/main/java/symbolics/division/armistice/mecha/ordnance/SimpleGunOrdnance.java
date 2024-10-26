@@ -42,7 +42,7 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		// endregion
 
 		cooldownTicks--;
-		if (cooldownTicks > 0 || targets().isEmpty() || !(targets().getFirst() instanceof EntityHitResult target))
+		if (true || cooldownTicks > 0 || targets().isEmpty() || !(targets().getFirst() instanceof EntityHitResult target))
 			return;
 
 		Entity projectile = createProjectile();
