@@ -44,6 +44,12 @@ public final class MechaDebugRenderer {
 		poseStack.popPose();
 	}
 
+	private static boolean showParts = true;
+
+	public static boolean shouldRenderParts() {
+		return showParts;
+	}
+
 	public static LiteralArgumentBuilder<CommandSourceStack> registerClientCommands(LiteralArgumentBuilder<CommandSourceStack> cmd) {
 		var sub = Commands.literal("mecha")
 			.requires(src -> src.hasPermission(Commands.LEVEL_ADMINS))
@@ -52,6 +58,12 @@ public final class MechaDebugRenderer {
 					enabled = BoolArgumentType.getBool(ctx, "enable");
 					return Command.SINGLE_SUCCESS;
 				}));
+		sub = cmd.then(Commands.literal("toggle")
+			.requires(src -> src.hasPermission(Commands.LEVEL_ADMINS))
+			.executes(ctx -> {
+				showParts = !showParts;
+				return Command.SINGLE_SUCCESS;
+			}));
 		sub = GeometryDebugRenderer.registerSubCommands(sub);
 		return cmd.then(sub);
 	}
