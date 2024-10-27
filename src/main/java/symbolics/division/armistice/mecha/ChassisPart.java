@@ -16,6 +16,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import symbolics.division.armistice.debug.ArmisticeDebugValues;
 import symbolics.division.armistice.mecha.movement.ChassisLeg;
 import symbolics.division.armistice.mecha.movement.DirectionState;
 import symbolics.division.armistice.mecha.movement.IKUtil;
@@ -49,10 +50,24 @@ public class ChassisPart extends AbstractMechaPart {
 	// - (AI) follow distance
 	// - move speed
 	// - step tolerance (?) -/- also at-rest tolerance
+	private boolean firstTick = true;
 
 	public ChassisPart(ChassisSchematic schematic) {
 		this.schematic = schematic;
 		moveSpeed = schematic.moveSpeed();
+	}
+
+	private static void drawLoc(Vector3f p, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
+		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
+		vc.addVertex(poseStack.last(), p).setColor(r, g, b, 1.0f);
+		vc.addVertex(poseStack.last(), p.add(0, 1, 0, new Vector3f()))
+			.setColor(r, g, b, 1.0f);
+	}
+
+	private static void drawSeg(Vector3f p1, Vector3f p2, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
+		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
+		vc.addVertex(poseStack.last(), p1).setColor(r, g, b, 1.0f);
+		vc.addVertex(poseStack.last(), p2).setColor(r, g, b, 1.0f);
 	}
 
 	@Override
@@ -140,7 +155,8 @@ public class ChassisPart extends AbstractMechaPart {
 				baseBone.setStartLocation(new Vec3f(baseStart.x + 0.01f, baseStart.y, baseStart.z));
 			}
 
-			skeleton.solveForTarget(tgt);
+			if (ArmisticeDebugValues.ikSolving)
+				skeleton.solveForTarget(tgt);
 //			skeleton.solveForTarget(new Vec3f(p.x(), p.y(), p.z()));
 
 			for (var leg : legs) {
@@ -149,8 +165,6 @@ public class ChassisPart extends AbstractMechaPart {
 			}
 		}
 	}
-
-	private boolean firstTick = true;
 
 	@Override
 	public void serverTick() {
@@ -275,18 +289,5 @@ public class ChassisPart extends AbstractMechaPart {
 			.setColor(0.0f, 1.0f, 0.0f, 1.0f);
 
 		core.hull.renderDebug(bufferSource, poseStack);
-	}
-
-	private static void drawLoc(Vector3f p, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
-		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
-		vc.addVertex(poseStack.last(), p).setColor(r, g, b, 1.0f);
-		vc.addVertex(poseStack.last(), p.add(0, 1, 0, new Vector3f()))
-			.setColor(r, g, b, 1.0f);
-	}
-
-	private static void drawSeg(Vector3f p1, Vector3f p2, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
-		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
-		vc.addVertex(poseStack.last(), p1).setColor(r, g, b, 1.0f);
-		vc.addVertex(poseStack.last(), p2).setColor(r, g, b, 1.0f);
 	}
 }

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import symbolics.division.armistice.Armistice;
+import symbolics.division.armistice.client.render.debug.ArmisticeClientDebugValues;
 import symbolics.division.armistice.mecha.MechaEntity;
 import symbolics.division.armistice.model.BBModelTree;
 
@@ -35,6 +36,7 @@ public class OrdnanceRenderer {
 	}
 
 	public void render(PoseStack.Pose pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
+		if (!ArmisticeClientDebugValues.showOrdnance) return;
 		PartRenderer.renderQuads(quads, texture, pose, bufferSource, color, packedLight, packedOverlay);
 	}
 }

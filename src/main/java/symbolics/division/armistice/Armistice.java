@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import symbolics.division.armistice.client.ArmisticeClient;
 import symbolics.division.armistice.client.render.debug.MechaDebugRenderer;
 import symbolics.division.armistice.datagen.ArmisticeDatagen;
+import symbolics.division.armistice.debug.ArmisticeDebugValues;
 import symbolics.division.armistice.event.RegistryEvents;
 import symbolics.division.armistice.network.OutlinerSyncS2CPayload;
 
@@ -25,6 +26,7 @@ public class Armistice {
 		NeoForge.EVENT_BUS.register(OutlinerSyncS2CPayload.class);
 		NeoForge.EVENT_BUS.register(ArmisticeClient.GameEvents.class);
 		NeoForge.EVENT_BUS.register(MechaDebugRenderer.class);
+		NeoForge.EVENT_BUS.register(ArmisticeDebugValues.class);
 	}
 
 	public static ResourceLocation id(String path) {

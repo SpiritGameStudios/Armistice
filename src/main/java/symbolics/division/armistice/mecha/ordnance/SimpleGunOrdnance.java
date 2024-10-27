@@ -7,6 +7,7 @@ import net.minecraft.world.entity.projectile.Snowball;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import symbolics.division.armistice.debug.ArmisticeDebugValues;
 import symbolics.division.armistice.mecha.OrdnancePart;
 
 public class SimpleGunOrdnance extends OrdnancePart {
@@ -42,7 +43,7 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		// endregion
 
 		cooldownTicks--;
-		if (true || cooldownTicks > 0 || targets().isEmpty() || !(targets().getFirst() instanceof EntityHitResult target))
+		if (!ArmisticeDebugValues.simpleGun || cooldownTicks > 0 || targets().isEmpty() || !(targets().getFirst() instanceof EntityHitResult target))
 			return;
 
 		Entity projectile = createProjectile();

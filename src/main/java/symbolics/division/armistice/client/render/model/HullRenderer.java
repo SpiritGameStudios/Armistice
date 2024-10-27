@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import symbolics.division.armistice.Armistice;
+import symbolics.division.armistice.client.render.debug.ArmisticeClientDebugValues;
 import symbolics.division.armistice.mecha.MechaEntity;
 import symbolics.division.armistice.model.BBModelTree;
 
@@ -43,6 +44,7 @@ public class HullRenderer {
 	}
 
 	public void render(PoseStack.Pose pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
+		if (!ArmisticeClientDebugValues.showHull) return;
 		PartRenderer.renderQuads(quads, texture, pose, bufferSource, color, packedLight, packedOverlay);
 	}
 }

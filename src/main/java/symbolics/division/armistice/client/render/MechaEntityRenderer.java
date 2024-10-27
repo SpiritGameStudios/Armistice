@@ -12,7 +12,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import symbolics.division.armistice.Armistice;
-import symbolics.division.armistice.client.render.debug.MechaDebugRenderer;
 import symbolics.division.armistice.client.render.model.PartRenderer;
 import symbolics.division.armistice.mecha.MechaEntity;
 
@@ -46,7 +45,7 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 			return;
 		}
 		if (Minecraft.getInstance().player == null) return;
-		if (!mecha.core().entity().hasPassenger(Minecraft.getInstance().player) && MechaDebugRenderer.shouldRenderParts())
+		if (!mecha.core().entity().hasPassenger(Minecraft.getInstance().player))
 			PartRenderer.renderParts(mecha, poseStack, bufferSource, color, packedLight, OverlayTexture.NO_OVERLAY);
 	}
 }

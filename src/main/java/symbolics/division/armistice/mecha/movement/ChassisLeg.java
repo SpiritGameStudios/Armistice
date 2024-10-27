@@ -5,6 +5,7 @@ import au.edu.federation.utils.Vec3f;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import symbolics.division.armistice.debug.ArmisticeDebugValues;
 import symbolics.division.armistice.mecha.ChassisPart;
 import symbolics.division.armistice.model.MechaModelData;
 
@@ -31,6 +32,7 @@ public class ChassisLeg {
 	absolute root is unfixed and points horizontally, like a tail.
 	central tiny bone points directly vertical
 	 */
+	private boolean firstTick = true;
 
 	public ChassisLeg(MechaModelData.LegInfo info, ChassisPart chassis, int index, FabrikStructure3D skeleton) {
 		// WARNING: CALIKO ROTATION SYSTEM IS LEFT-HANDED
@@ -112,9 +114,6 @@ public class ChassisLeg {
 		return chain;
 	}
 
-
-	private boolean firstTick = true;
-
 	public void tick() {
 		// there are 4 types of targets:
 		/*
@@ -123,6 +122,8 @@ public class ChassisLeg {
 			next step target: new location this leg is stepping to
 			final step target: ultimate location this leg will try to step to until in range.
 		 */
+		if (!ArmisticeDebugValues.ikSolving) return;
+
 		double tempBlocksPerTick = 0.05f;
 		Vec3 maptarget = chassis.legMap().legTarget(legIndex);
 		if (tickTarget.distanceTo(maptarget) > chassis.legMap().stepTolerance()) {
