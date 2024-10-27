@@ -47,7 +47,8 @@
                     "uuid": "eb3ed46f-c22e-de9f-326e-261a16fb55f6",
                     "visibility": true
                   },
-                  "4947e27c-9026-e3de-34ea-675168349d2f"
+                  "4947e27c-9026-e3de-34ea-675168349d2f",
+                  "41621fe2-6bd5-86fb-196e-2d4678214c49"
                 ],
                 "export": true,
                 "mirror_uv": false,
@@ -118,7 +119,7 @@
                     ],
                     "export": true,
                     "mirror_uv": false,
-                    "name": "seg1_6",
+                    "name": "seg3_3",
                     "origin": [
                       16.500000000000036,
                       -0.30000000000001137,
@@ -136,7 +137,7 @@
                 ],
                 "export": true,
                 "mirror_uv": false,
-                "name": "seg1_5",
+                "name": "seg3_2",
                 "origin": [
                   16.000000000000036,
                   1.6999999999999957,
@@ -160,7 +161,7 @@
             ],
             "export": true,
             "mirror_uv": false,
-            "name": "seg1_4",
+            "name": "seg3_1",
             "origin": [
               15.0,
               0.7,
@@ -302,7 +303,7 @@
                     ],
                     "export": true,
                     "mirror_uv": false,
-                    "name": "seg2_6",
+                    "name": "seg4_3",
                     "origin": [
                       -15.499999999999998,
                       -0.30000000000001137,
@@ -320,7 +321,7 @@
                 ],
                 "export": true,
                 "mirror_uv": false,
-                "name": "seg2_5",
+                "name": "seg4_2",
                 "origin": [
                   -15.999999999999998,
                   1.6999999999999957,
@@ -344,7 +345,7 @@
             ],
             "export": true,
             "mirror_uv": false,
-            "name": "seg2_4",
+            "name": "seg4_1",
             "origin": [
               -15.0,
               0.7,

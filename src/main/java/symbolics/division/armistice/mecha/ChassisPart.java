@@ -16,7 +16,6 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
-import symbolics.division.armistice.debug.ArmisticeDebugValues;
 import symbolics.division.armistice.mecha.movement.ChassisLeg;
 import symbolics.division.armistice.mecha.movement.DirectionState;
 import symbolics.division.armistice.mecha.movement.IKUtil;
@@ -50,24 +49,10 @@ public class ChassisPart extends AbstractMechaPart {
 	// - (AI) follow distance
 	// - move speed
 	// - step tolerance (?) -/- also at-rest tolerance
-	private boolean firstTick = true;
 
 	public ChassisPart(ChassisSchematic schematic) {
 		this.schematic = schematic;
 		moveSpeed = schematic.moveSpeed();
-	}
-
-	private static void drawLoc(Vector3f p, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
-		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
-		vc.addVertex(poseStack.last(), p).setColor(r, g, b, 1.0f);
-		vc.addVertex(poseStack.last(), p.add(0, 1, 0, new Vector3f()))
-			.setColor(r, g, b, 1.0f);
-	}
-
-	private static void drawSeg(Vector3f p1, Vector3f p2, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
-		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
-		vc.addVertex(poseStack.last(), p1).setColor(r, g, b, 1.0f);
-		vc.addVertex(poseStack.last(), p2).setColor(r, g, b, 1.0f);
 	}
 
 	@Override
@@ -143,7 +128,7 @@ public class ChassisPart extends AbstractMechaPart {
 //		skeleton.solveForTarget(IKUtil.mc2fab(targetCenter));
 		var p = absPos();
 		float age = (float) core.entity().tickCount / 60;
-		var tgt = new Vec3f(p.x + Mth.sin(age), p.y, p.z + Mth.cos(age));
+		var tgt = new Vec3f(p.x, p.y, p.z);
 
 		if (firstTick) {
 			firstTick = false;
@@ -151,20 +136,24 @@ public class ChassisPart extends AbstractMechaPart {
 			// bug in caliko: targeting an effector's base is undefined
 			var baseBone = skeleton.getChain(0).getBone(0);
 			Vec3f baseStart = baseBone.getStartLocation();
-			if (baseStart.approximatelyEquals(tgt, 0.01f)) {
+			if (baseStart.approximatelyEquals(tgt, 0.01f)) { // apply perturbation
 				baseBone.setStartLocation(new Vec3f(baseStart.x + 0.01f, baseStart.y, baseStart.z));
 			}
 
-			if (ArmisticeDebugValues.ikSolving)
-				skeleton.solveForTarget(tgt);
+			if (true) {
+				skeleton.solveForTarget(new Vec3f(p.x(), p.y(), p.z()));
+			}
+
 //			skeleton.solveForTarget(new Vec3f(p.x(), p.y(), p.z()));
 
 			for (var leg : legs) {
 				// live-update chain (caliko bug: fixedbase doesn't update on time)
-				leg.getChain().getBone(0).setStartLocation(baseBone.getEndLocation());
+//				leg.getChain().getBone(0).setStartLocation(baseBone.getEndLocation());
 			}
 		}
 	}
+
+	private boolean firstTick = true;
 
 	@Override
 	public void serverTick() {
@@ -289,5 +278,18 @@ public class ChassisPart extends AbstractMechaPart {
 			.setColor(0.0f, 1.0f, 0.0f, 1.0f);
 
 		core.hull.renderDebug(bufferSource, poseStack);
+	}
+
+	private static void drawLoc(Vector3f p, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
+		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
+		vc.addVertex(poseStack.last(), p).setColor(r, g, b, 1.0f);
+		vc.addVertex(poseStack.last(), p.add(0, 1, 0, new Vector3f()))
+			.setColor(r, g, b, 1.0f);
+	}
+
+	private static void drawSeg(Vector3f p1, Vector3f p2, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
+		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
+		vc.addVertex(poseStack.last(), p1).setColor(r, g, b, 1.0f);
+		vc.addVertex(poseStack.last(), p2).setColor(r, g, b, 1.0f);
 	}
 }

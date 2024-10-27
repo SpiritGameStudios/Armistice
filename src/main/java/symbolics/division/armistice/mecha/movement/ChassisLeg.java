@@ -129,14 +129,20 @@ public class ChassisLeg {
 		if (tickTarget.distanceTo(maptarget) > chassis.legMap().stepTolerance()) {
 			tickTarget = chassis.legMap().legTarget(legIndex);
 		}
-		chain.updateEmbeddedTarget(IKUtil.mc2fab(tickTarget));
-		try {
+		chain.updateEmbeddedTarget(new Vec3f((float) tickTarget.x, (float) tickTarget.y, (float) tickTarget.z));
+
+		if (firstTick) {
+			//  don't solve for  embedded target, you don't have a reference available yet
+			firstTick = false;
+		} else {
+			// you have to jiggle the bone a bit to motivate it to move
+			Vec3f prev = chain.getBone(0).getStartLocation();
+			chain.getBone(0).getStartLocation().set(prev.x, prev.y + 0.002f, prev.z);
+
 			chain.solveForEmbeddedTarget();
-		} catch (IllegalArgumentException e) {
-			int a = 1;
-			throw e;
 		}
-		firstTick = false;
+
+
 	}
 
 //	public void getLocalRotations() {
