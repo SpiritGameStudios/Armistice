@@ -12,7 +12,8 @@ import symbolics.division.armistice.registry.ArmisticeEntityTypeRegistrar;
 public final class MechaDebugRenderer {
 	@SubscribeEvent
 	private static void onRenderLevelStage(RenderLevelStageEvent event) {
-		if (!enabled || event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES) return;
+		if (!ArmisticeClientDebugValues.debugRenderer || event.getStage() != RenderLevelStageEvent.Stage.AFTER_ENTITIES)
+			return;
 		Vec3 camera = event.getCamera().getPosition();
 		PoseStack poseStack = event.getPoseStack();
 		poseStack.pushPose();
