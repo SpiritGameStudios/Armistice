@@ -36,12 +36,12 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 
 	@Override
 	public Quaternionf relRot() {
-		return new Quaternionf(core.model().ordnance(core.ordnanceIndex(this)).quat());
+		return new Quaternionf(core.model().ordnancePoint(core.ordnanceIndex(this)).quat());
 	}
 
 	@Override
 	public Vector3fc relPos() {
-		return core.model().ordnance(core.ordnanceIndex(this)).pos().toVector3f();
+		return core.model().ordnancePoint(core.ordnanceIndex(this)).pos().toVector3f();
 	}
 
 	protected abstract boolean isValidTarget(HitResult hitResult);

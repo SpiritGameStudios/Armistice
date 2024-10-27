@@ -9,7 +9,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 	public static final OrdnanceSchematic CROSSBOW = new OrdnanceSchematic(
 		1,
 		() -> new SimpleGunOrdnance(
-			1,
+			5,
 			9999999,
 			1.5
 		)

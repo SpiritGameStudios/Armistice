@@ -49,4 +49,11 @@ public record OutlinerNode(
 		);
 
 	public static final StreamCodec<ByteBuf, OutlinerNode> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
+
+	public Optional<OutlinerNode> getChild(String id) {
+		return this.children().stream()
+			.filter(c -> c.left().map(n -> n.name().equals(id)).orElse(false))
+			.map(c -> c.left())
+			.findFirst().orElse(Optional.empty());
+	}
 }

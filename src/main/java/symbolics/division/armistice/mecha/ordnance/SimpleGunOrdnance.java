@@ -3,12 +3,16 @@ package symbolics.division.armistice.mecha.ordnance;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.Snowball;
+import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
+import symbolics.division.armistice.mecha.MechaCore;
 import symbolics.division.armistice.mecha.OrdnancePart;
+import symbolics.division.armistice.model.BBModelData;
 
 public class SimpleGunOrdnance extends OrdnancePart {
 	protected final int cooldown;
@@ -16,6 +20,7 @@ public class SimpleGunOrdnance extends OrdnancePart {
 	protected final double projectileVelocity;
 
 	protected int cooldownTicks;
+	protected Vector3f relBarrel;
 
 	public SimpleGunOrdnance(int cooldown, double maxDistance, double projectileVelocity) {
 		super(1);
@@ -31,8 +36,19 @@ public class SimpleGunOrdnance extends OrdnancePart {
 	}
 
 	@Override
+	public void init(MechaCore core) {
+		super.init(core);
+
+		relBarrel = core.model().ordnance(core.ordnanceIndex(this)).getChild("marker1")
+			.map(node -> node.origin().scale(BBModelData.BASE_SCALE_FACTOR).toVector3f())
+			.orElse(new Vector3f(0, 0, 0));
+	}
+
+	@Override
 	public void serverTick() {
 		super.serverTick();
+
+		if (!ArmisticeDebugValues.simpleGun) return;
 
 		// region temp: debug targeting
 		Player player = core.level().getNearestPlayer(core.entity(), 100);
@@ -43,13 +59,17 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		// endregion
 
 		cooldownTicks--;
-		if (!ArmisticeDebugValues.simpleGun || cooldownTicks > 0 || targets().isEmpty() || !(targets().getFirst() instanceof EntityHitResult target))
+		if (cooldownTicks > 0 || targets().isEmpty() || !(targets().getFirst() instanceof EntityHitResult target))
 			return;
 
-		Entity projectile = createProjectile();
+		Vector3f absBarrel = relBarrel
+			.rotate(absRot(), new Vector3f(0, 0, 0))
+			.add(absPos());
 
-		double x = target.getEntity().getX() - absPos().x;
-		double z = target.getEntity().getZ() - absPos().z;
+		Entity projectile = createProjectile(absBarrel);
+
+		double x = target.getEntity().getX() - absBarrel.x;
+		double z = target.getEntity().getZ() - absBarrel.z;
 
 		double horizontalDist = Math.sqrt(x * x + z * z);
 
@@ -72,7 +92,7 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		cooldownTicks = cooldown;
 	}
 
-	public Entity createProjectile() {
-		return new Snowball(core.level(), absPos().x, absPos().y, absPos().z);
+	public Entity createProjectile(Vector3fc pos) {
+		return new SmallFireball(core.level(), pos.x(), pos.y(), pos.z(), Vec3.ZERO);
 	}
 }

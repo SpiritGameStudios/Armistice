@@ -901,5 +901,82 @@
       1.0
     ],
     "uuid": "d5129f09-eb4a-2434-d99b-1b74b3ae8102"
+  },
+  {
+    "allow_mirror_modeling": true,
+    "autouv": 1,
+    "box_uv": true,
+    "color": 5,
+    "faces": {
+      "down": {
+        "uv": [
+          6.0,
+          0.0,
+          4.0,
+          2.0
+        ]
+      },
+      "east": {
+        "uv": [
+          0.0,
+          2.0,
+          2.0,
+          4.0
+        ]
+      },
+      "north": {
+        "uv": [
+          2.0,
+          2.0,
+          4.0,
+          4.0
+        ]
+      },
+      "south": {
+        "uv": [
+          6.0,
+          2.0,
+          8.0,
+          4.0
+        ]
+      },
+      "up": {
+        "uv": [
+          4.0,
+          2.0,
+          2.0,
+          0.0
+        ]
+      },
+      "west": {
+        "uv": [
+          4.0,
+          2.0,
+          6.0,
+          4.0
+        ]
+      }
+    },
+    "from": [
+      -1.0,
+      29.0,
+      61.9
+    ],
+    "light_emission": 0,
+    "locked": false,
+    "name": "cube",
+    "origin": [
+      0.0,
+      29.0,
+      62.9
+    ],
+    "render_order": "default",
+    "rescale": false,
+    "to": [
+      1.0,
+      31.0,
+      63.9
+    ],
+    "uuid": "7ce4485f-199c-165a-36f4-d8eaf08a3db4"
   }
 ]

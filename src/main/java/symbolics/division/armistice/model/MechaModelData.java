@@ -6,6 +6,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.*;
 import symbolics.division.armistice.mecha.schematic.MechaSchematic;
+import symbolics.division.armistice.mecha.schematic.OrdnanceSchematic;
 
 import java.lang.Math;
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ public class MechaModelData {
 	public final int numLegs;
 	private final OutlinerNode hull;
 	private final OutlinerNode chassis;
+	private final List<OutlinerNode> ordnanceNodes = new ArrayList<>();
+
 	private final List<Bone> ordnanceInfo = new ArrayList<>();
 	private final List<LegInfo> legInfo = new ArrayList<>();
 
@@ -31,7 +34,11 @@ public class MechaModelData {
 			.stream().filter(n -> n.name().equals("root")).findAny().orElseThrow();
 
 		for (int i = 1; i <= schematic.ordnance().size(); i++) {
-			ordnanceInfo.add(Bone.of(getChild(hull, "ordnance" + i).orElseThrow()));
+			ordnanceInfo.add(Bone.of(hull.getChild("ordnance" + i).orElseThrow()));
+
+			OrdnanceSchematic ordnanceSchematic = schematic.ordnance().get(i - 1);
+			ordnanceNodes.add(Objects.requireNonNull(ModelOutlinerReloadListener.getNode(ordnanceSchematic.id().withPrefix("ordnance/")))
+				.stream().filter(n -> n.name().equals("root")).findAny().orElseThrow());
 		}
 
 		numLegs = (int) chassis.children().stream()
@@ -44,13 +51,17 @@ public class MechaModelData {
 		// temp: also include scale per-part
 		// bbmodels are by default 16x actual coordinates, so all distances emitted by this
 		// class need to be divided by 16.
-		relativeHullPosition = getChild(chassis, "hull").orElseThrow().origin().toVector3f().mul(BBModelData.BASE_SCALE_FACTOR);
+		relativeHullPosition = chassis.getChild("hull").orElseThrow().origin().toVector3f().mul(BBModelData.BASE_SCALE_FACTOR);
 
-		seatOffset = getChild(hull, "seat").map(seat -> seat.origin().scale(BBModelData.BASE_SCALE_FACTOR)).orElse(null);
+		seatOffset = hull.getChild("seat").map(seat -> seat.origin().scale(BBModelData.BASE_SCALE_FACTOR)).orElse(null);
 	}
 
-	public Bone ordnance(int i) {
+	public Bone ordnancePoint(int i) {
 		return ordnanceInfo.get(i);
+	}
+
+	public OutlinerNode ordnance(int i) {
+		return ordnanceNodes.get(i);
 	}
 
 	@Nullable
@@ -77,7 +88,7 @@ public class MechaModelData {
 		);
 	}
 
-	private static Quaternionfc bbRot2Quaternion(Vec3 xyz) {
+	public static Quaternionfc bbRot2Quaternion(Vec3 xyz) {
 		// bb model rotations are in zyx order, and performed in sequence from the root.
 		Vec3 rad = deg2rad(xyz);
 		return new Quaternionf().rotateZYX((float) rad.z, (float) rad.y, (float) rad.x);
@@ -85,13 +96,6 @@ public class MechaModelData {
 
 	private static Vec3 deg2rad(Vec3 deg) {
 		return new Vec3(deg.x * Mth.DEG_TO_RAD, deg.y * Mth.DEG_TO_RAD, deg.z * Mth.DEG_TO_RAD);
-	}
-
-	private static Optional<OutlinerNode> getChild(OutlinerNode node, String id) {
-		return node.children().stream()
-			.filter(c -> c.left().map(n -> n.name().equals(id)).orElse(false))
-			.map(c -> c.left())
-			.findFirst().orElse(Optional.empty());
 	}
 
 	private static Optional<OutlinerNode> getChild(OutlinerNode node, int index) {
@@ -128,7 +132,7 @@ public class MechaModelData {
 		// we'll have to assume that we can fudge it and the angles will
 		// look right when they're applied to the model after solving.
 		public static LegInfo of(OutlinerNode root, String id) {
-			OutlinerNode rootLegSegment = getChild(root, id).orElseThrow();
+			OutlinerNode rootLegSegment = root.getChild(id).orElseThrow();
 			List<SegmentInfo> segments = new ArrayList<>();
 			Matrix4f transform = new Matrix4f();
 
@@ -169,7 +173,7 @@ public class MechaModelData {
 				nextNode = getChild(segment, 0);
 			}
 
-			Vec3 legEnd = getChild(root, id + "_tip").orElseThrow().origin().scale(BBModelData.BASE_SCALE_FACTOR);
+			Vec3 legEnd = root.getChild(id + "_tip").orElseThrow().origin().scale(BBModelData.BASE_SCALE_FACTOR);
 			segments.add(new SegmentInfo(
 				Math.max(0.01f, tipPos.distance(legEnd.toVector3f())),
 				segment.rotation().x,
