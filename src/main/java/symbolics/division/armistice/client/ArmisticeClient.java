@@ -22,8 +22,4 @@ public class ArmisticeClient {
 	public static void handleRegisterAdditionalModelsEvent(ModelEvent.RegisterAdditional event) {
 //		TestModel.loadTestModel(event);
 	}
-
-	public static class GameEvents {
-
-	}
 }
