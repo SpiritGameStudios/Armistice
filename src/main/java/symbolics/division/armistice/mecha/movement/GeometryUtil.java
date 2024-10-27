@@ -1,6 +1,5 @@
 package symbolics.division.armistice.mecha.movement;
 
-import au.edu.federation.utils.Vec3f;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
@@ -21,10 +20,6 @@ public final class GeometryUtil {
 	}
 
 	public static double yaw(Vec3 dir) {
-		return Math.atan2(dir.x, dir.z);
-	}
-
-	public static double yaw(Vec3f dir) {
 		return Math.atan2(dir.x, dir.z);
 	}
 

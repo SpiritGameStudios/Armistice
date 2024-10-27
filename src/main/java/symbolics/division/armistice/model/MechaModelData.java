@@ -4,12 +4,10 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Quaternionf;
-import org.joml.Quaternionfc;
-import org.joml.Vector3f;
-import org.joml.Vector3fc;
+import org.joml.*;
 import symbolics.division.armistice.mecha.schematic.MechaSchematic;
 
+import java.lang.Math;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -117,48 +115,68 @@ public class MechaModelData {
 		}
 	}
 
+	private static Vector3f updateTransform(Matrix4f transform, Vector3fc pivot, Vector3fc rotation) {
+		// idk how this works my brain told me to do it
+		transform.translate(pivot.x(), pivot.y(), pivot.z());
+		transform.rotate(new Quaternionf().rotateZYX(rotation.z() * Mth.DEG_TO_RAD, rotation.y() * Mth.DEG_TO_RAD, rotation.x() * Mth.DEG_TO_RAD));
+		transform.translate(-pivot.x(), -pivot.y(), -pivot.z());
+		return transform.transformPosition(pivot, new Vector3f());
+	}
+
 	public record LegInfo(Vec3 rootOffset, Vec3 tip, List<SegmentInfo> segments) {
-		// we don't consider joint offset in the IK calc right now;
+		// we don't consider joint vertical offset in the IK calc right now;
 		// we'll have to assume that we can fudge it and the angles will
 		// look right when they're applied to the model after solving.
 		public static LegInfo of(OutlinerNode root, String id) {
 			OutlinerNode rootLegSegment = getChild(root, id).orElseThrow();
 			List<SegmentInfo> segments = new ArrayList<>();
+			Matrix4f transform = new Matrix4f();
 
 			// first segment rotation is yaw
-			Vec3 rootOrigin = rootLegSegment.origin().scale(BBModelData.BASE_SCALE_FACTOR);
 			Optional<OutlinerNode> segmentOptional = getChild(rootLegSegment, 0);
+			OutlinerNode segment = segmentOptional.orElseThrow(() -> new RuntimeException("Legs must have at least one segment"));
+			Vector3f basePos = updateTransform(transform, rootLegSegment.origin().scale(BBModelData.BASE_SCALE_FACTOR).toVector3f(), root.rotation().toVector3f());
+			Vector3f tipPos = updateTransform(
+				transform,
+				segment.origin().scale(BBModelData.BASE_SCALE_FACTOR).toVector3f(),
+				segment.rotation().toVector3f()
+			);
 			segments.add(
 				new SegmentInfo(
-					Math.max(0.01, segmentOptional.orElseThrow(() -> new RuntimeException("Legs must have at least one segment")).origin().scale(BBModelData.BASE_SCALE_FACTOR).distanceTo(rootOrigin)),
+					Math.max(0.01, basePos.distance(tipPos)),
 					rootLegSegment.rotation().y,
-					rootLegSegment.parameters().getOrDefault("minAngle", 1d),
-					rootLegSegment.parameters().getOrDefault("maxAngle", 1d)
+					rootLegSegment.parameters().getOrDefault("minAngle", 15d),
+					rootLegSegment.parameters().getOrDefault("maxAngle", 15d)
 				));
 
-			OutlinerNode segment = segmentOptional.get();
 			Optional<OutlinerNode> nextNode = getChild(segment, 0);
 			while (nextNode.isPresent()) {
+				basePos = tipPos;
+				tipPos = updateTransform(
+					transform,
+					nextNode.get().origin().scale(BBModelData.BASE_SCALE_FACTOR).toVector3f(),
+					nextNode.get().rotation().toVector3f()
+				);
 				segments.add(
 					new SegmentInfo(
-						Math.max(0.01, segment.origin().scale(BBModelData.BASE_SCALE_FACTOR).distanceTo(nextNode.get().origin().scale(BBModelData.BASE_SCALE_FACTOR))),
+						Math.max(0.01, basePos.distance(tipPos)),
 						segment.rotation().x,
-						segment.parameters().getOrDefault("minAngle", 1d),
-						segment.parameters().getOrDefault("maxAngle", 1d)
+						segment.parameters().getOrDefault("minAngle", 30d),
+						segment.parameters().getOrDefault("maxAngle", 30d)
 					)
 				);
 				segment = nextNode.get();
 				nextNode = getChild(segment, 0);
 			}
 
-			Vec3 tip = getChild(root, id + "_tip").orElseThrow().origin().scale(BBModelData.BASE_SCALE_FACTOR);
+			Vec3 legEnd = getChild(root, id + "_tip").orElseThrow().origin().scale(BBModelData.BASE_SCALE_FACTOR);
 			segments.add(new SegmentInfo(
-				segment.origin().scale(BBModelData.BASE_SCALE_FACTOR).distanceTo(tip),
+				Math.max(0.01f, tipPos.distance(legEnd.toVector3f())),
 				segment.rotation().x,
-				segment.parameters().getOrDefault("minAngle", 1d),
-				segment.parameters().getOrDefault("maxAngle", 1d)
+				segment.parameters().getOrDefault("minAngle", 30d),
+				segment.parameters().getOrDefault("maxAngle", 30d)
 			));
-			return new LegInfo(rootOrigin, tip, segments);
+			return new LegInfo(rootLegSegment.origin().scale(BBModelData.BASE_SCALE_FACTOR), legEnd, segments);
 		}
 	}
 

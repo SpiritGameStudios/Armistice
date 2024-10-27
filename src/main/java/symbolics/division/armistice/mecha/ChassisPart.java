@@ -6,6 +6,8 @@ import au.edu.federation.caliko.FabrikStructure3D;
 import au.edu.federation.utils.Vec3f;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
@@ -65,11 +67,17 @@ public class ChassisPart extends AbstractMechaPart {
 		var p = absPos();
 		FabrikBone3D rootBone = new FabrikBone3D(new Vec3f(p.x, p.y, p.z), new Vec3f(p.x, p.y, p.z + 1));
 		rootBone.setName("root");
-		FabrikChain3D rootChain = IKUtil.defaultChain();
+		FabrikChain3D rootChain = new FabrikChain3D();
 		rootChain.addBone(rootBone);
 		rootChain.setFixedBaseMode(false);
-		rootChain.setFreelyRotatingGlobalHingedBasebone(IKUtil.Y_AXIS);
+		rootChain.setGlobalHingedBasebone(
+			IKUtil.Y_AXIS,
+			180, 180, IKUtil.Z_AXIS
+		);
+//		rootChain.setFreelyRotatingGlobalHingedBasebone(IKUtil.Y_AXIS);
+
 		this.skeleton.addChain(rootChain);
+		IKUtil.configureDefaultChainSettings(this.skeleton.getChain(0));
 
 		// root bone is like the "nose" of the skeleton, guides the center towards desired position.
 		// each leg determines its own fixed rotation relative to the nose, and adds its chain to the skeleton.
@@ -116,10 +124,33 @@ public class ChassisPart extends AbstractMechaPart {
 			legs.get(i).tick();
 		}
 		var targetCenter = legMap.targetCentroid();
+
 //		skeleton.solveForTarget(IKUtil.mc2fab(targetCenter));
 		var p = absPos();
-//		skeleton.solveForTarget(new Vec3f(p.x, p.y, p.z));
+		float age = (float) core.entity().tickCount / 60;
+		var tgt = new Vec3f(p.x + Mth.sin(age), p.y, p.z + Mth.cos(age));
+
+		if (firstTick) {
+			firstTick = false;
+		} else {
+			// bug in caliko: targeting an effector's base is undefined
+			var baseBone = skeleton.getChain(0).getBone(0);
+			Vec3f baseStart = baseBone.getStartLocation();
+			if (baseStart.approximatelyEquals(tgt, 0.01f)) {
+				baseBone.setStartLocation(new Vec3f(baseStart.x + 0.01f, baseStart.y, baseStart.z));
+			}
+
+			skeleton.solveForTarget(tgt);
+//			skeleton.solveForTarget(new Vec3f(p.x(), p.y(), p.z()));
+
+			for (var leg : legs) {
+				// live-update chain (caliko bug: fixedbase doesn't update on time)
+				leg.getChain().getBone(0).setStartLocation(baseBone.getEndLocation());
+			}
+		}
 	}
+
+	private boolean firstTick = true;
 
 	@Override
 	public void serverTick() {
@@ -194,6 +225,15 @@ public class ChassisPart extends AbstractMechaPart {
 	@Override
 	public void renderDebug(MultiBufferSource bufferSource, PoseStack poseStack) {
 		for (int i = 0; i < skeleton.getNumChains(); i++) {
+			var effectorLoc = skeleton.getChain(i).getEffectorLocation();
+			poseStack.pushPose();
+			{
+				poseStack.translate(effectorLoc.x, effectorLoc.y, effectorLoc.z);
+				poseStack.mulPose(Minecraft.getInstance().gameRenderer.getMainCamera().rotation());
+				poseStack.scale(0.03f, -0.03f, 0.03f);
+				Minecraft.getInstance().font.drawInBatch(String.valueOf(i), 0.0F, 0.0F, -1, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+			}
+			poseStack.popPose();
 			skeleton.getChain(i).getChain()
 				.stream().forEach(
 					bone -> {
@@ -217,6 +257,15 @@ public class ChassisPart extends AbstractMechaPart {
 			quad.addVertex(poseStack.last(), target.add(tol, 0, tol).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
 			quad.addVertex(poseStack.last(), target.add(-tol, 0, tol).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
 			drawLoc(target.toVector3f(), 0, 0, 1, poseStack, bufferSource);
+
+			poseStack.pushPose();
+			{
+				poseStack.translate(target.x, target.y + 0.4, target.z);
+				poseStack.mulPose(Minecraft.getInstance().gameRenderer.getMainCamera().rotation());
+				poseStack.scale(0.03f, -0.03f, 0.03f);
+				Minecraft.getInstance().font.drawInBatch(String.valueOf(i + 1), 0.0F, 0.0F, -1, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+			}
+			poseStack.popPose();
 		}
 
 		VertexConsumer targetLine = bufferSource.getBuffer(RenderType.debugLineStrip(4.0));
