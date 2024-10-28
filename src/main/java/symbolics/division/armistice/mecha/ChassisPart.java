@@ -133,7 +133,6 @@ public class ChassisPart extends AbstractMechaPart {
 
 		List<ChassisLeg> lowPrio = new ArrayList<>();
 		for (ChassisLeg leg : legs) {
-			leg.tick();
 			if (leg.priority) {
 				leg.tick();
 			} else {
