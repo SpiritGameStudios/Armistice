@@ -1,8 +1,6 @@
 package symbolics.division.armistice.mecha.movement;
 
-import au.edu.federation.caliko.FabrikBone3D;
 import au.edu.federation.caliko.FabrikChain3D;
-import au.edu.federation.utils.Mat3f;
 import au.edu.federation.utils.Vec3f;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -41,33 +39,5 @@ public class IKUtil {
 		return mc2fab(
 			fab2mc(vec).yRot(deg * Mth.DEG_TO_RAD)
 		);
-	}
-
-	public static float getLocalPitch(FabrikChain3D chain, int index) {
-
-		FabrikBone3D bone = chain.getBone(index);
-
-		// modified from Fabrik Chain 3d solution for local hinges (see license)
-
-		// Not a basebone? Then construct a rotation matrix based on the previous bones inner-to-to-inner direction...
-		Mat3f m;
-		Vec3f relativeHingeRotationAxis;
-		if (index > 0) {
-			m = Mat3f.createRotationMatrix(chain.getBone(index - 1).getDirectionUV());
-			relativeHingeRotationAxis = m.times(bone.getJoint().getHingeRotationAxis()).normalise();
-		} else // ...basebone? Need to construct matrix from the relative constraint UV.
-		{
-			relativeHingeRotationAxis = chain.getBaseboneRelativeConstraintUV();
-		}
-
-		// ...and transform the hinge rotation axis into the previous bones frame of reference. ^^^ up there
-
-		// now we know how to transform our global pitch
-
-
-		// Project this bone's outer-to-inner direction onto the plane described by the relative hinge rotation axis
-		// Note: The returned vector is normalised.
-		Vec3f outerToInnerUV = bone.getDirectionUV().negated().projectOntoPlane(relativeHingeRotationAxis);
-		return 0;
 	}
 }

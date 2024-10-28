@@ -1,5 +1,6 @@
 package symbolics.division.armistice.client.render.model;
 
+import au.edu.federation.caliko.FabrikBone3D;
 import au.edu.federation.caliko.FabrikChain3D;
 import au.edu.federation.utils.Vec3f;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -7,10 +8,12 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.client.render.debug.ArmisticeClientDebugValues;
 import symbolics.division.armistice.mecha.MechaEntity;
+import symbolics.division.armistice.mecha.movement.IKUtil;
 import symbolics.division.armistice.model.BBModelData;
 import symbolics.division.armistice.model.BBModelTree;
 import symbolics.division.armistice.model.OutlinerNode;
@@ -34,7 +37,6 @@ public class ChassisRenderer {
 		private final List<ModelBaker.Quad[]> quadArrays;
 		private final List<OutlinerNode> segmentNodes = new ArrayList<>();
 		private final int index;
-		private final List<Float> inverts = new ArrayList<>();
 
 		public LegRenderer(BBModelTree leg, int index) {
 			this.index = index;
@@ -73,49 +75,43 @@ public class ChassisRenderer {
 				}
 				matrices.popPose();
 			}
-
-			// rotate yaw backwards if rotation > 90 degrees (caliko)
-			if (Math.abs(segment.node.rotation().x) > 90) {
-				inverts.add(-1f);
-			} else {
-				inverts.add(1f);
-			}
 		}
 
 		public void render(MechaEntity mecha, PoseStack matrices, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
 			FabrikChain3D chain = mecha.core().skeleton().getChain(index + 1);
 			// skip fake base bone that's not present in model
+			float parentYaw = Mth.PI - chain.getBone(1).getGlobalYawDegs();
 			for (int i = 0; i < quadArrays.size(); i++) {
 				if (quadArrays.get(i).length != 0) {
 					var bone = chain.getBone(i + 1);
 					float yaw = bone.getGlobalYawDegs() * Mth.DEG_TO_RAD;
-					float yawDeg = bone.getGlobalYawDegs();
-					float pitch = bone.getGlobalPitchDegs() * Mth.DEG_TO_RAD;
-					float pitchDeg = bone.getGlobalPitchDegs();
 					Vec3f base = bone.getStartLocation();
 					matrices.pushPose();
 					{
-						var p = mecha.position();
 						matrices.translate(base.x, base.y, base.z);
-						if (i == 3) {
-							int b = 1;
-						}
-						pitch = Mth.PI + pitch;
-//						pitch = -pitch;
 						yaw = Mth.PI - yaw;
-//						pitch = 0;
-//						yaw = 0;
-						if (i > 0 && inverts.get(i - 1) == -1) {
-							int q = 3;
-							pitch = -pitchDeg * Mth.DEG_TO_RAD;
-						}
+						float calcPitch = interpretPitch(bone, yaw, parentYaw);
 
-						matrices.mulPose(new Quaternionf().rotateZYX(0, yaw, pitch));
+						matrices.mulPose(new Quaternionf().rotateZYX(0, yaw, calcPitch + Mth.PI));
 						PartRenderer.renderQuads(quadArrays.get(i), texture, matrices.last(), bufferSource, color, packedLight, packedOverlay);
 					}
 					matrices.popPose();
 				}
 			}
+		}
+
+		private float interpretPitch(FabrikBone3D bone, float yawRad, float yawParentRad) {
+			Vec3 start = IKUtil.f2m(bone.getStartLocation());
+			Vec3 end = IKUtil.f2m(bone.getEndLocation());
+			// parent always points forwards
+			// if child points forwards, yaw is
+			double y = end.y - start.y;
+			double x = end.x - start.x;
+			double z = end.z - start.z;
+			double r = Math.sqrt(x * x + z * z);
+			double sign = Math.abs(yawParentRad - yawRad) > Math.PI / 2 ? -1 : 1;
+			return (float) Math.atan2(y, r * sign);
+
 		}
 	}
 
