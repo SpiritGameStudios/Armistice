@@ -41,6 +41,13 @@ public interface Part extends Euclidean {
 	}
 
 	/**
+	 * Transform a point relative to this part into world space
+	 */
+	default Vector3f rel2Abs(Vector3f rel) {
+		return rel.rotate(absRot(), new Vector3f()).add(absPos());
+	}
+
+	/**
 	 * absolute rot = parent.absRot * this.relRot
 	 *
 	 * @return absolute rotation relative to <0, 0, 1> in world space along the shortest arc.

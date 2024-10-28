@@ -13,6 +13,7 @@ import java.util.function.Supplier;
 
 public final class ArmisticeDebugValues {
 	public static boolean simpleGun = false;
+	public static boolean chassisGravity = false;
 	public static boolean ikSolving = false;
 
 	@SubscribeEvent
@@ -21,6 +22,7 @@ public final class ArmisticeDebugValues {
 			Commands.literal("armistice_debug")
 				.then(setter("simpleGun", value -> simpleGun = value, () -> simpleGun))
 				.then(setter("ikSolving", value -> ikSolving = value, () -> ikSolving))
+				.then(setter("chassisGravity", value -> chassisGravity = value, () -> chassisGravity))
 		);
 	}
 

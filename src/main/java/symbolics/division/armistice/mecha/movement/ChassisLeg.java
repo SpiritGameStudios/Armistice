@@ -6,6 +6,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
+import symbolics.division.armistice.math.GeometryUtil;
 import symbolics.division.armistice.mecha.ChassisPart;
 import symbolics.division.armistice.model.MechaModelData;
 

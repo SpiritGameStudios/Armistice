@@ -31,6 +31,9 @@ import java.util.List;
  * It also has a separate health pool and hitbox that controls whether it is immobilized.
  */
 public class ChassisPart extends AbstractMechaPart {
+	// temp: Should be defined by sum of part sizes
+	private static final double GRAVITY = 0.1;
+
 	public final List<Vec3> debugStepTargets = new ArrayList<>();
 	protected final DirectionState direction = new DirectionState(Math.PI);
 	protected final ChassisSchematic schematic;
@@ -161,9 +164,10 @@ public class ChassisPart extends AbstractMechaPart {
 
 		core.hull.serverTick();
 
-		// debug disable :PPPPP
-//		if (!core.entity().onGround()) movement = movement.subtract(0, 0.1, 0);
-//		else movement = new Vec3(movement.x, 0, movement.z);
+		if (!ArmisticeDebugValues.chassisGravity) return;
+		movement = !core.entity().onGround() ?
+			movement.subtract(0, GRAVITY, 0) :
+			new Vec3(movement.x, 0, movement.z);
 	}
 
 	@Override

@@ -1,7 +1,10 @@
-package symbolics.division.armistice.mecha.movement;
+package symbolics.division.armistice.math;
 
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
+import org.joml.Quaternionfc;
 import org.joml.Vector3f;
 
 public final class GeometryUtil {
@@ -29,6 +32,31 @@ public final class GeometryUtil {
 
 	public static boolean inRange(Vec3 a, Vec3 b, double tolerance) {
 		return a.distanceToSqr(b) <= tolerance * tolerance;
+	}
+
+	public static Vector3f asRadians(Vector3f degrees) {
+		return new Vector3f(degrees.x() * Mth.DEG_TO_RAD, degrees.y() * Mth.DEG_TO_RAD, degrees.y() * Mth.DEG_TO_RAD);
+	}
+
+	public static Vec3 asRadians(Vec3 degrees) {
+		return new Vec3(degrees.x() * Mth.DEG_TO_RAD, degrees.y() * Mth.DEG_TO_RAD, degrees.y() * Mth.DEG_TO_RAD);
+	}
+
+	public static Quaternionfc bbRot2Quaternion(Vec3 rotation) {
+		// bb model rotations are in zyx order, and performed in sequence from the root.
+		Vec3 radians = GeometryUtil.asRadians(rotation);
+		return new Quaternionf().rotateZYX((float) radians.z, (float) radians.y, (float) radians.x);
+	}
+
+	public static Vec3 bbRot2Direction(Vec3 rotation) {
+		Vec3 radians = GeometryUtil.asRadians(rotation);
+
+		return new Vec3(
+			new Vector3f(0, 0, 1)
+				.rotateZ((float) radians.z)
+				.rotateY((float) radians.y)
+				.rotateX((float) radians.x)
+		);
 	}
 
 	/**

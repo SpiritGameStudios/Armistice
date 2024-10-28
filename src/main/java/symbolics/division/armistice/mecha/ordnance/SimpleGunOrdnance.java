@@ -12,7 +12,7 @@ import org.joml.Vector3fc;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
 import symbolics.division.armistice.mecha.MechaCore;
 import symbolics.division.armistice.mecha.OrdnancePart;
-import symbolics.division.armistice.model.BBModelData;
+import symbolics.division.armistice.model.Bone;
 
 public class SimpleGunOrdnance extends OrdnancePart {
 	protected final int cooldown;
@@ -20,7 +20,7 @@ public class SimpleGunOrdnance extends OrdnancePart {
 	protected final double projectileVelocity;
 
 	protected int cooldownTicks;
-	protected Vector3f relBarrel;
+	protected Bone barrelBone;
 
 	public SimpleGunOrdnance(int cooldown, double maxDistance, double projectileVelocity) {
 		super(1);
@@ -39,9 +39,7 @@ public class SimpleGunOrdnance extends OrdnancePart {
 	public void init(MechaCore core) {
 		super.init(core);
 
-		relBarrel = core.model().ordnance(core.ordnanceIndex(this)).getChild("marker1")
-			.map(node -> node.origin().scale(BBModelData.BASE_SCALE_FACTOR).toVector3f())
-			.orElse(new Vector3f(0, 0, 0));
+		barrelBone = core.model().getMarker(core.model().ordnance(core.ordnanceIndex(this)), 1);
 	}
 
 	@Override
@@ -62,10 +60,7 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		if (cooldownTicks > 0 || targets().isEmpty() || !(targets().getFirst() instanceof EntityHitResult target))
 			return;
 
-		Vector3f absBarrel = relBarrel
-			.rotate(absRot(), new Vector3f(0, 0, 0))
-			.add(absPos());
-
+		Vector3f absBarrel = rel2Abs(barrelBone.pos().toVector3f());
 		Entity projectile = createProjectile(absBarrel);
 
 		double x = target.getEntity().getX() - absBarrel.x;

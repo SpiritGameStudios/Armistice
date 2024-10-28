@@ -2,11 +2,12 @@ package symbolics.division.armistice.mecha.movement;
 
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
+import symbolics.division.armistice.math.GeometryUtil;
 
 public class DirectionState {
-	private Vector3f currentDirection = new Vector3f(0, 0, 1);
-	private Vector3f lastDirection = new Vector3f(0, 0, 1);
-	private Vector3f targetDirection = new Vector3f(0, 0, 1);
+	private final Vector3f currentDirection = new Vector3f(0, 0, 1);
+	private final Vector3f lastDirection = new Vector3f(0, 0, 1);
+	private final Vector3f targetDirection = new Vector3f(0, 0, 1);
 	private Vector3f axis = new Vector3f(0, 1, 0);
 	private float radiansPerTick = (float) Math.PI / 32;
 	private double tolerance = 0;
