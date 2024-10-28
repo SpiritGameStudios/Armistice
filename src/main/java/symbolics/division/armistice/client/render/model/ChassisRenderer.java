@@ -75,11 +75,11 @@ public class ChassisRenderer {
 			}
 
 			// rotate yaw backwards if rotation > 90 degrees (caliko)
-//			if (Math.abs(segment.node.rotation().x) > 90) {
-//				inverts.add(-1f);
-//			} else {
-//				inverts.add(1f);
-//			}
+			if (Math.abs(segment.node.rotation().x) > 90) {
+				inverts.add(-1f);
+			} else {
+				inverts.add(1f);
+			}
 		}
 
 		public void render(MechaEntity mecha, PoseStack matrices, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
@@ -97,12 +97,20 @@ public class ChassisRenderer {
 					{
 						var p = mecha.position();
 						matrices.translate(base.x, base.y, base.z);
-						if (i == 2) {
+						if (i == 3) {
 							int b = 1;
 						}
-//						pitch = Mth.PI + pitch;
-						pitch = 1f;
-						matrices.mulPose(new Quaternionf().rotateZYX(0, Mth.PI + yaw, Mth.PI - pitch));
+						pitch = Mth.PI + pitch;
+//						pitch = -pitch;
+						yaw = Mth.PI - yaw;
+//						pitch = 0;
+//						yaw = 0;
+						if (i > 0 && inverts.get(i - 1) == -1) {
+							int q = 3;
+							pitch = -pitchDeg * Mth.DEG_TO_RAD;
+						}
+
+						matrices.mulPose(new Quaternionf().rotateZYX(0, yaw, pitch));
 						PartRenderer.renderQuads(quadArrays.get(i), texture, matrices.last(), bufferSource, color, packedLight, packedOverlay);
 					}
 					matrices.popPose();

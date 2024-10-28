@@ -113,32 +113,38 @@ public class ChassisLeg {
 		 */
 		if (!ArmisticeDebugValues.ikSolving) return;
 
-		float ticksPerBlock = 20;
+		float ticksPerBlock = 15;
 		Vec3 mapTarget = chassis.legMap().legTarget(legIndex);
 		Vec3 tip = tipPos();
 		float mapDelta = (float) mapTarget.distanceTo(tip);
 		boolean inRange = mapDelta <= chassis.legMap().stepTolerance();
 
+
 		// check if we need to do a new step
 		if (!stepping() && !inRange && !chassis.neighborsStepping(legIndex)) {
-			prevStepTarget = tip;
+			if (prevStepTarget != finalStepTarget) {
+				prevStepTarget = tip;
+			}
 			finalStepTarget = nearestValidStepPosition(mapTarget);
 			totalTicksToStep = mapDelta * ticksPerBlock;
 			ticksToStep = totalTicksToStep;
+			priority = false;
 		}
 
 		// update current step
 		if (stepping()) {
 			// not final tick, snap if too far
+			priority = false;
 			if (ticksToStep > 1f && tickTarget.closerThan(finalStepTarget, 10)) {
 				ticksToStep--;
 				float stepPercent = (totalTicksToStep - ticksToStep) / totalTicksToStep;
 				tickTarget = prevStepTarget.add(finalStepTarget.subtract(prevStepTarget).scale(stepPercent))
 					.add(0, GeometryUtil.easedCurve(stepPercent), 0);
+
 			} else { //final tick
 				ticksToStep = 0;
 				tickTarget = finalStepTarget;
-				priority = false;
+				prevStepTarget = finalStepTarget;
 			}
 		}
 

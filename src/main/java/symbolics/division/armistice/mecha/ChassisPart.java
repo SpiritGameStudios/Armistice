@@ -183,7 +183,7 @@ public class ChassisPart extends AbstractMechaPart {
 			// move to centroid
 			if (prevPos == Vec3.ZERO) prevPos = core.position();
 			var curPos = IKUtil.f2m(skeleton.getChain(0).getBone(0).getEndLocation());
-			float ticksPerBlock = 50;
+			float ticksPerBlock = 30;
 			var delta = desiredPos.subtract(curPos);
 			Vec3f tgt = IKUtil.m2f(curPos.add(delta.normalize().scale(1 / ticksPerBlock)));
 
