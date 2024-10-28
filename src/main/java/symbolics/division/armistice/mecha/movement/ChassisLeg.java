@@ -183,4 +183,8 @@ public class ChassisLeg {
 	public Vec3 getTickTarget() {
 		return tickTarget;
 	}
+
+	public void setTickTarget(Vec3 tickTarget) {
+		this.tickTarget = tickTarget;
+	}
 }

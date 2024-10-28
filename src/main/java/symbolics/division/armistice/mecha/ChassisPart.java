@@ -110,6 +110,15 @@ public class ChassisPart extends AbstractMechaPart {
 	@Override
 	public void tick() {
 		super.tick();
+
+	}
+
+	private boolean firstTick = true;
+
+	@Override
+	public void serverTick() {
+		super.serverTick();
+
 		// temp: need non horizontal-only movement
 		// update desired movement
 		if (pathingTarget != null && !pathingTarget.closerThan(new Vec3(absPos()), followTolerance)) {
@@ -193,13 +202,6 @@ public class ChassisPart extends AbstractMechaPart {
 				leg.getChain().getBone(0).setStartLocation(baseBone.getEndLocation());
 			}
 		}
-	}
-
-	private boolean firstTick = true;
-
-	@Override
-	public void serverTick() {
-		super.serverTick();
 
 		core.hull.serverTick();
 
