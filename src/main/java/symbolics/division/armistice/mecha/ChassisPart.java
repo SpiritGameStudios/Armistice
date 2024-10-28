@@ -28,6 +28,8 @@ import symbolics.division.armistice.mecha.schematic.ChassisSchematic;
 import java.util.ArrayList;
 import java.util.List;
 
+import static symbolics.division.armistice.registry.ArmisticeEntityDataSerializerRegistrar.*;
+
 /**
  * The chassis controls the pathing and manages legs. It is the root of the model,
  * so all other parts have position and rotation defined with this at the base.
@@ -62,27 +64,27 @@ public class ChassisPart extends AbstractMechaPart {
 	}
 
 	private void setLegTickTargets(List<Vector3f> tickTargets) {
-		this.core.entity().getEntityData().set(MechaEntity.LEG_TICK_TARGETS, tickTargets);
+		this.core.entity().getEntityData().set(LEG_TICK_TARGETS, tickTargets);
 	}
 
 	private void setAbsPos(Vector3f absPos) {
-		this.core.entity().getEntityData().set(MechaEntity.ABS_POS, absPos);
+		this.core.entity().getEntityData().set(ABS_POS, absPos);
 	}
 
 	private void setAbsRot(Quaternionf absRot) {
-		this.core.entity().getEntityData().set(MechaEntity.ABS_ROT, absRot);
+		this.core.entity().getEntityData().set(ABS_ROT, absRot);
 	}
 
 	private List<Vector3f> getLegTickTargets() {
-		return this.core.entity().getEntityData().get(MechaEntity.LEG_TICK_TARGETS);
+		return this.core.entity().getEntityData().get(LEG_TICK_TARGETS);
 	}
 
 	private Vector3f getAbsPos() {
-		return this.core.entity().getEntityData().get(MechaEntity.ABS_POS);
+		return this.core.entity().getEntityData().get(ABS_POS);
 	}
 
 	private Quaternionf getAbsRot() {
-		return this.core.entity().getEntityData().get(MechaEntity.ABS_ROT);
+		return this.core.entity().getEntityData().get(ABS_ROT);
 	}
 
 //	Vec3 prevDir = new Vec3(0, 0, 1);

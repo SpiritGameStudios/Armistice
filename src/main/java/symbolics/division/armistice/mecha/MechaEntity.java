@@ -2,10 +2,6 @@ package symbolics.division.armistice.mecha;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -27,22 +23,9 @@ import symbolics.division.armistice.registry.ArmisticeRegistries;
 import java.util.List;
 import java.util.Optional;
 
+import static symbolics.division.armistice.registry.ArmisticeEntityDataSerializerRegistrar.*;
+
 public class MechaEntity extends Entity {
-	public static final EntityDataAccessor<List<Vector3f>> LEG_TICK_TARGETS = SynchedEntityData.defineId(
-		MechaEntity.class,
-		EntityDataSerializer.forValueType(ByteBufCodecs.VECTOR3F.apply(ByteBufCodecs.list()))
-	);
-
-	public static final EntityDataAccessor<Vector3f> ABS_POS = SynchedEntityData.defineId(
-		MechaEntity.class,
-		EntityDataSerializers.VECTOR3
-	);
-
-	public static final EntityDataAccessor<Quaternionf> ABS_ROT = SynchedEntityData.defineId(
-		MechaEntity.class,
-		EntityDataSerializer.forValueType(ByteBufCodecs.QUATERNIONF)
-	);
-
 	protected final MechaCore core;
 	private boolean firstTick = true;
 

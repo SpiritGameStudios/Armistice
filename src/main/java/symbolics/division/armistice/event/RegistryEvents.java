@@ -53,6 +53,7 @@ public final class RegistryEvents {
 		private static void onRegister(RegisterEvent event) {
 			Registrar.process(ArmisticeDataComponentTypeRegistrar.class, MODID, event);
 			Registrar.process(ArmisticeBlockRegistrar.class, MODID, event);
+			Registrar.process(ArmisticeEntityDataSerializerRegistrar.class, MODID, event);
 			Registrar.process(ArmisticeEntityTypeRegistrar.class, MODID, event);
 			Registrar.process(ArmisticeItemRegistrar.class, MODID, event);
 			Registrar.process(ArmisticeCreativeModeTabRegistrar.class, MODID, event);
