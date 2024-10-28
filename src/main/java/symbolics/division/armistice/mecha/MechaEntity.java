@@ -15,7 +15,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.mecha.schematic.*;
@@ -87,7 +86,7 @@ public class MechaEntity extends Entity {
 	protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
 		builder.define(LEG_TICK_TARGETS, List.of());
 		builder.define(CLIENT_POS, new Vector3f());
-		builder.define(CLIENT_DIR, new Quaternionf());
+		builder.define(CLIENT_DIR, new Vector3f());
 	}
 
 	@Override
