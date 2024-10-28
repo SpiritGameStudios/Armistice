@@ -21,19 +21,7 @@ public class ChassisLeg {
 	protected Vec3 nextStepTarget = Vec3.ZERO;
 	protected Vec3 finalStepTarget = Vec3.ZERO;
 
-	/*
-	Idea:
-
-	starfish-shape: absolute root has a vertical bone, and all legs
-	extend from this such that the angle is maintained as chassis rotates.
-
-	n legs, n chains + 1 tiny bone that tries to solve for leg centroid + standing height at each step.
-	leg chains have embedded targets for step positions.
-	chassis should rotate to allow for leg rotations.
-	absolute root is unfixed and points horizontally, like a tail.
-	central tiny bone points directly vertical
-	 */
-	private boolean firstTick = true;
+	public boolean priority = false;
 
 	public ChassisLeg(MechaModelData.LegInfo info, ChassisPart chassis, int index, FabrikStructure3D skeleton) {
 		// WARNING: CALIKO ROTATION SYSTEM IS LEFT-HANDED
@@ -78,10 +66,7 @@ public class ChassisLeg {
 		for (int i = 1; i < info.segments().size(); i++) {
 			var segment = info.segments().get(i);
 			float deg = (float) segment.baseAngleDeg();
-			if (i == 3) {
-//				deg = 85f;
-			}
-			deg = Mth.abs(deg);
+			deg = Mth.abs(deg); // might need to change for some models, but apparently fixes rotation in test model?
 			var r = Vec3f.rotateAboutAxisDegs(IKUtil.Z_AXIS, deg, IKUtil.X_AXIS);
 			r.set(Mth.abs(r.x) < 0.001f ? 0.0f : r.x, Mth.abs(r.y) < 0.001f ? 0.0f : r.y, Mth.abs(r.z) < 0.001f ? 0.0f : r.z);
 
@@ -99,7 +84,7 @@ public class ChassisLeg {
 		chain.setName(legName);
 		baseBone.setName(legName + "_base");
 		chain.getBone(1).setName(legName + "_yaw");
-		// skip first 2 in enumeration (root and yaw bones
+		// skip first 2 in enumeration (root and yaw bones)
 		for (int i = 2; i < chain.getChain().size(); i++) {
 			chain.getBone(i).setName(legName + "_seg" + (i - 1));
 		}
@@ -115,6 +100,9 @@ public class ChassisLeg {
 		return chain;
 	}
 
+	protected float totalTicksToStep = 1;
+	protected float ticksToStep = 0;
+
 	public void tick() {
 		// there are 4 types of targets:
 		/*
@@ -125,33 +113,74 @@ public class ChassisLeg {
 		 */
 		if (!ArmisticeDebugValues.ikSolving) return;
 
-		double tempBlocksPerTick = 0.05f;
-		Vec3 maptarget = chassis.legMap().legTarget(legIndex);
-		if (tickTarget.distanceTo(maptarget) > chassis.legMap().stepTolerance()) {
-			tickTarget = chassis.legMap().legTarget(legIndex);
+		float ticksPerBlock = 20;
+		Vec3 mapTarget = chassis.legMap().legTarget(legIndex);
+		Vec3 tip = tipPos();
+		float mapDelta = (float) mapTarget.distanceTo(tip);
+		boolean inRange = mapDelta <= chassis.legMap().stepTolerance();
+
+		// check if we need to do a new step
+		if (!stepping() && !inRange && !chassis.neighborsStepping(legIndex)) {
+			prevStepTarget = tip;
+			finalStepTarget = nearestValidStepPosition(mapTarget);
+			totalTicksToStep = mapDelta * ticksPerBlock;
+			ticksToStep = totalTicksToStep;
 		}
+
+		// update current step
+		if (stepping()) {
+			// not final tick, snap if too far
+			if (ticksToStep > 1f && tickTarget.closerThan(finalStepTarget, 10)) {
+				ticksToStep--;
+				float stepPercent = (totalTicksToStep - ticksToStep) / totalTicksToStep;
+				tickTarget = prevStepTarget.add(finalStepTarget.subtract(prevStepTarget).scale(stepPercent));
+			} else { //final tick
+				ticksToStep = 0;
+				tickTarget = finalStepTarget;
+				priority = false;
+			}
+		}
+
+//		if (tickTarget.distanceTo(maptarget) > chassis.legMap().stepTolerance()) {
+//			tickTarget = chassis.legMap().legTarget(legIndex);
+//		}
+
+
+		// set target for this tick
 		chain.updateEmbeddedTarget(new Vec3f((float) tickTarget.x, (float) tickTarget.y, (float) tickTarget.z));
 
-		if (firstTick) {
-			//  don't solve for  embedded target, you don't have a reference available yet
-			firstTick = false;
-		} else {
-			// you have to jiggle the bone a bit to motivate it to move
-			Vec3f prev = chain.getBone(0).getStartLocation();
-			chain.getBone(0).getStartLocation().set(prev.x, prev.y + 0.002f, prev.z);
+		// attempt initial solve. this will be repeated after the body updates based on this result.
+		trySolve(null);
+	}
 
-			chain.solveForEmbeddedTarget();
+	public void trySolve(Vec3f tgt) {
+		if (chassis.legsReady()) {
+//			Vec3f prev = chain.getBone(0).getStartLocation();
+//			// you have to jiggle the bone a bit to motivate it to move
+//			chain.getBone(0).getStartLocation().set(prev.x, prev.y + 0.002f, prev.z);
+//			chain.solveForEmbeddedTarget();
 		}
-
-
 	}
 
 //	public void getLocalRotations() {
 //		for (FabrikBone3D : )
 //	}
 
-	public boolean stepping() {
-		return false;
+	protected Vec3 nearestValidStepPosition(Vec3 ideal) {
+		//  temp
+		return ideal;
 	}
 
+	public Vec3 tipPos() {
+		Vec3f loc = chain.getEffectorLocation();
+		return new Vec3(loc.x, loc.y, loc.z);
+	}
+
+	public boolean stepping() {
+		return ticksToStep > 0;
+	}
+
+	public Vec3 getTickTarget() {
+		return tickTarget;
+	}
 }

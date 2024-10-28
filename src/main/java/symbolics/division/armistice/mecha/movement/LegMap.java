@@ -17,11 +17,29 @@ public class LegMap {
 	protected Vec3 mapOffset = Vec3.ZERO;
 	protected float mapYaw = 0;
 	protected double stepTolerance = 0.5;
+	protected double[] directionWeights;
 
 	public LegMap(MechaModelData data, ChassisPart chassis) {
 		this.chassis = chassis;
 		this.legTipOffsets = data.legInfo().stream().map(MechaModelData.LegInfo::tip).toList();
-		this.centroidOffset = centroid(this.legTipOffsets).scale(-1);
+		Vec3 baseCentroid = centroid(this.legTipOffsets);
+		// if center of mech is origin, -baseCentroid is offset to obtain target centroid.
+		this.centroidOffset = baseCentroid.scale(-1);
+
+		// compute direction weights. closer = higher weight.
+		double weightSum = 0;
+		Vec3 centroidHorizontal = baseCentroid.multiply(1, 0, 1);
+		Vec3 directionRef = centroidHorizontal.add(0, 0, 1);
+		directionWeights = new double[legTipOffsets.size()];
+		for (int i = 0; i < directionWeights.length; i++) {
+			var offset = legTipOffsets.get(i).multiply(-1, 0, 1);
+			directionWeights[i] =
+				offset.distanceTo(centroidHorizontal) / offset.distanceTo(directionRef);
+			weightSum += directionWeights[i];
+		}
+		for (int i = 0; i < directionWeights.length; i++) {
+			directionWeights[i] /= weightSum;
+		}
 	}
 
 	public void setMapOffset(Vec3 offset) {
@@ -37,11 +55,23 @@ public class LegMap {
 		// leg target in world-space.
 		// special case: we *do* want to offset then rotate unlike usual,
 		// based on how we wish for legs to  move
-		return model2world(legTipOffsets.get(leg).yRot(mapYaw));
+		return model2world(legTipOffsets.get(leg).add(mapOffset).yRot(mapYaw));
 	}
 
-	public Vec3 targetCentroid() {
-		return centroid(chassis.effectors()).add(model2world(centroidOffset));
+	public Vec3 targetDir() {
+		List<Vec3> tips = chassis.effectors();
+		Vec3 centroid = centroid(tips);
+		Vec3 weightedPosition = Vec3.ZERO;
+		for (int i = 0; i < tips.size(); i++) {
+			weightedPosition = weightedPosition.add(tips.get(i).multiply(directionWeights[i], 0, directionWeights[i]));
+		}
+		return weightedPosition.subtract(centroid.multiply(1, 0, 1)).normalize();
+	}
+
+	public Vec3 targetCentroid(Vec3 dir) {
+		var c = centroid(chassis.effectors());
+		var m2w = centroidOffset.yRot((float) GeometryUtil.yaw(dir));
+		return c.add(m2w);
 	}
 
 	public void setStepTolerance(double v) {
@@ -52,6 +82,8 @@ public class LegMap {
 		return stepTolerance;
 	}
 
+//	private Vec3 world2model()
+
 	private Vec3 model2world(Vec3 modelSpacePosition) {
 		return new Vec3(
 			modelSpacePosition
@@ -61,7 +93,17 @@ public class LegMap {
 		);
 	}
 
-	private static Vec3 centroid(List<Vec3> positions) {
+
+	public static Vec3 weightedCentroid(List<Vec3> positions, double[] weights) {
 		return positions.stream().reduce(Vec3.ZERO, Vec3::add).scale(1d / positions.size());
 	}
+
+	public static Vec3 centroid(List<Vec3> positions) {
+		return positions.stream().reduce(Vec3.ZERO, Vec3::add).scale(1d / positions.size());
+	}
+
+	/*
+	weighted centroid gives us a heuristic of "direction".
+	first, we compute the weights, then we can
+	 */
 }

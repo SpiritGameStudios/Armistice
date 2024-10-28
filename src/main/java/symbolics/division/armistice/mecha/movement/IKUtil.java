@@ -17,12 +17,21 @@ public class IKUtil {
 		chain.setMaxIterationAttempts(100);
 	}
 
+	// flipped x version for left handed system conversion (confusing!)
 	public static Vec3f mc2fab(Vec3 mcVec) {
 		return new Vec3f(-(float) mcVec.x, (float) mcVec.y, (float) mcVec.z);
 	}
 
 	public static Vec3 fab2mc(Vec3f fabVec) {
 		return new Vec3(-fabVec.x, fabVec.y, fabVec.z);
+	}
+
+	public static Vec3f m2f(Vec3 mcVec) {
+		return new Vec3f((float) mcVec.x, (float) mcVec.y, (float) mcVec.z);
+	}
+
+	public static Vec3 f2m(Vec3f fabVec) {
+		return new Vec3(fabVec.x, fabVec.y, fabVec.z);
 	}
 
 	public static Vec3f rotateFabYawDeg(Vec3f vec, float deg) {
