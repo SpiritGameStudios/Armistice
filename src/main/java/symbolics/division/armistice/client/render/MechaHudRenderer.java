@@ -5,7 +5,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec2;
@@ -42,19 +41,23 @@ public final class MechaHudRenderer {
 
 			renderFlicker(
 				pos -> {
-					guiGraphics.blitSprite(
-						ResourceLocation.withDefaultNamespace("hud/armor_full"),
+					guiGraphics.blit(
+						Armistice.id("textures/gui/altitude.png"),
 						(int) pos.x,
 						(int) pos.y,
-						24,
-						23
+						0,
+						0,
+						16,
+						128,
+						16,
+						128
 					);
 				},
 				new Vec2(
-					guiGraphics.guiWidth() - 8 - font.width(String.valueOf(mecha.getDeltaMovement().y)),
+					guiGraphics.guiWidth() - 24,
 					8
 				),
-				0.25f,
+				0.5f,
 				0.2125f,
 				0.1625f
 			);
@@ -66,7 +69,7 @@ public final class MechaHudRenderer {
 
 	// Yttr FlickeryRenderer was heavily referenced for this
 	private static void renderFlicker(Consumer<Vec2> render, Vec2 pos, float r, float g, float b) {
-		float alpha = RANDOM.nextInt(30) == 0 ? RANDOM.nextFloat() : 1.0F;
+		float alpha = RANDOM.nextInt(15) == 0 ? Math.min(RANDOM.nextFloat(), 0.5F) : 1.0F;
 		alpha = (0.3F + (alpha * 0.7F));
 
 		RenderSystem.setShaderColor(r, g, b, alpha * 0.05F);
