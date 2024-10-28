@@ -2,6 +2,8 @@ package symbolics.division.armistice.mecha;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -17,15 +19,29 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.mecha.schematic.*;
+import symbolics.division.armistice.registry.ArmisticeEntityDataSerializerRegistrar;
 import symbolics.division.armistice.registry.ArmisticeOrdnanceRegistrar;
 import symbolics.division.armistice.registry.ArmisticeRegistries;
 
 import java.util.List;
 import java.util.Optional;
 
-import static symbolics.division.armistice.registry.ArmisticeEntityDataSerializerRegistrar.*;
-
 public class MechaEntity extends Entity {
+	public static final EntityDataAccessor<List<Vector3f>> LEG_TICK_TARGETS = SynchedEntityData.defineId(
+		MechaEntity.class,
+		ArmisticeEntityDataSerializerRegistrar.VEC3_LIST
+	);
+
+	protected static final EntityDataAccessor<Vector3f> CLIENT_POS = SynchedEntityData.defineId(
+		MechaEntity.class,
+		EntityDataSerializers.VECTOR3
+	);
+
+	protected static final EntityDataAccessor<Vector3f> CLIENT_DIR = SynchedEntityData.defineId(
+		MechaEntity.class,
+		EntityDataSerializers.VECTOR3
+	);
+
 	protected final MechaCore core;
 	private boolean firstTick = true;
 
@@ -70,8 +86,8 @@ public class MechaEntity extends Entity {
 	@Override
 	protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
 		builder.define(LEG_TICK_TARGETS, List.of());
-		builder.define(ABS_POS, new Vector3f());
-		builder.define(ABS_ROT, new Quaternionf());
+		builder.define(CLIENT_POS, new Vector3f());
+		builder.define(CLIENT_DIR, new Quaternionf());
 	}
 
 	@Override
