@@ -61,6 +61,29 @@ public class ChassisPart extends AbstractMechaPart {
 		moveSpeed = schematic.moveSpeed();
 	}
 
+	private void setLegTickTargets(List<Vector3f> tickTargets) {
+		this.core.entity().getEntityData().set(MechaEntity.LEG_TICK_TARGETS, tickTargets);
+	}
+
+	private void setAbsPos(Vector3f absPos) {
+		this.core.entity().getEntityData().set(MechaEntity.ABS_POS, absPos);
+	}
+
+	private void setAbsRot(Quaternionf absRot) {
+		this.core.entity().getEntityData().set(MechaEntity.ABS_ROT, absRot);
+	}
+
+	private List<Vector3f> getLegTickTargets() {
+		return this.core.entity().getEntityData().get(MechaEntity.LEG_TICK_TARGETS);
+	}
+
+	private Vector3f getAbsPos() {
+		return this.core.entity().getEntityData().get(MechaEntity.ABS_POS);
+	}
+
+	private Quaternionf getAbsRot() {
+		return this.core.entity().getEntityData().get(MechaEntity.ABS_ROT);
+	}
 
 //	Vec3 prevDir = new Vec3(0, 0, 1);
 

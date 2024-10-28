@@ -28,17 +28,17 @@ import java.util.List;
 import java.util.Optional;
 
 public class MechaEntity extends Entity {
-	protected static final EntityDataAccessor<List<Vector3f>> LEG_TICK_TARGETS = SynchedEntityData.defineId(
+	public static final EntityDataAccessor<List<Vector3f>> LEG_TICK_TARGETS = SynchedEntityData.defineId(
 		MechaEntity.class,
 		EntityDataSerializer.forValueType(ByteBufCodecs.VECTOR3F.apply(ByteBufCodecs.list()))
 	);
 
-	protected static final EntityDataAccessor<Vector3f> ABS_POS = SynchedEntityData.defineId(
+	public static final EntityDataAccessor<Vector3f> ABS_POS = SynchedEntityData.defineId(
 		MechaEntity.class,
 		EntityDataSerializers.VECTOR3
 	);
 
-	protected static final EntityDataAccessor<Quaternionf> ABS_ROT = SynchedEntityData.defineId(
+	public static final EntityDataAccessor<Quaternionf> ABS_ROT = SynchedEntityData.defineId(
 		MechaEntity.class,
 		EntityDataSerializer.forValueType(ByteBufCodecs.QUATERNIONF)
 	);
@@ -86,7 +86,9 @@ public class MechaEntity extends Entity {
 
 	@Override
 	protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
-
+		builder.define(LEG_TICK_TARGETS, List.of());
+		builder.define(ABS_POS, new Vector3f());
+		builder.define(ABS_ROT, new Quaternionf());
 	}
 
 	@Override
