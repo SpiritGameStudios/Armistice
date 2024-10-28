@@ -58,18 +58,17 @@ public class LegMap {
 		return model2world(legTipOffsets.get(leg).add(mapOffset).yRot(mapYaw));
 	}
 
-	public Vec3 targetDir() {
-		List<Vec3> tips = chassis.effectors();
-		Vec3 centroid = centroid(tips);
+	public Vec3 targetDir(List<Vec3> effectors) {
+		Vec3 centroid = centroid(effectors);
 		Vec3 weightedPosition = Vec3.ZERO;
-		for (int i = 0; i < tips.size(); i++) {
-			weightedPosition = weightedPosition.add(tips.get(i).multiply(directionWeights[i], 0, directionWeights[i]));
+		for (int i = 0; i < effectors.size(); i++) {
+			weightedPosition = weightedPosition.add(effectors.get(i).multiply(directionWeights[i], 0, directionWeights[i]));
 		}
 		return weightedPosition.subtract(centroid.multiply(1, 0, 1)).normalize();
 	}
 
-	public Vec3 targetCentroid(Vec3 dir) {
-		var c = centroid(chassis.effectors());
+	public Vec3 targetCentroid(Vec3 dir, List<Vec3> effectors) {
+		var c = centroid(effectors);
 		var m2w = centroidOffset.yRot((float) GeometryUtil.yaw(dir));
 		return c.add(m2w);
 	}

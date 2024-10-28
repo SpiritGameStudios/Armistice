@@ -133,18 +133,14 @@ public class ChassisLeg {
 			if (ticksToStep > 1f && tickTarget.closerThan(finalStepTarget, 10)) {
 				ticksToStep--;
 				float stepPercent = (totalTicksToStep - ticksToStep) / totalTicksToStep;
-				tickTarget = prevStepTarget.add(finalStepTarget.subtract(prevStepTarget).scale(stepPercent));
+				tickTarget = prevStepTarget.add(finalStepTarget.subtract(prevStepTarget).scale(stepPercent))
+					.add(0, GeometryUtil.easedCurve(stepPercent), 0);
 			} else { //final tick
 				ticksToStep = 0;
 				tickTarget = finalStepTarget;
 				priority = false;
 			}
 		}
-
-//		if (tickTarget.distanceTo(maptarget) > chassis.legMap().stepTolerance()) {
-//			tickTarget = chassis.legMap().legTarget(legIndex);
-//		}
-
 
 		// set target for this tick
 		chain.updateEmbeddedTarget(new Vec3f((float) tickTarget.x, (float) tickTarget.y, (float) tickTarget.z));

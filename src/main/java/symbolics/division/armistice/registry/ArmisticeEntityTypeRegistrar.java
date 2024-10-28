@@ -9,5 +9,5 @@ import symbolics.division.armistice.util.registrar.EntityTypeRegistrar;
 public final class ArmisticeEntityTypeRegistrar implements EntityTypeRegistrar {
 	public static final EntityType<MechaEntity> MECHA = EntityType.Builder.of(
 		MechaEntity::temp, MobCategory.MISC
-	).sized(5, 5).build("mecha");
+	).sized(5, 5).updateInterval(1).build("mecha");
 }

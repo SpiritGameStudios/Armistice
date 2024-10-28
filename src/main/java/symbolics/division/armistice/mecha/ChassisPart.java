@@ -6,8 +6,6 @@ import au.edu.federation.caliko.FabrikStructure3D;
 import au.edu.federation.utils.Vec3f;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import it.unimi.dsi.fastutil.PriorityQueue;
-import it.unimi.dsi.fastutil.objects.ObjectArrayPriorityQueue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -49,6 +47,10 @@ public class ChassisPart extends AbstractMechaPart {
 	protected Vec3 pathingTarget = Vec3.ZERO;
 	protected LegMap legMap;
 	protected FabrikStructure3D skeleton;
+
+	protected boolean legsReady = false;
+	protected Vec3 prevPos = Vec3.ZERO;
+	private boolean firstTick = true;
 
 	// todo notes: chassis schematic/skeleton needs to tell us
 	// - number of legs
@@ -122,29 +124,19 @@ public class ChassisPart extends AbstractMechaPart {
 		}
 	}
 
-	protected boolean legsReady = false;
-
 	public boolean legsReady() {
 		return legsReady;
 	}
 
-	protected Vec3 prevPos = Vec3.ZERO;
-
-	PriorityQueue<ChassisLeg> legPriority = new ObjectArrayPriorityQueue<>();
-
 	@Override
 	public void tick() {
 		super.tick();
-
 	}
-
-	private boolean firstTick = true;
 
 	@Override
 	public void serverTick() {
 		super.serverTick();
 
-		// temp: need non horizontal-only movement
 		// update desired movement
 		if (pathingTarget != null && !pathingTarget.closerThan(new Vec3(absPos()), followTolerance)) {
 			// if we're not facing the target, try to rotate towards it.
@@ -165,16 +157,16 @@ public class ChassisPart extends AbstractMechaPart {
 			legMap.setMapRotation(0);
 		}
 
-		List<ChassisLeg> lowPrio = new ArrayList<>();
+		List<ChassisLeg> lowp = new ArrayList<>();
 		for (ChassisLeg leg : legs) {
 			if (leg.priority) {
 				leg.tick();
 			} else {
-				lowPrio.add(leg);
+				lowp.add(leg);
 				leg.priority = true;
 			}
 		}
-		for (ChassisLeg leg : lowPrio) {
+		for (ChassisLeg leg : lowp) {
 			leg.tick();
 		}
 
@@ -185,8 +177,8 @@ public class ChassisPart extends AbstractMechaPart {
 			// legmap is currently rotated or forwards depending on where we want our legs.
 			// legs will attempt to move into position, then we want to move to be between our legs.
 
-			Vec3 desiredDir = legMap.targetDir();
-			Vec3 desiredPos = legMap.targetCentroid(desiredDir);
+			Vec3 desiredDir = legMap.targetDir(effectors());
+			Vec3 desiredPos = legMap.targetCentroid(desiredDir, effectors());
 
 			// move to centroid
 			if (prevPos == Vec3.ZERO) prevPos = core.position();
@@ -226,6 +218,11 @@ public class ChassisPart extends AbstractMechaPart {
 				// live-update chain (caliko bug: fixedbase doesn't update on time)
 				leg.getChain().getBone(0).setStartLocation(baseBone.getEndLocation());
 			}
+
+			// update client
+			setClientPos(absPos());
+			setClientDir(direction().toVector3f());
+			setLegTickTargets(effectors().stream().map(Vec3::toVector3f).toList());
 		}
 
 		core.hull.serverTick();
@@ -240,7 +237,42 @@ public class ChassisPart extends AbstractMechaPart {
 	public void clientTick(float tickDelta) {
 		super.clientTick(tickDelta);
 
+		if (!ArmisticeDebugValues.ikSolving) return;
+		if (firstTick) {
+			firstTick = false;
+			return;
+		}
+
+		Vec3 clientPos = new Vec3(getClientPos());
+		Vec3 clientDir = new Vec3(getClientDir());
+		List<Vec3> tickTargets = getLegTickTargets().stream().map(Vec3::new).toList();
+		Vec3f target = IKUtil.m2f(clientPos);
+
+		var baseChain = skeleton.getChain(0);
+		var baseBone = baseChain.getBone(0);
+		Vec3f baseLoc = IKUtil.m2f(clientPos.subtract(clientDir));
+		fixBaseLocation(baseChain, baseLoc);
+		baseBone.setEndLocation(target);
+
+		for (int i = 0; i < tickTargets.size(); i++) {
+			legs.get(i).getChain().updateEmbeddedTarget(IKUtil.m2f(tickTargets.get(i)));
+
+			// for debug render
+			legs.get(i).setTickTarget(tickTargets.get(i));
+		}
+
+		skeleton.solveForTarget(target);
+
+		for (var leg : legs) {
+			leg.getChain().getBone(0).setStartLocation(baseBone.getEndLocation());
+		}
+
 		core.hull.clientTick(tickDelta);
+	}
+
+	private static void fixBaseLocation(FabrikChain3D chain, Vec3f loc) {
+		chain.getBone(0).setStartLocation(loc);
+		chain.setBaseLocation(loc);
 	}
 
 	@Override
@@ -287,10 +319,12 @@ public class ChassisPart extends AbstractMechaPart {
 
 	// temp: see where we can replace this with relRot etc
 	public Vec3 direction() {
-//		return IKUtil.fab2mc(skeleton.getChain(0).getBone(0).getDirectionUV());
-		var sd = skeleton.getChain(0).getBone(0).getDirectionUV();
-		return new Vec3(sd.x, sd.y, sd.z);
-//		return direction.curDir();
+		if (core.entity().level().isClientSide) {
+			return new Vec3(getClientDir());
+		} else {
+			var sd = skeleton.getChain(0).getBone(0).getDirectionUV();
+			return new Vec3(sd.x, sd.y, sd.z);
+		}
 	}
 
 	public List<Vec3> effectors() {
@@ -336,10 +370,10 @@ public class ChassisPart extends AbstractMechaPart {
 		}
 
 		// centroid-informed map target direction
-		var td = legMap.targetDir();
+		var td = legMap.targetDir(effectors());
 		drawSeg(core.position().toVector3f(), core.position().add(td).toVector3f(), 0, 0, 1, poseStack, bufferSource);
 
-		Vec3 desiredPos = legMap.targetCentroid(td);
+		Vec3 desiredPos = legMap.targetCentroid(td, effectors());
 
 		drawLoc(desiredPos.toVector3f(), 0, 1, 0, poseStack, bufferSource);
 
