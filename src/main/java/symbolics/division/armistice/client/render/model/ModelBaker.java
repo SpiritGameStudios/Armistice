@@ -11,6 +11,7 @@ import symbolics.division.armistice.model.BBModelTree;
 import symbolics.division.armistice.model.Element;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 public class ModelBaker {
 	public static final int[][] VERTEX_INDICES = {
@@ -53,13 +54,18 @@ public class ModelBaker {
 	}
 
 	public static List<Quad> bake(BBModelTree tree) {
+		return bake(tree, n -> true);
+	}
+
+	public static List<Quad> bake(BBModelTree tree, Predicate<BBModelTree> filter) {
 		var poseStack = new PoseStack();
 		var s = BBModelData.BASE_SCALE_FACTOR;
 		poseStack.scale(s, s, s);
-		return bake(new ArrayList<>(), tree, poseStack);
+		return bake(new ArrayList<>(), tree, poseStack, filter);
 	}
 
-	private static List<Quad> bake(List<Quad> quads, BBModelTree tree, PoseStack poseStack) {
+	private static List<Quad> bake(List<Quad> quads, BBModelTree tree, PoseStack poseStack, Predicate<BBModelTree> filter) {
+		if (!filter.test(tree)) return quads;
 		Vector3fc origin = tree.node.origin().toVector3f();
 		Vector3fc rotation = tree.node.rotation().toVector3f();
 		poseStack.pushPose();
@@ -70,7 +76,7 @@ public class ModelBaker {
 		poseStack.translate(-origin.x(), -origin.y(), -origin.z());
 
 		for (Element element : tree.elements()) addElement(quads, poseStack, element);
-		for (BBModelTree child : tree.children()) bake(quads, child, poseStack);
+		for (BBModelTree child : tree.children()) bake(quads, child, poseStack, filter);
 
 		poseStack.popPose();
 		return quads;

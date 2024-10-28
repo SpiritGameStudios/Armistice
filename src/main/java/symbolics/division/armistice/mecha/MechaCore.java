@@ -1,5 +1,6 @@
 package symbolics.division.armistice.mecha;
 
+import au.edu.federation.caliko.FabrikStructure3D;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -168,5 +169,10 @@ public class MechaCore implements Part {
 
 	public Euclidean ordnanceEuclidean(int index) {
 		return ordnance().get(index);
+	}
+
+	public FabrikStructure3D skeleton() {
+		// temp: ONLY for rendering!
+		return chassis.skeleton;
 	}
 }
