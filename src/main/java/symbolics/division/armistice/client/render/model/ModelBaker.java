@@ -58,10 +58,25 @@ public class ModelBaker {
 	}
 
 	public static List<Quad> bake(BBModelTree tree, Predicate<BBModelTree> filter) {
-		var poseStack = new PoseStack();
+		PoseStack poseStack = new PoseStack();
 		var s = BBModelData.BASE_SCALE_FACTOR;
 		poseStack.scale(s, s, s);
+		return bake(tree, filter, poseStack);
+	}
+
+	public static List<Quad> bake(BBModelTree tree, Predicate<BBModelTree> filter, PoseStack poseStack) {
 		return bake(new ArrayList<>(), tree, poseStack, filter);
+	}
+
+	public static List<Quad> bakeNoTransform(List<Quad> quads, BBModelTree tree, PoseStack poseStack, Predicate<BBModelTree> filter) {
+		if (!filter.test(tree)) return quads;
+		poseStack.pushPose();
+
+		for (Element element : tree.elements()) addElement(quads, poseStack, element);
+		for (BBModelTree child : tree.children()) bake(quads, child, poseStack, filter);
+
+		poseStack.popPose();
+		return quads;
 	}
 
 	private static List<Quad> bake(List<Quad> quads, BBModelTree tree, PoseStack poseStack, Predicate<BBModelTree> filter) {
