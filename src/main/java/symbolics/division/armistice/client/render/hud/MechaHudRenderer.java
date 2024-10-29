@@ -1,10 +1,8 @@
-package symbolics.division.armistice.client.render;
+package symbolics.division.armistice.client.render.hud;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -13,7 +11,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec2;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
-import org.joml.Matrix4f;
 import symbolics.division.armistice.Armistice;
 
 import java.util.function.Consumer;
@@ -53,19 +50,21 @@ public final class MechaHudRenderer {
 				GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA
 			);
 
-			renderAltitude(guiGraphics, mecha);
-			renderHeading(guiGraphics, mecha);
+			DrawHelper drawHelper = new DrawHelper(guiGraphics);
+
+			renderAltitude(drawHelper, mecha);
+			renderHeading(drawHelper, mecha);
 
 			RenderSystem.disableBlend();
 			RenderSystem.defaultBlendFunc();
 		});
 	}
 
-	private static void renderAltitude(GuiGraphics guiGraphics, Entity mecha) {
+	private static void renderAltitude(DrawHelper drawHelper, Entity mecha) {
 		lightbulbColor();
 
 		renderFlicker(
-			pos -> guiGraphics.blit(
+			pos -> drawHelper.guiGraphics().blit(
 				ALTITUDE_SPRITESHEET,
 				(int) pos.x, (int) pos.y,
 				6, 122,
@@ -74,13 +73,13 @@ public final class MechaHudRenderer {
 				16, 64
 			),
 			new Vec2(
-				guiGraphics.guiWidth() - 14,
+				drawHelper.guiGraphics().guiWidth() - 14,
 				8
 			)
 		);
 
 		renderFlicker(
-			pos -> guiGraphics.blit(
+			pos -> drawHelper.guiGraphics().blit(
 				ALTITUDE_SPRITESHEET,
 				(int) pos.x, (int) pos.y,
 				10, 14,
@@ -89,7 +88,7 @@ public final class MechaHudRenderer {
 				16, 64
 			),
 			new Vec2(
-				guiGraphics.guiWidth() - 26,
+				drawHelper.guiGraphics().guiWidth() - 26,
 				6 + Mth.map(
 					(int) mecha.getY(),
 					mecha.level().getMinBuildHeight(),
@@ -103,25 +102,25 @@ public final class MechaHudRenderer {
 		resetColor();
 	}
 
-	private static void renderHeading(GuiGraphics guiGraphics, Entity mecha) {
+	private static void renderHeading(DrawHelper drawHelper, Entity mecha) {
 		lightbulbColor();
 
-		int left = guiGraphics.guiWidth() / 3;
-		int right = (guiGraphics.guiWidth() / 3) * 2;
+		int left = drawHelper.guiGraphics().guiWidth() / 3;
+		int right = (drawHelper.guiGraphics().guiWidth() / 3) * 2;
 
 		renderFlicker(
-			pos -> hLine(
-				guiGraphics,
-				left - 2 + (int) pos.x,
-				right + 2 + (int) pos.x,
-				(int) pos.y
+			pos -> drawHelper.hLine(
+				left - 2 + pos.x,
+				right + 2 + pos.x,
+				pos.y,
+				2
 			),
 			new Vec2(0, 9)
 		);
 
-		int degPerPixel = (guiGraphics.guiWidth() / Minecraft.getInstance().options.fov().get());
-		int offset = (guiGraphics.guiWidth() / 2) - Mth.floor(Mth.wrapDegrees(mecha.getYRot() + 180.0F) * degPerPixel);
-		
+		int degPerPixel = (drawHelper.guiGraphics().guiWidth() / Minecraft.getInstance().options.fov().get());
+		int offset = (drawHelper.guiGraphics().guiWidth() / 2) - Mth.floor(Mth.wrapDegrees(mecha.getYRot() + 180.0F) * degPerPixel);
+
 		for (int i = -360; i < 360; i++) {
 			int x = (i * degPerPixel) + offset;
 			if (x < left) continue;
@@ -130,7 +129,7 @@ public final class MechaHudRenderer {
 			if (i % 90 == 0) {
 				int finalI = i;
 				renderFlicker(
-					pos -> guiGraphics.blit(
+					pos -> drawHelper.guiGraphics().blit(
 						HEADING_FONT,
 						(int) pos.x, (int) pos.y,
 						5, 7,
@@ -143,11 +142,11 @@ public final class MechaHudRenderer {
 			}
 
 			renderFlicker(
-				pos -> vLine(
-					guiGraphics,
-					(int) pos.x,
-					(int) pos.y,
-					6 + (int) pos.y
+				pos -> drawHelper.vLine(
+					pos.x,
+					pos.y,
+					6 + pos.y,
+					1
 				),
 				new Vec2(x, 3)
 			);
@@ -183,52 +182,5 @@ public final class MechaHudRenderer {
 
 	private static void resetColor() {
 		RenderSystem.setShaderColor(1, 1, 1, 1);
-	}
-
-	private static void fill(GuiGraphics guiGraphics, int minX, int minY, int maxX, int maxY) {
-		Matrix4f matrix4f = guiGraphics.pose().last().pose();
-		if (minX < maxX) {
-			int i = minX;
-			minX = maxX;
-			maxX = i;
-		}
-
-		if (minY < maxY) {
-			int j = minY;
-			minY = maxY;
-			maxY = j;
-		}
-
-		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(
-			VertexFormat.Mode.QUADS,
-			DefaultVertexFormat.POSITION
-		);
-
-		bufferBuilder.addVertex(matrix4f, (float) minX, (float) minY, 0);
-		bufferBuilder.addVertex(matrix4f, (float) minX, (float) maxY, 0);
-		bufferBuilder.addVertex(matrix4f, (float) maxX, (float) maxY, 0);
-		bufferBuilder.addVertex(matrix4f, (float) maxX, (float) minY, 0);
-
-		BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
-	}
-
-	private static void hLine(GuiGraphics guiGraphics, int minX, int maxX, int y) {
-		if (maxX < minX) {
-			int i = minX;
-			minX = maxX;
-			maxX = i;
-		}
-
-		fill(guiGraphics, minX, y, maxX + 1, y + 2);
-	}
-
-	private static void vLine(GuiGraphics guiGraphics, int x, int minY, int maxY) {
-		if (maxY < minY) {
-			int i = minY;
-			minY = maxY;
-			maxY = i;
-		}
-
-		fill(guiGraphics, x, minY + 1, x + 1, maxY);
 	}
 }

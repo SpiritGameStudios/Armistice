@@ -69,4 +69,15 @@ public final class ArmisticeCreativeModeTabRegistrar implements CreativeModeTabR
 			));
 		})
 		.build();
+
+	public static final CreativeModeTab ARMISTICE_DECORATION = CreativeModeTab.builder()
+		.title(Component.translatable("itemGroup.armistice.decoration"))
+		.icon(() -> ArmisticeBlockRegistrar.CORRUGATED_ARMISTEEL.asItem().getDefaultInstance())
+		.displayItems((parameters, output) -> {
+			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_PLATING);
+			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_GRATE);
+			output.accept(ArmisticeBlockRegistrar.CORRUGATED_ARMISTEEL);
+			output.accept(ArmisticeBlockRegistrar.IRON_GRATE);
+		})
+		.build();
 }

@@ -23,4 +23,34 @@ public final class ArmisticeBlockRegistrar implements BlockRegistrar {
 			.isViewBlocking((state, level, pos) -> false)
 			.noOcclusion()
 	);
+
+	public static final Block ARMISTEEL_GRATE = new WaterloggedTransparentBlock(
+		BlockBehaviour.Properties.of()
+			.strength(3.0F, 6.0F)
+			.sound(SoundType.COPPER_GRATE)
+			.mapColor(MapColor.METAL)
+			.requiresCorrectToolForDrops()
+			.isValidSpawn(Blocks::never)
+			.isRedstoneConductor((state, level, pos) -> false)
+			.isViewBlocking((state, level, pos) -> false)
+			.isSuffocating((state, level, pos) -> false)
+			.isViewBlocking((state, level, pos) -> false)
+			.noOcclusion()
+	);
+
+	public static final Block ARMISTEEL_PLATING = new Block(
+		BlockBehaviour.Properties.of()
+			.strength(3.0F, 6.0F)
+			.sound(SoundType.NETHERITE_BLOCK)
+			.mapColor(MapColor.METAL)
+			.requiresCorrectToolForDrops()
+	);
+
+	public static final Block CORRUGATED_ARMISTEEL = new Block(
+		BlockBehaviour.Properties.of()
+			.strength(3.0F, 6.0F)
+			.sound(SoundType.NETHERITE_BLOCK)
+			.mapColor(MapColor.METAL)
+			.requiresCorrectToolForDrops()
+	);
 }

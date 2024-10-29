@@ -2,5 +2,9 @@
 	"commands.heal.not_living": "Cannot heal non-living entity",
 	"commands.heal.success": "Healed %s for %s health",
 	"block.armistice.iron_grate": "Iron Grate",
-	"itemGroup.armistice.schematics": "Schematics"
+	"block.armistice.armisteel_grate": "Armisteel Grate",
+	"block.armistice.armisteel_plating": "Armisteel Plating",
+	"block.armistice.corrugated_armisteel": "Corrugated Armisteel",
+	"itemGroup.armistice.schematics": "Armistice: Schematics",
+	"itemGroup.armistice.decoration": "Armistice: Decoration"
 }

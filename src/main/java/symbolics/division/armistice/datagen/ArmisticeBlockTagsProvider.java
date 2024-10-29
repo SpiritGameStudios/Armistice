@@ -21,9 +21,15 @@ public class ArmisticeBlockTagsProvider extends BlockTagsProvider {
 	@Override
 	protected void addTags(@NotNull HolderLookup.Provider provider) {
 		tag(BlockTags.NEEDS_STONE_TOOL)
-			.add(ArmisticeBlockRegistrar.IRON_GRATE);
+			.add(ArmisticeBlockRegistrar.IRON_GRATE)
+			.add(ArmisticeBlockRegistrar.ARMISTEEL_GRATE)
+			.add(ArmisticeBlockRegistrar.ARMISTEEL_PLATING)
+			.add(ArmisticeBlockRegistrar.CORRUGATED_ARMISTEEL);
 
 		tag(BlockTags.MINEABLE_WITH_PICKAXE)
-			.add(ArmisticeBlockRegistrar.IRON_GRATE);
+			.add(ArmisticeBlockRegistrar.IRON_GRATE)
+			.add(ArmisticeBlockRegistrar.ARMISTEEL_GRATE)
+			.add(ArmisticeBlockRegistrar.ARMISTEEL_PLATING)
+			.add(ArmisticeBlockRegistrar.CORRUGATED_ARMISTEEL);
 	}
 }

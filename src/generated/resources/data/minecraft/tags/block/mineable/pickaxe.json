@@ -1,5 +1,8 @@
 {
   "values": [
-    "armistice:iron_grate"
+    "armistice:iron_grate",
+    "armistice:armisteel_grate",
+    "armistice:armisteel_plating",
+    "armistice:corrugated_armisteel"
   ]
 }

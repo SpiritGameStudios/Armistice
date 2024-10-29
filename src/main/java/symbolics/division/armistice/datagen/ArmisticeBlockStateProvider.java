@@ -19,11 +19,19 @@ public class ArmisticeBlockStateProvider extends BlockStateProvider {
 	protected void registerStatesAndModels() {
 		simpleBlockWithItem(
 			ArmisticeBlockRegistrar.IRON_GRATE,
-			cubeAllInnerFaces("iron_grate", modLoc("block/iron_grate")).renderType("cutout")
+			cubeAll("iron_grate", modLoc("block/iron_grate")).renderType("cutout")
 		);
+
+		simpleBlockWithItem(
+			ArmisticeBlockRegistrar.ARMISTEEL_GRATE,
+			cubeAll("armisteel_grate", modLoc("block/armisteel_grate")).renderType("cutout")
+		);
+
+		simpleBlockWithItem(ArmisticeBlockRegistrar.ARMISTEEL_PLATING, cubeAll(ArmisticeBlockRegistrar.ARMISTEEL_PLATING));
+		simpleBlockWithItem(ArmisticeBlockRegistrar.CORRUGATED_ARMISTEEL, cubeAll(ArmisticeBlockRegistrar.CORRUGATED_ARMISTEEL));
 	}
 
-	public BlockModelBuilder cubeAllInnerFaces(String name, ResourceLocation texture) {
-		return models().singleTexture(name, ResourceLocation.withDefaultNamespace(BLOCK_FOLDER + "/cube_all_inner_faces"), "all", texture);
+	public BlockModelBuilder cubeAll(String name, ResourceLocation texture) {
+		return models().singleTexture(name, ResourceLocation.withDefaultNamespace(BLOCK_FOLDER + "/cube_all"), "all", texture);
 	}
 }
