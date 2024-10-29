@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import symbolics.division.armistice.client.render.debug.ArmisticeClientDebugValues;
 import symbolics.division.armistice.client.render.debug.MechaDebugRenderer;
 import symbolics.division.armistice.client.render.hud.MechaHudRenderer;
+import symbolics.division.armistice.client.render.hud.MechaOverlayRenderer;
 import symbolics.division.armistice.datagen.ArmisticeDatagen;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
 import symbolics.division.armistice.event.RegistryEvents;
@@ -25,6 +26,7 @@ public class Armistice {
 		RegistryEvents.init(modEventBus);
 		modEventBus.register(ArmisticeDatagen.class);
 		modEventBus.register(MechaHudRenderer.class);
+		modEventBus.register(MechaOverlayRenderer.class);
 
 		NeoForge.EVENT_BUS.register(OutlinerSyncS2CPayload.class);
 

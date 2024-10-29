@@ -6,18 +6,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec2;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import symbolics.division.armistice.Armistice;
 
-import java.util.function.Consumer;
-
 public final class MechaHudRenderer {
-	private static final RandomSource RANDOM = RandomSource.create();
-
 	/**
 	 * Meter: Pos(0, 0), Size(3, 61)
 	 * Arrow: Pos(8, 0), Size(5, 7)
@@ -63,7 +58,7 @@ public final class MechaHudRenderer {
 	private static void renderAltitude(DrawHelper drawHelper, Entity mecha) {
 		lightbulbColor();
 
-		renderFlicker(
+		drawHelper.renderFlicker(
 			pos -> drawHelper.guiGraphics().blit(
 				ALTITUDE_SPRITESHEET,
 				(int) pos.x, (int) pos.y,
@@ -78,7 +73,7 @@ public final class MechaHudRenderer {
 			)
 		);
 
-		renderFlicker(
+		drawHelper.renderFlicker(
 			pos -> drawHelper.guiGraphics().blit(
 				ALTITUDE_SPRITESHEET,
 				(int) pos.x, (int) pos.y,
@@ -108,7 +103,7 @@ public final class MechaHudRenderer {
 		int left = drawHelper.guiGraphics().guiWidth() / 3;
 		int right = (drawHelper.guiGraphics().guiWidth() / 3) * 2;
 
-		renderFlicker(
+		drawHelper.renderFlicker(
 			pos -> drawHelper.hLine(
 				left - 2 + pos.x,
 				right + 2 + pos.x,
@@ -128,7 +123,7 @@ public final class MechaHudRenderer {
 
 			if (i % 90 == 0) {
 				int finalI = i;
-				renderFlicker(
+				drawHelper.renderFlicker(
 					pos -> drawHelper.guiGraphics().blit(
 						HEADING_FONT,
 						(int) pos.x, (int) pos.y,
@@ -141,7 +136,7 @@ public final class MechaHudRenderer {
 				);
 			}
 
-			renderFlicker(
+			drawHelper.renderFlicker(
 				pos -> drawHelper.vLine(
 					pos.x,
 					pos.y,
@@ -153,27 +148,6 @@ public final class MechaHudRenderer {
 		}
 
 		resetColor();
-	}
-
-	// Yttr FlickeryRenderer was heavily referenced for this
-	private static void renderFlicker(Consumer<Vec2> render, Vec2 pos) {
-		float[] currentColor = RenderSystem.getShaderColor();
-
-		float alpha = RANDOM.nextInt(15) == 0 ? Math.min(RANDOM.nextFloat(), 0.5F) : 1.0F;
-		alpha = (0.3F + (alpha * 0.7F)) * currentColor[3];
-
-		RenderSystem.setShaderColor(currentColor[0], currentColor[1], currentColor[2], alpha * 0.05F);
-
-		for (float i = -0.8F; i < 0.8F; i += 0.2F) {
-			for (float j = -0.8F; j < 0.8F; j += 0.2F) {
-				render.accept(pos.add(new Vec2(i, j)));
-			}
-		}
-
-		RenderSystem.setShaderColor(currentColor[0], currentColor[1], currentColor[2], alpha);
-		render.accept(pos);
-
-		RenderSystem.setShaderColor(currentColor[0], currentColor[1], currentColor[2], 1);
 	}
 
 	private static void lightbulbColor() {
