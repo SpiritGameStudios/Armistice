@@ -28,13 +28,18 @@ public record OutlinerNode(
 	List<Either<OutlinerNode, String>> children,
 	Map<String, Double> parameters
 ) {
+	public static final float BASE_SCALE_FACTOR = 1f / 16;
+
 	public static final Codec<OutlinerNode> CODEC =
 		Codec.recursive(
 			OutlinerNode.class.getSimpleName(),
 			outlineCodec -> RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("name").forGetter(OutlinerNode::name),
 				CodecHelper.UUID.fieldOf("uuid").forGetter(OutlinerNode::uuid),
-				Vec3.CODEC.fieldOf("origin").forGetter(OutlinerNode::origin),
+				Vec3.CODEC.xmap(
+					vec3 -> vec3.scale(BASE_SCALE_FACTOR),
+					vec3 -> vec3.scale(1 / BASE_SCALE_FACTOR)
+				).fieldOf("origin").forGetter(OutlinerNode::origin),
 				Vec3.CODEC.lenientOptionalFieldOf("rotation", Vec3.ZERO).forGetter(OutlinerNode::rotation),
 				Codec.BOOL.fieldOf("export").forGetter(OutlinerNode::export),
 				Codec.BOOL.fieldOf("mirror_uv").forGetter(OutlinerNode::mirrorUv),

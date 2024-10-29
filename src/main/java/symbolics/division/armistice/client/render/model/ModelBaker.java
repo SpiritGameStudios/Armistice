@@ -6,9 +6,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.*;
-import symbolics.division.armistice.model.BBModelData;
 import symbolics.division.armistice.model.BBModelTree;
 import symbolics.division.armistice.model.Element;
+import symbolics.division.armistice.model.OutlinerNode;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -59,7 +59,7 @@ public class ModelBaker {
 
 	public static List<Quad> bake(BBModelTree tree, Predicate<BBModelTree> filter) {
 		PoseStack poseStack = new PoseStack();
-		var s = BBModelData.BASE_SCALE_FACTOR;
+		var s = OutlinerNode.BASE_SCALE_FACTOR;
 		poseStack.scale(s, s, s);
 		return bake(tree, filter, poseStack);
 	}

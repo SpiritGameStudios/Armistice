@@ -53,9 +53,9 @@ public class MechaModelData {
 		// temp: also include scale per-part
 		// bbmodels are by default 16x actual coordinates, so all distances emitted by this
 		// class need to be divided by 16.
-		relativeHullPosition = chassis.getChild("hull").orElseThrow().origin().toVector3f().mul(BBModelData.BASE_SCALE_FACTOR);
+		relativeHullPosition = chassis.getChild("hull").orElseThrow().origin().toVector3f();
 
-		seatOffset = hull.getChild("seat").map(seat -> seat.origin().scale(BBModelData.BASE_SCALE_FACTOR)).orElse(null);
+		seatOffset = hull.getChild("seat").map(OutlinerNode::origin).orElse(null);
 	}
 
 	public Bone getMarker(OutlinerNode node, int i) {
@@ -119,10 +119,10 @@ public class MechaModelData {
 			// first segment rotation is yaw
 			Optional<OutlinerNode> segmentOptional = getChild(rootLegSegment, 0);
 			OutlinerNode segment = segmentOptional.orElseThrow(() -> new RuntimeException("Legs must have at least one segment"));
-			Vector3f basePos = updateTransform(transform, rootLegSegment.origin().scale(BBModelData.BASE_SCALE_FACTOR).toVector3f(), root.rotation().toVector3f());
+			Vector3f basePos = updateTransform(transform, rootLegSegment.origin().toVector3f(), root.rotation().toVector3f());
 			Vector3f tipPos = updateTransform(
 				transform,
-				segment.origin().scale(BBModelData.BASE_SCALE_FACTOR).toVector3f(),
+				segment.origin().toVector3f(),
 				segment.rotation().toVector3f()
 			);
 			segments.add(
@@ -138,7 +138,7 @@ public class MechaModelData {
 				basePos = tipPos;
 				tipPos = updateTransform(
 					transform,
-					nextNode.get().origin().scale(BBModelData.BASE_SCALE_FACTOR).toVector3f(),
+					nextNode.get().origin().toVector3f(),
 					nextNode.get().rotation().toVector3f()
 				);
 				segments.add(
@@ -153,14 +153,14 @@ public class MechaModelData {
 				nextNode = getChild(segment, 0);
 			}
 
-			Vec3 legEnd = root.getChild(id + "_tip").orElseThrow().origin().scale(BBModelData.BASE_SCALE_FACTOR);
+			Vec3 legEnd = root.getChild(id + "_tip").orElseThrow().origin();
 			segments.add(new SegmentInfo(
 				Math.max(0.01f, tipPos.distance(legEnd.toVector3f())),
 				segment.rotation().x,
 				segment.parameters().getOrDefault("minAngle", 30d),
 				segment.parameters().getOrDefault("maxAngle", 30d)
 			));
-			return new LegInfo(rootLegSegment.origin().scale(BBModelData.BASE_SCALE_FACTOR), legEnd, segments);
+			return new LegInfo(rootLegSegment.origin(), legEnd, segments);
 		}
 	}
 

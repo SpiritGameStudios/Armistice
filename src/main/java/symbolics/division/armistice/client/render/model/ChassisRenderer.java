@@ -14,7 +14,6 @@ import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.client.render.debug.ArmisticeClientDebugValues;
 import symbolics.division.armistice.mecha.MechaEntity;
 import symbolics.division.armistice.mecha.movement.IKUtil;
-import symbolics.division.armistice.model.BBModelData;
 import symbolics.division.armistice.model.BBModelTree;
 import symbolics.division.armistice.model.OutlinerNode;
 
@@ -41,7 +40,7 @@ public class ChassisRenderer {
 		public LegRenderer(BBModelTree leg, int index) {
 			this.index = index;
 			PoseStack matrices = new PoseStack();
-			var s = BBModelData.BASE_SCALE_FACTOR;
+			var s = OutlinerNode.BASE_SCALE_FACTOR;
 			matrices.scale(s, s, s);
 			addSegment(leg, matrices);
 

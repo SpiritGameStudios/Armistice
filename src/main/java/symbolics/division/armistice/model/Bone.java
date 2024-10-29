@@ -16,7 +16,7 @@ public record Bone(Vec3 pos, Vec3 rot, Vec3 direction, Quaternionfc quat) {
 	 */
 	public static Bone of(OutlinerNode node) {
 		return new Bone(
-			node.origin().scale(BBModelData.BASE_SCALE_FACTOR),
+			node.origin(),
 			node.rotation(),
 			GeometryUtil.bbRot2Direction(node.rotation()),
 			GeometryUtil.bbRot2Quaternion(node.rotation())

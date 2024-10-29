@@ -18,7 +18,6 @@ public record BBModelData(
 	List<Element> elements,
 	List<OutlinerNode> outliner
 ) {
-	public static final float BASE_SCALE_FACTOR = 1f / 16;
 	private static final Pattern NPV = Pattern.compile("(.+):(.+)=([0-9]+.?[0-9]*)");
 	public static final Codec<Map<String, Map<String, Double>>> OUTLINER_PROPERTIES = Codec.STRING.comapFlatMap(
 		string -> {

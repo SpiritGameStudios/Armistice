@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "minecraft:air"
+          "name": "armistice:corrugated_armisteel"
         }
       ],
       "rolls": 1.0
