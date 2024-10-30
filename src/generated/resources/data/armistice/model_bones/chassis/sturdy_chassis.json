@@ -1,0 +1,647 @@
+[
+  {
+    "autouv": 0,
+    "children": [
+      {
+        "autouv": 0,
+        "export": true,
+        "mirror_uv": false,
+        "name": "hull",
+        "origin": [
+          0.0,
+          4.0,
+          0.0
+        ],
+        "uuid": "86e1468e-9d02-8898-e0b3-8d50d4e3182d",
+        "visibility": true
+      },
+      "1a93ec5d-141c-4109-78ed-a3ad8f77b2f8",
+      "9ac96773-1f0c-75cb-c2ea-822b8e7afa60",
+      "d988b788-1e33-1a28-cab9-0901f8857204",
+      "80ddcdca-5467-1773-57fc-8e14045f39f7",
+      "1a5a3548-3873-a5db-044f-a574be502a59",
+      {
+        "autouv": 0,
+        "children": [
+          "1bcee945-ee92-8763-a7ca-c0d2b1dba0b9",
+          {
+            "autouv": 0,
+            "children": [
+              "2d656e18-ce67-6436-1412-881154094dd7",
+              "741e4050-17e4-eaea-db5e-b81b50e60156",
+              {
+                "autouv": 0,
+                "children": [
+                  "35bb66f1-310a-bf99-3853-cc8120df2e22",
+                  {
+                    "autouv": 0,
+                    "children": [
+                      "f5ee42b9-b169-dd51-58d0-39d2c6bf4e53",
+                      "7b2602eb-d713-64a3-5748-95486f474262",
+                      "135c73bd-1690-6594-453c-3337f4e2a5b6",
+                      "752989df-ab73-339a-efac-0ae34350425c",
+                      "f39e8eb0-6a81-1162-1953-dd95de3cc0de"
+                    ],
+                    "export": true,
+                    "mirror_uv": false,
+                    "name": "seg1_3",
+                    "origin": [
+                      11.573576436351047,
+                      -0.8613545744588187,
+                      55.918098748092596
+                    ],
+                    "rotation": [
+                      120.0,
+                      0.0,
+                      0.0
+                    ],
+                    "uuid": "f87fb16c-f9c0-13c4-5136-e70d9da8133e",
+                    "visibility": true
+                  }
+                ],
+                "export": true,
+                "mirror_uv": false,
+                "name": "seg1_2",
+                "origin": [
+                  11.573576436351047,
+                  0.9358222275240884,
+                  43.73296655108552
+                ],
+                "rotation": [
+                  -107.5,
+                  0.0,
+                  0.0
+                ],
+                "uuid": "516ddb4c-7e35-4b39-e800-8cb06218ba89",
+                "visibility": true
+              }
+            ],
+            "export": true,
+            "mirror_uv": false,
+            "name": "seg1_1",
+            "origin": [
+              11.573576436351047,
+              0.0,
+              32.304116989831655
+            ],
+            "rotation": [
+              50.0,
+              0.0,
+              0.0
+            ],
+            "uuid": "4724dc69-2145-6efa-3701-df6de3304ba4",
+            "visibility": true
+          }
+        ],
+        "export": true,
+        "mirror_uv": false,
+        "name": "leg1",
+        "origin": [
+          12.0,
+          0.0,
+          26.5
+        ],
+        "rotation": [
+          0.0,
+          55.0,
+          0.0
+        ],
+        "uuid": "76b692f4-cc56-0871-969d-604d288f2b80",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "children": [
+          "e9cc2894-a6ea-d7fe-2496-10aa6849b112",
+          {
+            "autouv": 0,
+            "children": [
+              "9820ff77-f632-bbdc-6419-40779e54df40",
+              "6a0ba10f-9dca-1d5c-2a28-3a4c7e8296bb",
+              {
+                "autouv": 0,
+                "children": [
+                  "4657b11d-2358-bad1-f8f7-b0b9d7f2f7e8",
+                  {
+                    "autouv": 0,
+                    "children": [
+                      "4f643f5a-7f19-f208-20a0-ae1984df047c",
+                      "30115b5e-d9f4-a0e7-7874-bc829c0e6de5",
+                      "d9d773c0-5d97-da67-a7ef-01dac9b75d8c",
+                      "c17b7e84-8099-6f51-82b4-bb912119f053",
+                      "847a9c33-2c5b-3bc4-3bf2-4fafa26a7a56"
+                    ],
+                    "export": true,
+                    "mirror_uv": false,
+                    "name": "seg1_9",
+                    "origin": [
+                      14.0,
+                      -0.8613545744588187,
+                      30.598946703803605
+                    ],
+                    "rotation": [
+                      120.0,
+                      0.0,
+                      0.0
+                    ],
+                    "uuid": "eafe641f-061b-dbfc-dd89-19705d546722",
+                    "visibility": true
+                  }
+                ],
+                "export": true,
+                "mirror_uv": false,
+                "name": "seg1_8",
+                "origin": [
+                  14.0,
+                  0.9358222275240884,
+                  18.413814506796527
+                ],
+                "rotation": [
+                  -107.5,
+                  0.0,
+                  0.0
+                ],
+                "uuid": "c1a9b0ce-4f95-1b16-a7ea-79492ff9ac5a",
+                "visibility": true
+              }
+            ],
+            "export": true,
+            "mirror_uv": false,
+            "name": "seg1_7",
+            "origin": [
+              14.0,
+              0.0,
+              6.984964945542664
+            ],
+            "rotation": [
+              50.0,
+              0.0,
+              0.0
+            ],
+            "uuid": "e4f01e09-af2c-e530-8b28-7e17c7cab649",
+            "visibility": true
+          }
+        ],
+        "export": true,
+        "mirror_uv": false,
+        "name": "leg3",
+        "origin": [
+          15.0,
+          0.0,
+          -1.0
+        ],
+        "rotation": [
+          0.0,
+          90.0,
+          0.0
+        ],
+        "uuid": "07f16ead-e1a2-0054-a60e-1dca5c67ea75",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "children": [
+          "caa542db-61d1-4836-e76c-2ccbf2112c27",
+          {
+            "autouv": 0,
+            "children": [
+              "5acffdb4-9bf9-3799-0091-585071b09b2c",
+              "b7470fae-b217-87a8-c156-34ee09bcd5a9",
+              {
+                "autouv": 0,
+                "children": [
+                  "c9c72a25-8300-82ec-33d4-7c8a35be9c20",
+                  {
+                    "autouv": 0,
+                    "children": [
+                      "3125bade-4151-82b3-1681-4a0ee7bc1722",
+                      "6ef9166f-a9bc-518e-bfba-8b9d5f34c499",
+                      "f8b8279e-48ad-7bf9-8745-8f0402c63150",
+                      "cf5d85c1-9107-9bf2-e9a6-be08fe15245b",
+                      "388311e2-4277-eafb-56d4-6ce0a20e507c"
+                    ],
+                    "export": true,
+                    "mirror_uv": false,
+                    "name": "seg1_6",
+                    "origin": [
+                      -14.020360082039119,
+                      -0.8613545744588187,
+                      56.24167518444364
+                    ],
+                    "rotation": [
+                      120.0,
+                      0.0,
+                      0.0
+                    ],
+                    "uuid": "d7138efa-ae2b-6039-c621-ef6290c7e4a3",
+                    "visibility": true
+                  }
+                ],
+                "export": true,
+                "mirror_uv": false,
+                "name": "seg1_5",
+                "origin": [
+                  -12.573576436351047,
+                  0.9358222275240884,
+                  44.056542987436565
+                ],
+                "rotation": [
+                  -107.5,
+                  0.0,
+                  0.0
+                ],
+                "uuid": "44f0b0da-c60e-7f89-909e-79d217e2abc8",
+                "visibility": true
+              }
+            ],
+            "export": true,
+            "mirror_uv": false,
+            "name": "seg1_4",
+            "origin": [
+              -12.573576436351047,
+              0.0,
+              32.6276934261827
+            ],
+            "rotation": [
+              50.0,
+              0.0,
+              0.0
+            ],
+            "uuid": "6fb00371-fbc6-c9bc-e475-0bb1dfddd60d",
+            "visibility": true
+          }
+        ],
+        "export": true,
+        "mirror_uv": false,
+        "name": "leg2",
+        "origin": [
+          -13.0,
+          0.0,
+          26.25
+        ],
+        "rotation": [
+          0.0,
+          -55.0,
+          0.0
+        ],
+        "uuid": "d144e670-af8b-4b8a-b648-392fb0165213",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "children": [
+          "c0b49578-fb6c-985d-51ae-cdeb17502b94",
+          {
+            "autouv": 0,
+            "children": [
+              "b7608f20-613c-41a6-9988-f0f689d3a823",
+              "e7ded01d-e299-9296-5d3f-02a869b4c002",
+              {
+                "autouv": 0,
+                "children": [
+                  "7214250b-490c-4043-30d1-8b9567916673",
+                  {
+                    "autouv": 0,
+                    "children": [
+                      "96c2d332-d828-7017-7f6f-fe5ccde104d6",
+                      "ace79559-9f78-62bc-ce12-126be8bfe5cd",
+                      "96ca9ee1-d71a-65da-bcdb-24a794d7dac7",
+                      "24385fbe-b455-8223-e5c9-814686dd426d",
+                      "dd931ed3-e191-aaa1-f05c-9801ea8cc3c5"
+                    ],
+                    "export": true,
+                    "mirror_uv": false,
+                    "name": "seg1_12",
+                    "origin": [
+                      -16.446783645688072,
+                      -0.8613545744588187,
+                      31.672523140154652
+                    ],
+                    "rotation": [
+                      120.0,
+                      0.0,
+                      0.0
+                    ],
+                    "uuid": "59284c4b-0742-d159-57f9-1b6e22fd1c40",
+                    "visibility": true
+                  }
+                ],
+                "export": true,
+                "mirror_uv": false,
+                "name": "seg1_11",
+                "origin": [
+                  -15.0,
+                  0.9358222275240884,
+                  19.487390943147574
+                ],
+                "rotation": [
+                  -107.5,
+                  0.0,
+                  0.0
+                ],
+                "uuid": "979a4d5c-67f8-79be-8890-5aadd0773ce9",
+                "visibility": true
+              }
+            ],
+            "export": true,
+            "mirror_uv": false,
+            "name": "seg1_10",
+            "origin": [
+              -15.0,
+              0.0,
+              8.058541381893711
+            ],
+            "rotation": [
+              50.0,
+              0.0,
+              0.0
+            ],
+            "uuid": "c55dd1d9-35f9-30ea-a90a-c15d99ab9ce3",
+            "visibility": true
+          }
+        ],
+        "export": true,
+        "mirror_uv": false,
+        "name": "leg4",
+        "origin": [
+          -16.0,
+          0.0,
+          -0.5
+        ],
+        "rotation": [
+          0.0,
+          -90.0,
+          0.0
+        ],
+        "uuid": "f5a4f810-6e54-bec3-5e60-683e74ea98a4",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "children": [
+          "f766fd15-552f-e62d-a71d-45bab019a8aa",
+          {
+            "autouv": 0,
+            "children": [
+              "e3ff25a9-00fa-dc38-3be6-6f964e491b2d",
+              "972149c9-1bf3-493e-8c8b-f4ab8df5bb11",
+              {
+                "autouv": 0,
+                "children": [
+                  "fb6b8e59-3fc6-f150-bbbe-0a5b0459451c",
+                  {
+                    "autouv": 0,
+                    "children": [
+                      "a4584177-9125-9deb-494c-ceb22425ee4b",
+                      "923a6c61-c4df-d951-7b06-3eaea5289e76",
+                      "fc279336-10ec-d7a0-a95a-56109e6a2a49",
+                      "bc82181f-050e-90a6-d172-f66f60cab8c5",
+                      "28606c7f-024f-79b3-c073-0802a5037fbe"
+                    ],
+                    "export": true,
+                    "mirror_uv": false,
+                    "name": "seg1_15",
+                    "origin": [
+                      11.573576436351047,
+                      -0.8613545744588187,
+                      3.9180987480925964
+                    ],
+                    "rotation": [
+                      120.0,
+                      0.0,
+                      0.0
+                    ],
+                    "uuid": "813bfff3-ac91-68d7-7801-dccdc5247eb8",
+                    "visibility": true
+                  }
+                ],
+                "export": true,
+                "mirror_uv": false,
+                "name": "seg1_14",
+                "origin": [
+                  11.573576436351047,
+                  0.9358222275240884,
+                  -8.267033448914482
+                ],
+                "rotation": [
+                  -107.5,
+                  0.0,
+                  0.0
+                ],
+                "uuid": "d06274f6-aa18-19a1-1a0a-78f3fddb32c4",
+                "visibility": true
+              }
+            ],
+            "export": true,
+            "mirror_uv": false,
+            "name": "seg1_13",
+            "origin": [
+              11.573576436351047,
+              0.0,
+              -19.695883010168345
+            ],
+            "rotation": [
+              50.0,
+              0.0,
+              0.0
+            ],
+            "uuid": "b8082766-c7fd-9087-e7b1-d4319b0f85eb",
+            "visibility": true
+          }
+        ],
+        "export": true,
+        "mirror_uv": false,
+        "name": "leg5",
+        "origin": [
+          12.0,
+          0.0,
+          -25.5
+        ],
+        "rotation": [
+          0.0,
+          145.0,
+          0.0
+        ],
+        "uuid": "ed15d58c-a987-d3e7-dd95-7ace55f93401",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "children": [
+          "57aea86b-a44b-aab1-38a0-29474e8a3ec9",
+          {
+            "autouv": 0,
+            "children": [
+              "2267b1d8-ec00-f445-e294-869dc8697995",
+              "06110a71-a2d1-d01d-c895-d62dc2fbf390",
+              {
+                "autouv": 0,
+                "children": [
+                  "250d8e9b-c73b-401d-9c21-3171d5734300",
+                  {
+                    "autouv": 0,
+                    "children": [
+                      "5ef6ebd0-c64b-0410-42b2-5ee090a47330",
+                      "cbe1ecb8-f4b8-2623-a0b1-df2d24ee0caa",
+                      "f0d01dfd-fba6-a879-ec22-ed02276f8d92",
+                      "c0ef5e4d-3c97-5d74-e597-7f1a32f2aae1",
+                      "b8801898-934e-6982-fec0-231f607aa228"
+                    ],
+                    "export": true,
+                    "mirror_uv": false,
+                    "name": "seg1_18",
+                    "origin": [
+                      -13.520360082039119,
+                      -0.8613545744588187,
+                      4.741675184443643
+                    ],
+                    "rotation": [
+                      120.0,
+                      0.0,
+                      0.0
+                    ],
+                    "uuid": "0ea38fc1-1eee-dacf-7eeb-62174993cdda",
+                    "visibility": true
+                  }
+                ],
+                "export": true,
+                "mirror_uv": false,
+                "name": "seg1_17",
+                "origin": [
+                  -12.073576436351047,
+                  0.9358222275240884,
+                  -7.443457012563435
+                ],
+                "rotation": [
+                  -107.5,
+                  0.0,
+                  0.0
+                ],
+                "uuid": "deeb77af-16e5-9aad-9e0a-3d762e61d2a1",
+                "visibility": true
+              }
+            ],
+            "export": true,
+            "mirror_uv": false,
+            "name": "seg1_16",
+            "origin": [
+              -12.073576436351047,
+              0.0,
+              -18.872306573817298
+            ],
+            "rotation": [
+              50.0,
+              0.0,
+              0.0
+            ],
+            "uuid": "44c9517f-a8e1-c027-4874-149b58a8b71d",
+            "visibility": true
+          }
+        ],
+        "export": true,
+        "mirror_uv": false,
+        "name": "leg6",
+        "origin": [
+          -12.5,
+          0.0,
+          -25.25
+        ],
+        "rotation": [
+          0.0,
+          -145.0,
+          0.0
+        ],
+        "uuid": "def0b7d3-048d-a119-c602-3692acc1cff0",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "export": true,
+        "mirror_uv": false,
+        "name": "leg1_tip",
+        "origin": [
+          42.25,
+          -33.75,
+          46.5
+        ],
+        "uuid": "2360a67d-9f6c-a68a-fa35-bdd3328c7271",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "export": true,
+        "mirror_uv": false,
+        "name": "leg5_tip",
+        "origin": [
+          42.25,
+          -33.75,
+          -48.0
+        ],
+        "uuid": "b6cb269a-4b49-baf1-891b-aec8064b2198",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "export": true,
+        "mirror_uv": false,
+        "name": "leg6_tip",
+        "origin": [
+          -43.25,
+          -33.75,
+          -48.0
+        ],
+        "uuid": "602f0e1f-a804-5f18-185a-67e1700fee6b",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "export": true,
+        "mirror_uv": false,
+        "name": "leg4_tip",
+        "origin": [
+          -55.75,
+          -33.75,
+          -1.5
+        ],
+        "uuid": "ebac9f58-d58d-7116-d827-164817bb00d5",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "export": true,
+        "mirror_uv": false,
+        "name": "leg3_tip",
+        "origin": [
+          55.0,
+          -33.75,
+          -1.5
+        ],
+        "uuid": "a10c194d-2897-1473-c3a3-ec549a207eb2",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "export": true,
+        "mirror_uv": false,
+        "name": "leg2_tip",
+        "origin": [
+          -43.0,
+          -33.75,
+          46.5
+        ],
+        "uuid": "722a1732-c749-1e38-5589-693dd383a3f7",
+        "visibility": true
+      }
+    ],
+    "export": true,
+    "mirror_uv": false,
+    "name": "root",
+    "origin": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "uuid": "35809767-f4d6-badf-65f0-2421cf882a05",
+    "visibility": true
+  }
+]

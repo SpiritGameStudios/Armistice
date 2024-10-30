@@ -103,17 +103,15 @@ public class ChassisRenderer {
 		}
 
 		private float interpretPitch(FabrikBone3D bone, float yawRad, float yawParentRad) {
+			// global pitch in caliko is weird
 			Vec3 start = IKUtil.f2m(bone.getStartLocation());
 			Vec3 end = IKUtil.f2m(bone.getEndLocation());
-			// parent always points forwards
-			// if child points forwards, yaw is
 			double y = end.y - start.y;
 			double x = end.x - start.x;
 			double z = end.z - start.z;
 			double r = Math.sqrt(x * x + z * z);
 			double sign = Math.abs(yawParentRad - yawRad) > Math.PI / 2 ? -1 : 1;
 			return (float) Math.atan2(y, r * sign);
-
 		}
 	}
 
@@ -141,8 +139,8 @@ public class ChassisRenderer {
 	}
 
 	public static void dispatch(MechaEntity mecha, PoseStack poseStack, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
-		// draw self, calls armor render, calls hull render
-
+		// draw self, calls armor render
+		if (!ArmisticeClientDebugValues.showChassis) return;
 		var chassis = PartRenderer.chassis.getOrDefault(mecha.core().schematic().chassis().id(), MISSING);
 		if (chassis != null) {
 			poseStack.pushPose();
@@ -158,7 +156,6 @@ public class ChassisRenderer {
 	}
 
 	public void render(PoseStack.Pose pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
-		if (!ArmisticeClientDebugValues.showChassis) return;
 		PartRenderer.renderQuads(quads, texture, pose, bufferSource, color, packedLight, packedOverlay);
 	}
 }
