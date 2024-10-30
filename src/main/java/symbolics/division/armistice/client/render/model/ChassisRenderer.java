@@ -92,6 +92,9 @@ public class ChassisRenderer {
 						float calcPitch = interpretPitch(bone, yaw, parentYaw);
 
 						matrices.mulPose(new Quaternionf().rotateZYX(0, yaw, calcPitch + Mth.PI));
+						var seg = segmentNodes.get(i).origin();
+						matrices.translate(-seg.x, -seg.y, -seg.z);
+
 						PartRenderer.renderQuads(quadArrays.get(i), texture, matrices.last(), bufferSource, color, packedLight, packedOverlay);
 					}
 					matrices.popPose();
