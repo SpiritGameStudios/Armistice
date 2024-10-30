@@ -153,9 +153,9 @@ public final class MechaHudRenderer {
 		int degPerPixel = (drawHelper.guiGraphics().guiWidth() / Minecraft.getInstance().options.fov().get());
 
 		Vec3 dir = mecha.core().direction().normalize();
-		double yaw = Mth.atan2(dir.x, dir.z) * Mth.RAD_TO_DEG;
+		double yaw = Mth.atan2(-dir.x, dir.z) * Mth.RAD_TO_DEG;
 
-		int offset = (drawHelper.guiGraphics().guiWidth() / 2) - Mth.floor(Mth.wrapDegrees(yaw + 180.0F) * degPerPixel);
+		int offset = (drawHelper.guiGraphics().guiWidth() / 2) - Mth.floor(Mth.wrapDegrees(yaw + 180) * degPerPixel);
 
 		for (int i = -360; i < 360; i++) {
 			int x = (i * degPerPixel) + offset;

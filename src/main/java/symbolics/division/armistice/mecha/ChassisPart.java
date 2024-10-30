@@ -4,8 +4,9 @@ import au.edu.federation.caliko.FabrikBone3D;
 import au.edu.federation.caliko.FabrikChain3D;
 import au.edu.federation.caliko.FabrikStructure3D;
 import au.edu.federation.utils.Vec3f;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -16,6 +17,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import symbolics.division.armistice.client.render.hud.DrawHelper;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
 import symbolics.division.armistice.mecha.movement.ChassisLeg;
 import symbolics.division.armistice.mecha.movement.DirectionState;
@@ -362,12 +364,39 @@ public class ChassisPart extends AbstractMechaPart {
 				Minecraft.getInstance().font.drawInBatch(String.valueOf(i), 0.0F, 0.0F, -1, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
 			}
 			poseStack.popPose();
-			skeleton.getChain(i).getChain()
-				.stream().forEach(
-					bone -> {
-						drawSeg(new Vector3f(bone.getStartLocationAsArray()), new Vector3f(bone.getEndLocationAsArray()), 1, 1, 1, poseStack, bufferSource);
-					}
-				);
+
+			RenderSystem.setShaderColor(0.5f, 0.2125f, 0.1625f, 1);
+
+			RenderSystem.enableBlend();
+			RenderSystem.blendFuncSeparate(
+				GlStateManager.SourceFactor.SRC_ALPHA,
+				GlStateManager.DestFactor.ONE,
+				GlStateManager.SourceFactor.SRC_ALPHA,
+				GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA
+			);
+
+			skeleton.getChain(i).getChain().forEach(
+				bone -> {
+					DrawHelper.renderFlicker(
+						pos -> drawSeg(
+							new Vector3f(bone.getStartLocationAsArray()).add(pos.toVector3f()),
+							new Vector3f(bone.getEndLocationAsArray()).add(pos.toVector3f()),
+							1,
+							1,
+							1,
+							poseStack,
+							bufferSource
+						),
+						Vec3.ZERO
+					);
+
+				}
+			);
+
+
+			RenderSystem.disableBlend();
+			RenderSystem.defaultBlendFunc();
+			RenderSystem.setShaderColor(1f, 1f, 1f, 1);
 		}
 
 		// centroid-informed map target direction
@@ -418,8 +447,16 @@ public class ChassisPart extends AbstractMechaPart {
 	}
 
 	private static void drawSeg(Vector3f p1, Vector3f p2, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
-		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
-		vc.addVertex(poseStack.last(), p1).setColor(r, g, b, 1.0f);
-		vc.addVertex(poseStack.last(), p2).setColor(r, g, b, 1.0f);
+//		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
+
+		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(
+			VertexFormat.Mode.DEBUG_LINE_STRIP,
+			DefaultVertexFormat.POSITION_COLOR
+		);
+
+		bufferBuilder.addVertex(poseStack.last(), p1).setColor(r, g, b, 1.0f);
+		bufferBuilder.addVertex(poseStack.last(), p2).setColor(r, g, b, 1.0f);
+
+		BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 	}
 }

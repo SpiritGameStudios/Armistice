@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
 
 import java.util.function.Consumer;
@@ -93,6 +94,19 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 
 		RenderSystem.setShaderColor(currentColor[0], currentColor[1], currentColor[2], alpha);
 		render.accept(pos);
+
+		RenderSystem.setShaderColor(currentColor[0], currentColor[1], currentColor[2], 1);
+	}
+
+	public static void renderFlicker(Consumer<Vec3> render, Vec3 pos) {
+		float[] currentColor = RenderSystem.getShaderColor();
+
+		float alpha = RANDOM.nextInt(10) == 0 ? Math.min(RANDOM.nextFloat(), 0.25F) : 1.0F;
+		alpha = (0.3F + (alpha * 0.7F)) * currentColor[3];
+
+		RenderSystem.setShaderColor(currentColor[0], currentColor[1], currentColor[2], alpha);
+		render.accept(pos.offsetRandom(RANDOM, 0.0025F));
+		render.accept(pos.offsetRandom(RANDOM, 0.075F));
 
 		RenderSystem.setShaderColor(currentColor[0], currentColor[1], currentColor[2], 1);
 	}
