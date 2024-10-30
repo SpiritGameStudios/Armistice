@@ -7,8 +7,7 @@
 		}
 	],
 	"parent": "minecraft:block/cube_all",
-	"render_type": "minecraft:cutout",
 	"textures": {
-		"all": "armistice:block/iron_grate"
+		"all": "armistice:block/armisteel_piping"
 	}
 }

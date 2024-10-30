@@ -78,6 +78,11 @@ public final class ArmisticeCreativeModeTabRegistrar implements CreativeModeTabR
 			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_GRATE);
 			output.accept(ArmisticeBlockRegistrar.CORRUGATED_ARMISTEEL);
 			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_CHAIN);
+			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_BLOCK);
+			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_MESH);
+			output.accept(ArmisticeBlockRegistrar.RIGIDIZED_ARMISTEEL);
+			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_PIPING);
+			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_VENT);
 		})
 		.build();
 }

@@ -3,16 +3,28 @@ package symbolics.division.armistice.client.render.hud;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
+import symbolics.division.armistice.Armistice;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 public record DrawHelper(GuiGraphics guiGraphics) {
 	private static final RandomSource RANDOM = RandomSource.create();
+
+	/**
+	 * Each number is 5 x 7
+	 * Spritesheet is 55 x 7
+	 * Numbers are at 5 * number
+	 */
+	private static final ResourceLocation NUMBER_FONT = Armistice.id("textures/gui/number.png");
 
 	public void fill(float minX, float minY, float maxX, float maxY) {
 		if (maxX > minX) {
@@ -42,6 +54,7 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 		BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 	}
 
+	// region Lines
 	public void line(Vec2 start, Vec2 end) {
 		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(
 			VertexFormat.Mode.DEBUG_LINE_STRIP,
@@ -76,14 +89,14 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 		fill(x, minY, x + thickness, maxY);
 	}
 
-	public void aLine(float x1, float y1, float x2, float y2, float thickness) {
-		if (x1 > x2) {
-			float t = x2;
-			x2 = x1;
-			x1 = t;
-			t = y2;
-			y2 = y1;
-			y1 = t;
+	@SuppressWarnings("deprecation")
+	public void aLine(Vec2 start, Vec2 end, float thickness) {
+		if (start.x > end.x) {
+			float prevX = end.x;
+			float prevY = end.y;
+
+			end = new Vec2(start.x, start.y);
+			start = new Vec2(prevX, prevY);
 		}
 
 		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(
@@ -93,13 +106,13 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 
 		Matrix4f matrix = guiGraphics.pose().last().pose();
 
-		float dx = x2 - x1;
-		float dy = y2 - y1;
+		float dx = end.x - start.x;
+		float dy = end.y - start.y;
 		float resolution = thickness * (float) Mth.fastInvSqrt(dx * dx + dy * dy);
 		float w = thickness / 2;
 		for (float t = 0; t <= 1; t += resolution) {
-			float xt = x1 + t * dx;
-			float yt = y1 + t * dy;
+			float xt = start.x + t * dx;
+			float yt = start.y + t * dy;
 			bufferBuilder.addVertex(matrix, xt - w, yt - w, 0);
 			bufferBuilder.addVertex(matrix, xt - w, yt + w, 0);
 			bufferBuilder.addVertex(matrix, xt + w, yt + w, 0);
@@ -108,15 +121,15 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 
 		BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 	}
+	// endregion
 
+	// region Flicker
 	// Yttr FlickeryRenderer was heavily referenced for this
-	public void renderFlicker(Consumer<Vec2> render, Vec2 pos) {
-		float[] currentColor = RenderSystem.getShaderColor();
-
+	public void renderFlicker(Consumer<Vec2> render, Vec2 pos, Vector4f color) {
 		float alpha = RANDOM.nextInt(15) == 0 ? Math.min(RANDOM.nextFloat(), 0.5F) : 1.0F;
-		alpha = (0.3F + (alpha * 0.7F)) * currentColor[3];
+		alpha = (0.3F + (alpha * 0.7F)) * color.w;
 
-		RenderSystem.setShaderColor(currentColor[0], currentColor[1], currentColor[2], alpha * 0.05F);
+		RenderSystem.setShaderColor(color.x, color.y, color.z, alpha * 0.05F);
 
 		for (float i = -0.8F; i < 0.8F; i += 0.2F) {
 			for (float j = -0.8F; j < 0.8F; j += 0.2F) {
@@ -125,22 +138,61 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 			}
 		}
 
-		RenderSystem.setShaderColor(currentColor[0], currentColor[1], currentColor[2], alpha);
+		RenderSystem.setShaderColor(color.x, color.y, color.z, alpha);
 		render.accept(pos);
 
-		RenderSystem.setShaderColor(currentColor[0], currentColor[1], currentColor[2], 1);
+		RenderSystem.setShaderColor(color.x, color.y, color.z, color.w);
 	}
 
-	public static void renderFlicker(Consumer<Vec3> render, Vec3 pos) {
-		float[] currentColor = RenderSystem.getShaderColor();
+	public static void renderHologramFlicker(Consumer<Vec3> render, Vec3 pos, Vector4f color) {
 
 		float alpha = RANDOM.nextInt(10) == 0 ? Math.min(RANDOM.nextFloat(), 0.25F) : 1.0F;
-		alpha = (0.3F + (alpha * 0.7F)) * currentColor[3];
+		alpha = (0.3F + (alpha * 0.7F)) * color.w;
 
-		RenderSystem.setShaderColor(currentColor[0], currentColor[1], currentColor[2], alpha);
+		RenderSystem.setShaderColor(color.x, color.y, color.z, alpha);
 		render.accept(pos.offsetRandom(RANDOM, 0.0025F));
 		render.accept(pos.offsetRandom(RANDOM, 0.075F));
 
-		RenderSystem.setShaderColor(currentColor[0], currentColor[1], currentColor[2], 1);
+		RenderSystem.setShaderColor(color.x, color.y, color.z, 1);
+	}
+	// endregion
+
+	public void renderNumber(int number, float x, float y, float size, Vector4f color) {
+		IntStream digits = String.valueOf(number).chars()
+			.map(Character::getNumericValue)
+			.map(digit -> digit == -1 ? 10 : digit);
+
+
+		AtomicInteger i = new AtomicInteger();
+		digits.forEach(digit -> {
+			renderFlicker(
+				pos -> guiGraphics.blit(
+					NUMBER_FONT,
+					(int) pos.x, (int) pos.y,
+					Mth.floor(5 * size), Mth.floor(7 * size),
+					5 * digit, 0,
+					5, 7,
+					55, 7
+				),
+				new Vec2(x + (7 * size) * i.get(), y),
+				color
+			);
+
+			i.getAndIncrement();
+		});
+	}
+
+	public void renderCenteredNumber(int number, float x, float y, float size, Vector4f color) {
+		int count = String.valueOf(number).length();
+		float width = 7 * size * count;
+
+		renderNumber(number, x - (width / 2), y, size, color);
+	}
+
+	public void renderLeftNumber(int number, float x, float y, float size, Vector4f color) {
+		int count = String.valueOf(number).length();
+		float width = 7 * size * count;
+
+		renderNumber(number, x - width, y, size, color);
 	}
 }

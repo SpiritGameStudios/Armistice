@@ -18,6 +18,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import symbolics.division.armistice.client.render.hud.DrawHelper;
+import symbolics.division.armistice.client.render.hud.MechaHudRenderer;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
 import symbolics.division.armistice.mecha.movement.ChassisLeg;
 import symbolics.division.armistice.mecha.movement.DirectionState;
@@ -377,7 +378,7 @@ public class ChassisPart extends AbstractMechaPart {
 
 			skeleton.getChain(i).getChain().forEach(
 				bone -> {
-					DrawHelper.renderFlicker(
+					DrawHelper.renderHologramFlicker(
 						pos -> drawSeg(
 							new Vector3f(bone.getStartLocationAsArray()).add(pos.toVector3f()),
 							new Vector3f(bone.getEndLocationAsArray()).add(pos.toVector3f()),
@@ -387,7 +388,8 @@ public class ChassisPart extends AbstractMechaPart {
 							poseStack,
 							bufferSource
 						),
-						Vec3.ZERO
+						Vec3.ZERO,
+						MechaHudRenderer.lightbulbColor()
 					);
 
 				}

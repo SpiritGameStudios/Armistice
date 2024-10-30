@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/iron_bars_cap_alt",
+  "render_type": "minecraft:cutout",
+  "textures": {
+    "bars": "armistice:block/armisteel_bars",
+    "edge": "armistice:block/armisteel_bars_edge",
+    "particle": "armistice:block/armisteel_bars"
+  }
+}

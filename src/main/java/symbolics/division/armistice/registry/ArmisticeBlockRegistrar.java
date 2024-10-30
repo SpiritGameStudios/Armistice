@@ -1,10 +1,8 @@
 package symbolics.division.armistice.registry;
 
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.WaterloggedTransparentBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.MapColor;
 import symbolics.division.armistice.block.ArmisteelChainBlock;
 import symbolics.division.armistice.util.registrar.BlockRegistrar;
@@ -41,10 +39,68 @@ public final class ArmisticeBlockRegistrar implements BlockRegistrar {
 			.requiresCorrectToolForDrops()
 	);
 
+	public static final Block ARMISTEEL_PIPING = new Block(
+		BlockBehaviour.Properties.of()
+			.strength(3.0F, 6.0F)
+			.sound(SoundType.NETHERITE_BLOCK)
+			.mapColor(MapColor.METAL)
+			.requiresCorrectToolForDrops()
+	);
+
+	public static final Block ARMISTEEL_VENT = new Block(
+		BlockBehaviour.Properties.of()
+			.strength(3.0F, 6.0F)
+			.sound(SoundType.NETHERITE_BLOCK)
+			.mapColor(MapColor.METAL)
+			.requiresCorrectToolForDrops()
+	);
+
+	public static final Block ARMISTEEL_MESH = new Block(
+		BlockBehaviour.Properties.of()
+			.strength(3.0F, 6.0F)
+			.sound(SoundType.NETHERITE_BLOCK)
+			.mapColor(MapColor.METAL)
+			.requiresCorrectToolForDrops()
+	);
+
+	public static final Block RIGIDIZED_ARMISTEEL = new Block(
+		BlockBehaviour.Properties.of()
+			.strength(3.0F, 6.0F)
+			.sound(SoundType.NETHERITE_BLOCK)
+			.mapColor(MapColor.METAL)
+			.requiresCorrectToolForDrops()
+	);
+
+	public static final Block ARMISTEEL_BLOCK = new Block(
+		BlockBehaviour.Properties.of()
+			.strength(3.0F, 6.0F)
+			.sound(SoundType.NETHERITE_BLOCK)
+			.mapColor(MapColor.METAL)
+			.requiresCorrectToolForDrops()
+	);
+
+	public static final Block ARMISTEEL_BULB = new CopperBulbBlock(
+		BlockBehaviour.Properties.of()
+			.strength(3.0F, 6.0F)
+			.sound(SoundType.NETHERITE_BLOCK)
+			.mapColor(MapColor.METAL)
+			.requiresCorrectToolForDrops()
+			.isRedstoneConductor((state, level, pos) -> false)
+			.lightLevel(state -> state.getValue(BlockStateProperties.LIT) ? 15 : 0)
+	);
+
 	public static final ArmisteelChainBlock ARMISTEEL_CHAIN = new ArmisteelChainBlock(
 		BlockBehaviour.Properties.of()
 			.forceSolidOn()
 			.requiresCorrectToolForDrops()
+			.strength(5.0F, 6.0F)
+			.sound(SoundType.CHAIN)
+			.noOcclusion()
+	);
+
+	public static final IronBarsBlock ARMISTEEL_BARS = new IronBarsBlock(
+		BlockBehaviour.Properties.of().
+			requiresCorrectToolForDrops()
 			.strength(5.0F, 6.0F)
 			.sound(SoundType.CHAIN)
 			.noOcclusion()
