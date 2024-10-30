@@ -129,8 +129,8 @@ public class MechaModelData {
 				new SegmentInfo(
 					Math.max(0.01, basePos.distance(tipPos)),
 					rootLegSegment.rotation().y,
-					rootLegSegment.parameters().getOrDefault("minAngle", 15d),
-					rootLegSegment.parameters().getOrDefault("maxAngle", 15d)
+					rootLegSegment.parameters().getOrDefault("minAngle", 30d),
+					rootLegSegment.parameters().getOrDefault("maxAngle", 30d)
 				));
 
 			Optional<OutlinerNode> nextNode = getChild(segment, 0);
@@ -145,8 +145,8 @@ public class MechaModelData {
 					new SegmentInfo(
 						Math.max(0.01, basePos.distance(tipPos)),
 						segment.rotation().x,
-						segment.parameters().getOrDefault("minAngle", 30d),
-						segment.parameters().getOrDefault("maxAngle", 30d)
+						segment.parameters().getOrDefault("minAngle", 45d),
+						segment.parameters().getOrDefault("maxAngle", 45d)
 					)
 				);
 				segment = nextNode.get();
@@ -157,8 +157,8 @@ public class MechaModelData {
 			segments.add(new SegmentInfo(
 				Math.max(0.01f, tipPos.distance(legEnd.toVector3f())),
 				segment.rotation().x,
-				segment.parameters().getOrDefault("minAngle", 30d),
-				segment.parameters().getOrDefault("maxAngle", 30d)
+				segment.parameters().getOrDefault("minAngle", 45d),
+				segment.parameters().getOrDefault("maxAngle", 45d)
 			));
 			return new LegInfo(rootLegSegment.origin(), legEnd, segments);
 		}
