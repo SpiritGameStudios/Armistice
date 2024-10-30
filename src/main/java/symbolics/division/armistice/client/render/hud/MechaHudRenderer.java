@@ -157,6 +157,15 @@ public final class MechaHudRenderer {
 
 		int offset = (drawHelper.guiGraphics().guiWidth() / 2) - Mth.floor(Mth.wrapDegrees(yaw + 180) * degPerPixel);
 
+		float x1 = drawHelper.guiGraphics().guiWidth() / 2;
+		float y1 = drawHelper.guiGraphics().guiHeight() / 2;
+		float x2 = x1 + 100;
+		float y2 = y1 + 87;
+
+		drawHelper.aLine(
+			x1, y1, x2, y2, 20
+		);
+
 		for (int i = -360; i < 360; i++) {
 			int x = (i * degPerPixel) + offset;
 			if (x < left) continue;

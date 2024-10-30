@@ -8,6 +8,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
+import org.joml.Vector2f;
 
 import java.util.function.Consumer;
 
@@ -74,6 +75,54 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 		}
 
 		fill(x, minY, x + thickness, maxY);
+	}
+
+	public void aLine(float x1, float y1, float x2, float y2, float thickness) {
+		if (x1 > x2) {
+			float t = x2;
+			x2 = x1;
+			x1 = t;
+			t = y2;
+			y2 = y1;
+			y1 = t;
+		}
+
+		float slope = (y2 - y1) / (x2 - x1);
+		float reciprocal = -1 / slope;
+
+		float dx = 1f / ((float) Mth.fastInvSqrt(thickness * thickness / (1 + reciprocal * reciprocal)) * 2);
+		float dy = reciprocal * dx;
+
+
+		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(
+			VertexFormat.Mode.TRIANGLE_STRIP,
+			DefaultVertexFormat.POSITION
+		);
+
+		Matrix4f matrix = guiGraphics.pose().last().pose();
+
+//		bufferBuilder.addVertex(matrix, x1 - thickness, y1 - thickness, 0);
+//		bufferBuilder.addVertex(matrix, x1 - thickness, y1 + thickness, 0);
+//		bufferBuilder.addVertex(matrix, x1 + thickness, y1 + thickness, 0);
+//		bufferBuilder.addVertex(matrix, x1 + thickness, y1 - thickness, 0);
+		Vector2f[] vs = new Vector2f[4];
+		if (slope > 0) {
+			vs[0] = new Vector2f(x1 - dx, y1 + dy);
+			vs[1] = new Vector2f(x1 + dx, y1 - dy);
+			vs[2] = new Vector2f(x2 - dx, y2 + dy);
+			vs[3] = new Vector2f(x2 + dx, y2 - dy);
+		} else {
+			vs[0] = new Vector2f(x1 - dx, y1 - dy);
+			vs[1] = new Vector2f(x1 + dx, y1 + dy);
+			vs[2] = new Vector2f(x2 + dx, y2 + dy);
+			vs[3] = new Vector2f(x2 - dx, y2 - dy);
+		}
+
+		for (Vector2f v : vs) {
+			bufferBuilder.addVertex(matrix, v.x, v.y, 0);
+		}
+
+		BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 	}
 
 	// Yttr FlickeryRenderer was heavily referenced for this
