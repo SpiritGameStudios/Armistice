@@ -84,7 +84,7 @@ public final class RegistryEvents {
 
 			event.register(
 				ArmisticeRegistries.HULL_KEY,
-				registry -> registry.register(Armistice.id("test_hull"), new HullSchematic(1, List.of(1, 2, 3), new HeatData(1, 0, 0)))
+				registry -> registry.register(Armistice.id("test_hull"), new HullSchematic(1, List.of(1, 2, 3), new HeatData(100, 10, 1)))
 			);
 
 			// endregion

@@ -41,6 +41,11 @@ public class MechaEntity extends Entity {
 		EntityDataSerializers.VECTOR3
 	);
 
+	protected static final EntityDataAccessor<Integer> HEAT = SynchedEntityData.defineId(
+		MechaEntity.class,
+		EntityDataSerializers.INT
+	);
+
 	protected final MechaCore core;
 	private boolean firstTick = true;
 
@@ -87,6 +92,7 @@ public class MechaEntity extends Entity {
 		builder.define(LEG_TICK_TARGETS, List.of());
 		builder.define(CLIENT_POS, new Vector3f());
 		builder.define(CLIENT_DIR, new Vector3f());
+		builder.define(HEAT, 0);
 	}
 
 	@Override

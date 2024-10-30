@@ -1,21 +1,37 @@
 package symbolics.division.armistice.mecha;
 
 import net.minecraft.core.NonNullList;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.ordnance.NullOrdnancePart;
 import symbolics.division.armistice.mecha.schematic.HeatData;
 import symbolics.division.armistice.mecha.schematic.HullSchematic;
 
+import static symbolics.division.armistice.mecha.MechaEntity.HEAT;
+
 public class HullPart extends AbstractMechaPart {
 	protected final NonNullList<OrdnancePart> ordnance;
 	protected final HeatData heatData;
 
-	protected int heat;
 	protected int coolingDelay;
 
 	public HullPart(HullSchematic schematic) {
 		ordnance = NonNullList.withSize(schematic.slots().size() - 1, new NullOrdnancePart());
 		this.heatData = schematic.heat();
+	}
+
+	@VisibleForTesting
+	public void setHeat(int heat) {
+		this.core.entity().getEntityData().set(HEAT, heat);
+	}
+
+	public int getHeat() {
+		if (this.core == null) return -1;
+		return this.core.entity().getEntityData().get(HEAT);
+	}
+
+	public int getMaxHeat() {
+		return heatData.max();
 	}
 
 	@Override
@@ -33,29 +49,27 @@ public class HullPart extends AbstractMechaPart {
 	public void tick() {
 		super.tick();
 
-		int prevHeat = heat;
-		ordnance.forEach(part -> heat += part.heat());
+		int prevHeat = getHeat();
+		setHeat(prevHeat + ordnance.stream().mapToInt(OrdnancePart::heat).sum());
 
-		if (heat > prevHeat) coolingDelay = heatData.delay();
+		if (getHeat() > prevHeat) coolingDelay = heatData.delay();
 		else coolingDelay = Math.max(coolingDelay - 1, 0);
 
 		if (coolingDelay == 0)
-			heat = Math.max(heat - heatData.decay(), 0);
+			setHeat(Math.max(getHeat() - heatData.decay(), 0));
 
-		if (heat > heatData.max()) onOverheat();
+		if (getHeat() > heatData.max()) onOverheat();
 	}
 
 	@Override
 	public void clientTick(float tickDelta) {
 		ordnance.forEach(part -> part.clientTick(tickDelta));
-
 		super.clientTick(tickDelta);
 	}
 
 	@Override
 	public void serverTick() {
 		ordnance.forEach(Part::serverTick);
-
 		super.serverTick();
 	}
 

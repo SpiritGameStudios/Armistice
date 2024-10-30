@@ -26,6 +26,13 @@ public final class GeometryUtil {
 		return Math.atan2(dir.x, dir.z);
 	}
 
+	public static double quaternionToYaw(Quaternionf quaternion) {
+		return Mth.atan2(
+			2 * (quaternion.y * quaternion.z + quaternion.w * quaternion.x),
+			-1 + 2 * (quaternion.x * quaternion.x + quaternion.y * quaternion.y)
+		);
+	}
+
 	public static double chord(double radians) {
 		return 2 * Math.sin(radians / 2);
 	}

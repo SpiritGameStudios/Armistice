@@ -41,6 +41,20 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 		BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 	}
 
+	public void line(Vec2 start, Vec2 end) {
+		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(
+			VertexFormat.Mode.DEBUG_LINE_STRIP,
+			DefaultVertexFormat.POSITION
+		);
+
+		Matrix4f matrix = guiGraphics.pose().last().pose();
+
+		bufferBuilder.addVertex(matrix, start.x, start.y, 0);
+		bufferBuilder.addVertex(matrix, end.x, end.y, 0);
+
+		BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+	}
+
 	public void hLine(float minX, float maxX, float y, float thickness) {
 		if (minX > maxX) {
 			float prevMinX = minX;

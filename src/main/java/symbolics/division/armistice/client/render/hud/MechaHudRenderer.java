@@ -8,9 +8,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec2;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import symbolics.division.armistice.Armistice;
+import symbolics.division.armistice.mecha.MechaEntity;
 
 public final class MechaHudRenderer {
 	/**
@@ -27,6 +29,8 @@ public final class MechaHudRenderer {
 	 */
 	private static final ResourceLocation HEADING_FONT = Armistice.id("textures/gui/heading.png");
 
+	private static final ResourceLocation HEAT = Armistice.id("textures/gui/heat.png");
+
 	@SubscribeEvent
 	private static void registerGuiLayers(RegisterGuiLayersEvent event) {
 		event.registerAboveAll(Armistice.id("mecha_hud"), (guiGraphics, deltaTracker) -> {
@@ -34,8 +38,8 @@ public final class MechaHudRenderer {
 			if (player == null) return;
 
 			Entity vehicle = player.getVehicle();
-//			if (!(vehicle instanceof MechaEntity mecha)) return;
-			Entity mecha = player;
+			if (!(vehicle instanceof MechaEntity mecha)) return;
+			if (!mecha.core().ready()) return;
 
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(
@@ -49,13 +53,14 @@ public final class MechaHudRenderer {
 
 			renderAltitude(drawHelper, mecha);
 			renderHeading(drawHelper, mecha);
+			renderHeat(drawHelper, mecha);
 
 			RenderSystem.disableBlend();
 			RenderSystem.defaultBlendFunc();
 		});
 	}
 
-	private static void renderAltitude(DrawHelper drawHelper, Entity mecha) {
+	private static void renderAltitude(DrawHelper drawHelper, MechaEntity mecha) {
 		lightbulbColor();
 
 		drawHelper.renderFlicker(
@@ -97,7 +102,39 @@ public final class MechaHudRenderer {
 		resetColor();
 	}
 
-	private static void renderHeading(DrawHelper drawHelper, Entity mecha) {
+	private static void renderHeat(DrawHelper drawHelper, MechaEntity mecha) {
+		lightbulbColor();
+
+		drawHelper.renderFlicker(
+			pos -> drawHelper.line(
+				pos,
+				new Vec2(20, 20).add(pos)
+			),
+			new Vec2(
+				39,
+				drawHelper.guiGraphics().guiHeight() - 25
+			)
+		);
+
+		drawHelper.renderFlicker(
+			pos -> drawHelper.guiGraphics().blit(
+				HEAT,
+				(int) pos.x, (int) pos.y,
+				64, 64,
+				0, 0,
+				64, 64,
+				64, 64
+			),
+			new Vec2(
+				8,
+				drawHelper.guiGraphics().guiHeight() - 64 + 8
+			)
+		);
+
+		resetColor();
+	}
+
+	private static void renderHeading(DrawHelper drawHelper, MechaEntity mecha) {
 		lightbulbColor();
 
 		int left = drawHelper.guiGraphics().guiWidth() / 3;
@@ -114,7 +151,11 @@ public final class MechaHudRenderer {
 		);
 
 		int degPerPixel = (drawHelper.guiGraphics().guiWidth() / Minecraft.getInstance().options.fov().get());
-		int offset = (drawHelper.guiGraphics().guiWidth() / 2) - Mth.floor(Mth.wrapDegrees(mecha.getYRot() + 180.0F) * degPerPixel);
+
+		Vec3 dir = mecha.core().direction().normalize();
+		double yaw = Mth.atan2(dir.x, dir.z) * Mth.RAD_TO_DEG;
+
+		int offset = (drawHelper.guiGraphics().guiWidth() / 2) - Mth.floor(Mth.wrapDegrees(yaw + 180.0F) * degPerPixel);
 
 		for (int i = -360; i < 360; i++) {
 			int x = (i * degPerPixel) + offset;

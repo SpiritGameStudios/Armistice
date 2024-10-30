@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.VisibleForTesting;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import symbolics.division.armistice.mecha.movement.Euclidean;
@@ -129,6 +130,18 @@ public class MechaCore implements Part {
 		return schematic;
 	}
 
+	public boolean ready() {
+		return hull.ready() && chassis.ready();
+	}
+
+	public int getHeat() {
+		return hull.getHeat();
+	}
+
+	public int getMaxHeat() {
+		return hull.getMaxHeat();
+	}
+
 	@Override
 	public Vector3f absPos() {
 		return position().toVector3f();
@@ -174,5 +187,10 @@ public class MechaCore implements Part {
 	public FabrikStructure3D skeleton() {
 		// temp: ONLY for rendering!
 		return chassis.skeleton;
+	}
+
+	@VisibleForTesting
+	public void setHeat(int heat) {
+		hull.setHeat(heat);
 	}
 }
