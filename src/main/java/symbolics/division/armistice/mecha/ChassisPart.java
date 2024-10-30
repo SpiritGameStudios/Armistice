@@ -221,7 +221,8 @@ public class ChassisPart extends AbstractMechaPart {
 
 			// update client
 			setClientPos(absPos());
-			setClientDir(direction().toVector3f());
+			var ddd = direction().toVector3f();
+			setClientDir(ddd);
 			setLegTickTargets(effectors().stream().map(Vec3::toVector3f).toList());
 		}
 
@@ -238,7 +239,7 @@ public class ChassisPart extends AbstractMechaPart {
 		super.clientTick(tickDelta);
 
 		if (!ArmisticeDebugValues.ikSolving) return;
-		if (firstTick) {
+		if (firstTick || getLegTickTargets().isEmpty()) {
 			firstTick = false;
 			return;
 		}
