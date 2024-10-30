@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "armistice:block/armisteel_chain",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "armistice:block/armisteel_chain"
+    },
+    "axis=z": {
+      "model": "armistice:block/armisteel_chain",
+      "x": 90
+    }
+  }
+}

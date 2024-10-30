@@ -38,10 +38,10 @@ public class ArmisticeLootTableProvider extends LootTableProvider {
 
 		@Override
 		protected void generate() {
-			dropSelf(ArmisticeBlockRegistrar.IRON_GRATE);
 			dropSelf(ArmisticeBlockRegistrar.ARMISTEEL_GRATE);
 			dropSelf(ArmisticeBlockRegistrar.ARMISTEEL_PLATING);
 			dropSelf(ArmisticeBlockRegistrar.CORRUGATED_ARMISTEEL);
+			dropSelf(ArmisticeBlockRegistrar.ARMISTEEL_CHAIN);
 		}
 	}
 }

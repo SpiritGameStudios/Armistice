@@ -4,7 +4,9 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ModelFile;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.registry.ArmisticeBlockRegistrar;
 
 import static net.neoforged.neoforge.client.model.generators.ModelProvider.BLOCK_FOLDER;
@@ -18,17 +20,22 @@ public class ArmisticeBlockStateProvider extends BlockStateProvider {
 	@Override
 	protected void registerStatesAndModels() {
 		simpleBlockWithItem(
-			ArmisticeBlockRegistrar.IRON_GRATE,
-			cubeAll("iron_grate", modLoc("block/iron_grate")).renderType("cutout")
-		);
-
-		simpleBlockWithItem(
 			ArmisticeBlockRegistrar.ARMISTEEL_GRATE,
 			cubeAll("armisteel_grate", modLoc("block/armisteel_grate")).renderType("cutout")
 		);
 
 		simpleBlockWithItem(ArmisticeBlockRegistrar.ARMISTEEL_PLATING, cubeAll(ArmisticeBlockRegistrar.ARMISTEEL_PLATING));
 		simpleBlockWithItem(ArmisticeBlockRegistrar.CORRUGATED_ARMISTEEL, cubeAll(ArmisticeBlockRegistrar.CORRUGATED_ARMISTEEL));
+
+		axisBlock(
+			ArmisticeBlockRegistrar.ARMISTEEL_CHAIN,
+			models().cross("armisteel_chain", modLoc("block/armisteel_chain")).renderType("cutout"),
+			models().cross("armisteel_chain", modLoc("block/armisteel_chain")).renderType("cutout")
+		);
+
+		itemModels().getBuilder(ArmisticeBlockRegistrar.ARMISTEEL_CHAIN.asItem().toString())
+			.parent(new ModelFile.UncheckedModelFile("item/generated"))
+			.texture("layer0", Armistice.id("block/armisteel_chain"));
 	}
 
 	public BlockModelBuilder cubeAll(String name, ResourceLocation texture) {
