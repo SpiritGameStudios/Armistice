@@ -59,7 +59,9 @@ public class OrdnanceRenderer {
 		if (!ArmisticeClientDebugValues.showOrdnance) return;
 		pose.pushPose();
 		{
-			var baseRotation = mecha.core().model().ordnancePoint(ordnance).rot().scale(Mth.DEG_TO_RAD);
+			var baseRotation = mecha.core().model().ordnanceInfo(ordnance).mountPoint().rotationInfo().bbRotation()
+				.scale(Mth.DEG_TO_RAD);
+
 			pose.mulPose(new Quaternionf().rotateZYX((float) baseRotation.z, (float) baseRotation.y, (float) baseRotation.x));
 			PartRenderer.renderQuads(quads, texture, pose.last(), bufferSource, color, packedLight, packedOverlay);
 			if (bodyQuads.length > 0) {
@@ -84,6 +86,8 @@ public class OrdnanceRenderer {
 				pose.mulPose(lerpedRot);
 				pose.translate(-bodyPos.x, -bodyPos.y, -bodyPos.z);
 				PartRenderer.renderQuads(bodyQuads, texture, pose.last(), bufferSource, color, packedLight, packedOverlay);
+
+				part.lastRenderRotation = lerpedRot;
 			}
 		}
 		pose.popPose();

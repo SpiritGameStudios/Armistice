@@ -45,12 +45,12 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 
 	@Override
 	public Quaternionf relRot() {
-		return new Quaternionf(core.model().ordnancePoint(core.ordnanceIndex(this)).quat());
+		return new Quaternionf(core.model().ordnanceInfo(this, core).mountPoint().rotationInfo().rotation());
 	}
 
 	@Override
 	public Vector3fc relPos() {
-		return core.model().ordnancePoint(core.ordnanceIndex(this)).pos().toVector3f();
+		return core.model().ordnanceInfo(this, core).mountPoint().origin().toVector3f();
 	}
 
 	protected abstract boolean isValidTarget(HitResult hitResult);
@@ -63,7 +63,7 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 
 	public Quaternionf baseRotation() {
 		// default barrel rotation
-		return new Quaternionf(core.hull.absRot().mul(core.model().ordnancePoint(core.ordnanceIndex(this)).quat()));
+		return new Quaternionf(core.hull.absRot().mul(core.model().ordnanceInfo(this, core).mountPoint().rotationInfo().rotation()));
 	}
 
 	public Vector2fc barrelRotation() {

@@ -1,11 +1,10 @@
 package symbolics.division.armistice.mecha.ordnance;
 
 import net.minecraft.core.Direction;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.SmallFireball;
+import net.minecraft.world.entity.projectile.Snowball;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -15,7 +14,7 @@ import org.joml.Vector3fc;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
 import symbolics.division.armistice.mecha.MechaCore;
 import symbolics.division.armistice.mecha.OrdnancePart;
-import symbolics.division.armistice.model.Bone;
+import symbolics.division.armistice.model.MechaModelData;
 
 public class SimpleGunOrdnance extends OrdnancePart {
 	protected final int cooldown;
@@ -23,7 +22,7 @@ public class SimpleGunOrdnance extends OrdnancePart {
 	protected final double projectileVelocity;
 
 	protected int cooldownTicks;
-	protected Bone barrelBone;
+	protected MechaModelData.MarkerInfo barrelMarker;
 
 	public SimpleGunOrdnance(int cooldown, double maxDistance, double projectileVelocity) {
 		super(1);
@@ -42,7 +41,7 @@ public class SimpleGunOrdnance extends OrdnancePart {
 	public void init(MechaCore core) {
 		super.init(core);
 
-		barrelBone = core.model().getMarker(core.model().ordnance(core.ordnanceIndex(this)), 1);
+		barrelMarker = core.model().ordnanceInfo(this, core).markers().get(1);
 	}
 
 	@Override
@@ -64,23 +63,21 @@ public class SimpleGunOrdnance extends OrdnancePart {
 			return;
 
 		// temp: inappropriate use of rotationmanager. also, try to apply logic to ordnance in general.
-		int index = core.ordnanceIndex(this);
+		MechaModelData.OrdnanceInfo info = core.model().ordnanceInfo(this, core);
 
 		// NOT A SAFE ASSUMPTION. the body may not always be centered on origin (though it should)
-		var barrelLength = barrelBone.pos().with(Direction.Axis.Y, 0).length();
-		// we really need getters and OrdnanceInfo objects for commonly queried info. See LegInfo for examples.
-		var baseRotation = core.model().ordnancePoint(index).rot().scale(Mth.DEG_TO_RAD);
-		Vec3 evilBodyOffsetPleaseUpdateModelData = core.model().ordnance(index)
-			.getChild("body").get().origin();
-		rotationManager.setTarget(target.getEntity().position());
-		core.entity().level()
-		rotationManager.tick();
+		var barrelLength = barrelMarker.origin().with(Direction.Axis.Y, 0).length();
+		var baseRotation = info.mountPoint().rotationInfo().bbRotation().scale(Mth.DEG_TO_RAD);
+
+		Vec3 evilBodyOffsetPleaseUpdateModelData = info.body().origin();
+
 		Vec3 currentDirection = rotationManager.currentDirection();
 		Vector3f absBarrel = rel2Abs(
 			new Quaternionf().rotateZYX(
 				(float) baseRotation.z, (float) baseRotation.y, (float) baseRotation.x
 			).transform(evilBodyOffsetPleaseUpdateModelData.toVector3f())
 		);
+
 		absBarrel = absBarrel.add(currentDirection.scale(barrelLength).toVector3f());
 		Entity projectile = createProjectile(absBarrel);
 
@@ -89,10 +86,13 @@ public class SimpleGunOrdnance extends OrdnancePart {
 
 		double horizontalDist = Math.sqrt(x * x + z * z);
 
-		double y = (target.getEntity().getY(1.0 / 3.0) - projectile.getY()) + horizontalDist * (projectile.getGravity() * 5);
+		double y = (target.getEntity().getY(1.0 / 3.0) - projectile.getY()) + Math.abs(horizontalDist) * (projectile.getGravity() * 5);
 
 		// temp: rotation manager example
 		Vec3 desiredDir = new Vec3(x, y, z).normalize();
+
+		rotationManager.setTarget(target.getEntity().position());
+		rotationManager.tick();
 
 		// you can constrain it by angle, dot product, whatever
 		// one problem arises where it solves then tries to calc vector. I'm not sure
@@ -118,6 +118,6 @@ public class SimpleGunOrdnance extends OrdnancePart {
 	}
 
 	public Entity createProjectile(Vector3fc pos) {
-		return new SmallFireball(core.level(), pos.x(), pos.y(), pos.z(), Vec3.ZERO);
+		return new Snowball(core.level(), pos.x(), pos.y(), pos.z());
 	}
 }

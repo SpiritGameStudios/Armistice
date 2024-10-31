@@ -241,6 +241,8 @@ public class ChassisPart extends AbstractMechaPart {
 	public void clientTick(float tickDelta) {
 		super.clientTick(tickDelta);
 
+		core.hull.clientTick(tickDelta);
+
 		if (!ArmisticeDebugValues.ikSolving) return;
 		if (firstTick || getLegTickTargets().isEmpty()) {
 			firstTick = false;
@@ -270,8 +272,6 @@ public class ChassisPart extends AbstractMechaPart {
 		for (var leg : legs) {
 			leg.getChain().getBone(0).setStartLocation(baseBone.getEndLocation());
 		}
-
-		core.hull.clientTick(tickDelta);
 	}
 
 	private static void fixBaseLocation(FabrikChain3D chain, Vec3f loc) {

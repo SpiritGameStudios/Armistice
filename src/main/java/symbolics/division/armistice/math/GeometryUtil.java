@@ -23,18 +23,11 @@ public final class GeometryUtil {
 	}
 
 	public static double yaw(Vec3 dir) {
-		return Math.atan2(dir.x, dir.z);
-	}
-
-	public static double quaternionToYaw(Quaternionf quaternion) {
-		return Mth.atan2(
-			2 * (quaternion.y * quaternion.z + quaternion.w * quaternion.x),
-			-1 + 2 * (quaternion.x * quaternion.x + quaternion.y * quaternion.y)
-		);
+		return Mth.atan2(dir.x, dir.z);
 	}
 
 	public static double chord(double radians) {
-		return 2 * Math.sin(radians / 2);
+		return 2 * Mth.sin((float) (radians / 2));
 	}
 
 	public static boolean inRange(Vec3 a, Vec3 b, double tolerance) {
