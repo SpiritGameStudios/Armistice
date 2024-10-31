@@ -66,9 +66,9 @@ public class ChassisLeg {
 		for (int i = 1; i < info.segments().size(); i++) {
 			var segment = info.segments().get(i);
 			float deg = (float) segment.baseAngleDeg();
-//			deg = Mth.abs(deg); // might need to change for some models, but apparently fixes rotation in test model?
+			deg = Mth.abs(deg); // might need to change for some models, but apparently fixes rotation in test model?
 			var r = Vec3f.rotateAboutAxisDegs(IKUtil.Z_AXIS, deg, IKUtil.X_AXIS);
-//			r.set(Mth.abs(r.x) < 0.001f ? 0.0f : r.x, Mth.abs(r.y) < 0.001f ? 0.0f : r.y, Mth.abs(r.z) < 0.001f ? 0.0f : r.z);
+			r.set(Mth.abs(r.x) < 0.001f ? 0.0f : r.x, Mth.abs(r.y) < 0.001f ? 0.0f : r.y, Mth.abs(r.z) < 0.001f ? 0.0f : r.z);
 
 			chain.addConsecutiveHingedBone(
 				IKUtil.Z_AXIS,
