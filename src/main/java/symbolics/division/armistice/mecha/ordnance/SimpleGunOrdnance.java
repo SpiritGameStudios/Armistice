@@ -1,5 +1,7 @@
 package symbolics.division.armistice.mecha.ordnance;
 
+import net.minecraft.core.Direction;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -7,6 +9,7 @@ import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
@@ -60,7 +63,25 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		if (cooldownTicks > 0 || targets().isEmpty() || !(targets().getFirst() instanceof EntityHitResult target))
 			return;
 
-		Vector3f absBarrel = rel2Abs(barrelBone.pos().toVector3f());
+		// temp: inappropriate use of rotationmanager. also, try to apply logic to ordnance in general.
+		int index = core.ordnanceIndex(this);
+
+		// NOT A SAFE ASSUMPTION. the body may not always be centered on origin (though it should)
+		var barrelLength = barrelBone.pos().with(Direction.Axis.Y, 0).length();
+		// we really need getters and OrdnanceInfo objects for commonly queried info. See LegInfo for examples.
+		var baseRotation = core.model().ordnancePoint(index).rot().scale(Mth.DEG_TO_RAD);
+		Vec3 evilBodyOffsetPleaseUpdateModelData = core.model().ordnance(index)
+			.getChild("body").get().origin();
+		rotationManager.setTarget(target.getEntity().position());
+		core.entity().level()
+		rotationManager.tick();
+		Vec3 currentDirection = rotationManager.currentDirection();
+		Vector3f absBarrel = rel2Abs(
+			new Quaternionf().rotateZYX(
+				(float) baseRotation.z, (float) baseRotation.y, (float) baseRotation.x
+			).transform(evilBodyOffsetPleaseUpdateModelData.toVector3f())
+		);
+		absBarrel = absBarrel.add(currentDirection.scale(barrelLength).toVector3f());
 		Entity projectile = createProjectile(absBarrel);
 
 		double x = target.getEntity().getX() - absBarrel.x;
@@ -72,11 +93,13 @@ public class SimpleGunOrdnance extends OrdnancePart {
 
 		// temp: rotation manager example
 		Vec3 desiredDir = new Vec3(x, y, z).normalize();
-		rotationManager.setTarget(target.getEntity().position());
-		rotationManager.tick();
-		Vec3 currentDirection = rotationManager.currentDirection();
+
 		// you can constrain it by angle, dot product, whatever
-//		if (rotationManager.currentDirection().dot(desiredDir) < 0.95) return;
+		// one problem arises where it solves then tries to calc vector. I'm not sure
+		// if this is the correct order to do the check on whether it will be able to fire.
+		// it should also check if it would hit itself with the gun (though rotations should normally
+		// prevent that, and self-spawned projectiles should phase through us)
+		if (rotationManager.currentDirection().dot(desiredDir) < 0.95) return;
 
 		Vec3 velocity = currentDirection
 			.scale(projectileVelocity);

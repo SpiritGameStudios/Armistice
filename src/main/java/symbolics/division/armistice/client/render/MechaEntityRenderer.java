@@ -46,6 +46,6 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 		}
 		if (Minecraft.getInstance().player == null) return;
 		if (!mecha.core().entity().hasPassenger(Minecraft.getInstance().player))
-			PartRenderer.renderParts(mecha, poseStack, bufferSource, color, packedLight, OverlayTexture.NO_OVERLAY);
+			PartRenderer.renderParts(mecha, partialTick, poseStack, bufferSource, color, packedLight, OverlayTexture.NO_OVERLAY);
 	}
 }

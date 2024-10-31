@@ -39,7 +39,7 @@ public class PartRenderer {
 		}
 	}
 
-	public static void renderParts(MechaEntity mecha, PoseStack pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
+	public static void renderParts(MechaEntity mecha, float tickDelta, PoseStack pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
 		// render in absolute space to ensure we match internal representation
 		pose.pushPose();
 		pose.translate(-mecha.core().position().x(), -mecha.core().position().y(), -mecha.core().position().z());
@@ -47,7 +47,7 @@ public class PartRenderer {
 		HullRenderer.dispatch(mecha, pose, bufferSource, color, packedLight, packedOverlay);
 		for (int i = 0; i < mecha.core().ordnance().size(); i++) {
 			if (mecha.core().ordnance().get(i) instanceof NullOrdnancePart) continue;
-			OrdnanceRenderer.dispatch(mecha, i, pose, bufferSource, color, packedLight, packedOverlay);
+			OrdnanceRenderer.dispatch(mecha, i, tickDelta, pose, bufferSource, color, packedLight, packedOverlay);
 		}
 		pose.popPose();
 	}
