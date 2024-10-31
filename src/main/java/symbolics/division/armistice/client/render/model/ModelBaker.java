@@ -111,16 +111,18 @@ public class ModelBaker {
 			Direction dir = entry.getKey();
 			Element.Face face = entry.getValue();
 			if (face.texture().isEmpty()) {
-				int a = 1;
 				continue;
 			}
 			// null face, will have invalid uv
+
+			int rotationIndex = face.rotation().orElse(0) / 90;
+
 			int[] ix = VERTEX_INDICES[dir.get3DDataValue()];
 			Vertex[] vertices = {
-				Vertex.of(points[ix[0]], face.uv().x / 256f, face.uv().y / 256f),
-				Vertex.of(points[ix[1]], face.uv().z / 256f, face.uv().y / 256f),
-				Vertex.of(points[ix[2]], face.uv().z / 256f, face.uv().w / 256f),
-				Vertex.of(points[ix[3]], face.uv().x / 256f, face.uv().w / 256f),
+				Vertex.of(points[ix[(rotationIndex) % 4]], face.uv().x / 256f, face.uv().y / 256f),
+				Vertex.of(points[ix[(1 + rotationIndex) % 4]], face.uv().z / 256f, face.uv().y / 256f),
+				Vertex.of(points[ix[(2 + rotationIndex) % 4]], face.uv().z / 256f, face.uv().w / 256f),
+				Vertex.of(points[ix[(3 + rotationIndex) % 4]], face.uv().x / 256f, face.uv().w / 256f),
 			};
 			Vector3f normal = transform.transformNormal(dir.step(), new Vector3f());
 			quads.add(new Quad(vertices, normal.x, normal.y, normal.z));
