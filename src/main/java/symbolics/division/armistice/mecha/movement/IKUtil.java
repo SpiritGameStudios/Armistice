@@ -4,6 +4,7 @@ import au.edu.federation.caliko.FabrikChain3D;
 import au.edu.federation.utils.Vec3f;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Vector2f;
 
 public class IKUtil {
 	public static final Vec3f X_AXIS = new Vec3f(1, 0, 0);
@@ -32,6 +33,14 @@ public class IKUtil {
 
 	public static Vec3 f2m(Vec3f fabVec) {
 		return new Vec3(fabVec.x, fabVec.y, fabVec.z);
+	}
+
+	public static Vector2f globalYawPitch(Vec3f vec) {
+		double xz = Mth.length(vec.x, vec.z);
+		return new Vector2f(
+			(float) Math.atan2(vec.x, vec.z),
+			(float) Math.atan2(vec.y, xz)
+		);
 	}
 
 	public static Vec3f rotateFabYawDeg(Vec3f vec, float deg) {

@@ -70,8 +70,15 @@ public class SimpleGunOrdnance extends OrdnancePart {
 
 		double y = (target.getEntity().getY(1.0 / 3.0) - projectile.getY()) + horizontalDist * (projectile.getGravity() * 5);
 
-		Vec3 velocity = new Vec3(x, y, z)
-			.normalize()
+		// temp: rotation manager example
+		Vec3 desiredDir = new Vec3(x, y, z).normalize();
+		rotationManager.setTarget(target.getEntity().position());
+		rotationManager.tick();
+		Vec3 currentDirection = rotationManager.currentDirection();
+		// you can constrain it by angle, dot product, whatever
+//		if (rotationManager.currentDirection().dot(desiredDir) < 0.95) return;
+
+		Vec3 velocity = currentDirection
 			.scale(projectileVelocity);
 
 		projectile.setDeltaMovement(velocity);

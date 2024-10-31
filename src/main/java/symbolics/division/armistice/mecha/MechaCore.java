@@ -13,6 +13,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.joml.Quaternionf;
+import org.joml.Vector2fc;
 import org.joml.Vector3f;
 import symbolics.division.armistice.mecha.movement.Euclidean;
 import symbolics.division.armistice.mecha.schematic.MechaSchematic;
@@ -182,6 +183,10 @@ public class MechaCore implements Part {
 
 	public Euclidean ordnanceEuclidean(int index) {
 		return ordnance().get(index);
+	}
+
+	public Vector2fc ordnanceBarrelRotation(int index) {
+		return ordnance().get(index).barrelRotation();
 	}
 
 	public FabrikStructure3D skeleton() {

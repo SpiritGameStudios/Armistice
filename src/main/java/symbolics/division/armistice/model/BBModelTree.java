@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
@@ -37,6 +38,7 @@ public class BBModelTree {
 		return elements.values();
 	}
 
+	@Nullable
 	public Element elements(String uuid) {
 		return elements.get(uuid);
 	}
@@ -45,6 +47,7 @@ public class BBModelTree {
 		return children.values();
 	}
 
+	@Nullable
 	public BBModelTree child(String name) {
 		return children.get(name);
 	}
