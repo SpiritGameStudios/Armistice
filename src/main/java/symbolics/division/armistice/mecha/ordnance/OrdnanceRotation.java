@@ -7,21 +7,28 @@ import au.edu.federation.utils.Vec3f;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.*;
+import symbolics.division.armistice.mecha.MechaCore;
 import symbolics.division.armistice.mecha.OrdnancePart;
 import symbolics.division.armistice.mecha.movement.IKUtil;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static symbolics.division.armistice.mecha.MechaEntity.BARREL_ROTATIONS;
+
 public class OrdnanceRotation {
 	protected OrdnancePart ord;
+	protected final MechaCore core;
 	protected FabrikChain3D chain;
 
 	protected final float yawSpeed;
 	protected final float pitchSpeed;
-	protected final Vector2f rotation = new Vector2f(0, 0);
 
 	public OrdnanceRotation(OrdnancePart ord,
 							float yOffset,
-							float minYaw, float maxYaw, float yawDegTickSpeed,
+							float minYaw, float maxYaw, MechaCore core, float yawDegTickSpeed,
 							float minPitch, float maxPitch, float pitchDegTickSpeed) {
+		this.core = core;
 		this.yawSpeed = yawDegTickSpeed;
 		this.pitchSpeed = pitchDegTickSpeed;
 		this.ord = ord;
@@ -57,12 +64,14 @@ public class OrdnanceRotation {
 	}
 
 	public Vector2fc relYawPitchRad() {
-		return rotation;
+		return core.ordnanceBarrelRotation(core.ordnanceIndex(ord));
 	}
 
 	public Vec3 currentDirection() {
+		Vector2fc rotation = relYawPitchRad();
+
 		Matrix4f m2w = new Matrix4f().rotate(ord.baseRotation());
-		m2w.rotate(new Quaternionf().rotateZYX(0, rotation.x * Mth.DEG_TO_RAD, -rotation.y * Mth.DEG_TO_RAD));
+		m2w.rotate(new Quaternionf().rotateZYX(0, rotation.x() * Mth.DEG_TO_RAD, -rotation.y() * Mth.DEG_TO_RAD));
 		return new Vec3(m2w.transformDirection(0, 0, 1, new Vector3f()));
 	}
 
@@ -71,9 +80,19 @@ public class OrdnanceRotation {
 		double xz = Mth.length(d.x, d.z);
 		float yaw = (float) Mth.atan2(d.x, d.z) * Mth.RAD_TO_DEG;
 		float pitch = (float) Mth.atan2(d.y, xz) * Mth.RAD_TO_DEG;
-		rotation.set(
-			Mth.wrapDegrees(Mth.approachDegrees(rotation.x, yaw, yawSpeed)),
-			Mth.wrapDegrees(Mth.approachDegrees(rotation.y, pitch, pitchSpeed))
+
+		Vector2fc rotation = relYawPitchRad();
+
+		List<Vector2f> barrelRotations = new ArrayList<>(core.entity().getEntityData().get(BARREL_ROTATIONS));
+
+		barrelRotations.add(
+			core.ordnanceIndex(ord),
+			new Vector2f(
+				Mth.wrapDegrees(Mth.approachDegrees(rotation.x(), yaw, yawSpeed)),
+				Mth.wrapDegrees(Mth.approachDegrees(rotation.y(), pitch, pitchSpeed))
+			)
 		);
+
+		core.entity().getEntityData().set(BARREL_ROTATIONS, barrelRotations);
 	}
 }

@@ -13,6 +13,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.joml.Quaternionf;
+import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.joml.Vector3f;
 import symbolics.division.armistice.mecha.movement.Euclidean;
@@ -20,6 +21,8 @@ import symbolics.division.armistice.mecha.schematic.MechaSchematic;
 import symbolics.division.armistice.model.MechaModelData;
 
 import java.util.List;
+
+import static symbolics.division.armistice.mecha.MechaEntity.BARREL_ROTATIONS;
 
 /**
  * state holder and entity controller
@@ -186,7 +189,9 @@ public class MechaCore implements Part {
 	}
 
 	public Vector2fc ordnanceBarrelRotation(int index) {
-		return ordnance().get(index).barrelRotation();
+		List<Vector2f> barrelRotations = entity().getEntityData().get(BARREL_ROTATIONS);
+		if (index >= barrelRotations.size()) return new Vector2f();
+		return barrelRotations.get(index);
 	}
 
 	public FabrikStructure3D skeleton() {

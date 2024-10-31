@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.mecha.schematic.*;
@@ -39,6 +40,11 @@ public class MechaEntity extends Entity {
 	protected static final EntityDataAccessor<Vector3f> CLIENT_DIR = SynchedEntityData.defineId(
 		MechaEntity.class,
 		EntityDataSerializers.VECTOR3
+	);
+
+	public static final EntityDataAccessor<List<Vector2f>> BARREL_ROTATIONS = SynchedEntityData.defineId(
+		MechaEntity.class,
+		ArmisticeEntityDataSerializerRegistrar.VEC2_LIST
 	);
 
 	protected static final EntityDataAccessor<Integer> HEAT = SynchedEntityData.defineId(
@@ -93,6 +99,7 @@ public class MechaEntity extends Entity {
 		builder.define(CLIENT_POS, new Vector3f());
 		builder.define(CLIENT_DIR, new Vector3f());
 		builder.define(HEAT, 0);
+		builder.define(BARREL_ROTATIONS, List.of());
 	}
 
 	@Override
