@@ -23,8 +23,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ChassisRenderer {
-	private static final ResourceLocation TEST_TEXTURE = Armistice.id("textures/mecha/skin/chassis_skin_test.png");
-
 	private static final ChassisRenderer MISSING = new ChassisRenderer();
 
 	private final ResourceLocation texture;
@@ -123,7 +121,7 @@ public class ChassisRenderer {
 
 	Pattern legName = Pattern.compile("^leg([0-9]+)$");
 
-	public ChassisRenderer(BBModelTree tree) {
+	public ChassisRenderer(BBModelTree tree, ResourceLocation id) {
 		quads = ModelBaker.bake(tree, t -> !t.node.name().startsWith("leg")).toArray(ModelBaker.Quad[]::new);
 		int count = (int) tree.children().stream().filter(c -> legName.matcher(c.node.name()).find()).count();
 		legRenderers = new LegRenderer[count];
@@ -135,7 +133,10 @@ public class ChassisRenderer {
 				legRenderers[index - 1] = new LegRenderer(child, index - 1);
 			}
 		}
-		texture = TEST_TEXTURE;
+		texture = ResourceLocation.fromNamespaceAndPath(
+			id.getNamespace(),
+			"textures/chassis/" + id.getPath() + ".png"
+		);
 	}
 
 	public static void dispatch(MechaEntity mecha, PoseStack poseStack, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {

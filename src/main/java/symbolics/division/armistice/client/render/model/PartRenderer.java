@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import org.joml.Vector3f;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.mecha.MechaEntity;
+import symbolics.division.armistice.mecha.OrdnancePart;
 import symbolics.division.armistice.mecha.ordnance.NullOrdnancePart;
 import symbolics.division.armistice.model.BBModelTree;
 
@@ -27,14 +28,16 @@ public class PartRenderer {
 			String[] path = entry.getKey().getPath().split("/", 2);
 			if (path.length < 2) {
 				Armistice.LOGGER.error("No part type give for mecha model path {}", entry.getKey());
-			} else {
-				ResourceLocation id = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), path[1]);
-				switch (path[0]) {
-					case "chassis" -> chassis.put(id, new ChassisRenderer(entry.getValue()));
-					case "hull" -> hull.put(id, new HullRenderer(entry.getValue()));
-					case "ordnance" -> ordnance.put(id, new OrdnanceRenderer(entry.getValue()));
-					default -> Armistice.LOGGER.error("invalid part type: {}", entry.getKey());
-				}
+				continue;
+			}
+
+			ResourceLocation id = ResourceLocation.fromNamespaceAndPath(entry.getKey().getNamespace(), path[1]);
+
+			switch (path[0]) {
+				case "chassis" -> chassis.put(id, new ChassisRenderer(entry.getValue(), id));
+				case "hull" -> hull.put(id, new HullRenderer(entry.getValue(), id));
+				case "ordnance" -> ordnance.put(id, new OrdnanceRenderer(entry.getValue(), id));
+				default -> Armistice.LOGGER.error("invalid part type: {}", entry.getKey());
 			}
 		}
 	}
@@ -46,8 +49,9 @@ public class PartRenderer {
 		ChassisRenderer.dispatch(mecha, pose, bufferSource, color, packedLight, packedOverlay);
 		HullRenderer.dispatch(mecha, pose, bufferSource, color, packedLight, packedOverlay);
 		for (int i = 0; i < mecha.core().ordnance().size(); i++) {
-			if (mecha.core().ordnance().get(i) instanceof NullOrdnancePart) continue;
-			OrdnanceRenderer.dispatch(mecha, i, tickDelta, pose, bufferSource, color, packedLight, packedOverlay);
+			OrdnancePart part = mecha.core().ordnance().get(i);
+			if (part instanceof NullOrdnancePart) continue;
+			OrdnanceRenderer.dispatch(mecha, part, tickDelta, pose, bufferSource, color, packedLight, packedOverlay);
 		}
 		pose.popPose();
 	}

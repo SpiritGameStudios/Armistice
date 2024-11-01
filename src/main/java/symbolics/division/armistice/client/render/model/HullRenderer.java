@@ -13,8 +13,6 @@ import symbolics.division.armistice.model.BBModelTree;
 
 @OnlyIn(Dist.CLIENT)
 public class HullRenderer {
-	private static final ResourceLocation TEST_TEXTURE = Armistice.id("textures/mecha/skin/skin_template.png");
-
 	private static final HullRenderer MISSING = new HullRenderer();
 
 	private final ResourceLocation texture;
@@ -25,9 +23,12 @@ public class HullRenderer {
 		this.texture = MissingTextureAtlasSprite.getLocation();
 	}
 
-	public HullRenderer(BBModelTree tree) {
+	public HullRenderer(BBModelTree tree, ResourceLocation id) {
 		quads = ModelBaker.bake(tree).toArray(ModelBaker.Quad[]::new);
-		texture = TEST_TEXTURE;
+		texture = ResourceLocation.fromNamespaceAndPath(
+			id.getNamespace(),
+			"textures/hull/" + id.getPath() + ".png"
+		);
 	}
 
 	public static void dispatch(MechaEntity mecha, PoseStack poseStack, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {

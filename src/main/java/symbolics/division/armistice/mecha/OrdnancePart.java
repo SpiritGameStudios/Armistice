@@ -1,8 +1,10 @@
 package symbolics.division.armistice.mecha;
 
 import com.google.common.collect.ImmutableList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector2fc;
 import org.joml.Vector3fc;
@@ -15,6 +17,7 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 	protected final int maxTargets;
 	private final List<HitResult> targets = new ArrayList<>();
 	protected MechaCore core;
+	private ResourceLocation id = null;
 
 	public Quaternionf lastRenderRotation = new Quaternionf();
 
@@ -74,5 +77,15 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 		if (!isValidTarget(hitResult) || targets.size() >= maxTargets) return false;
 		targets.add(hitResult);
 		return true;
+	}
+
+	public void setId(ResourceLocation id) {
+		if (this.id != null) throw new IllegalStateException();
+		this.id = id;
+	}
+
+	@Nullable
+	public ResourceLocation id() {
+		return this.id;
 	}
 }

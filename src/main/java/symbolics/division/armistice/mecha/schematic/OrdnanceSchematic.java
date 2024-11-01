@@ -15,7 +15,10 @@ public record OrdnanceSchematic(
 
 	@Override
 	public OrdnancePart make() {
-		return supplier.get();
+		OrdnancePart part = supplier.get();
+		part.setId(id());
+
+		return part;
 	}
 
 	@Override
