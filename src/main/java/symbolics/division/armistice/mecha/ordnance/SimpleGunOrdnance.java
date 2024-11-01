@@ -9,7 +9,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
-import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
 import symbolics.division.armistice.mecha.MechaCore;
@@ -71,18 +70,18 @@ public class SimpleGunOrdnance extends OrdnancePart {
 
 		Vec3 evilBodyOffsetPleaseUpdateModelData = info.body().origin();
 
-		Vec3 currentDirection = rotationManager.currentDirection();
-		Vector3f absBarrel = rel2Abs(
+		Vec3 absBody = new Vec3(rel2Abs(
 			new Quaternionf().rotateZYX(
 				(float) baseRotation.z, (float) baseRotation.y, (float) baseRotation.x
 			).transform(evilBodyOffsetPleaseUpdateModelData.toVector3f())
-		);
+		));
 
-		absBarrel = absBarrel.add(currentDirection.scale(barrelLength).toVector3f());
-		Entity projectile = createProjectile(absBarrel);
+		Vec3 idealBarrelDir = target.getEntity().position().subtract(absBody).normalize().scale(barrelLength);
+		Vec3 idealBarrelTipPos = absBody.add(idealBarrelDir);
+		Entity projectile = createProjectile(idealBarrelTipPos.toVector3f());
 
-		double x = target.getEntity().getX() - absBarrel.x;
-		double z = target.getEntity().getZ() - absBarrel.z;
+		double x = target.getEntity().getX() - idealBarrelTipPos.x;
+		double z = target.getEntity().getZ() - idealBarrelTipPos.z;
 
 		double horizontalDist = Math.sqrt(x * x + z * z);
 
@@ -91,7 +90,7 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		// temp: rotation manager example
 		Vec3 desiredDir = new Vec3(x, y, z).normalize();
 
-		rotationManager.setTarget(target.getEntity().position());
+		rotationManager.setTarget(idealBarrelTipPos.add(idealBarrelDir));
 		rotationManager.tick();
 
 		// you can constrain it by angle, dot product, whatever
@@ -99,9 +98,10 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		// if this is the correct order to do the check on whether it will be able to fire.
 		// it should also check if it would hit itself with the gun (though rotations should normally
 		// prevent that, and self-spawned projectiles should phase through us)
-		if (rotationManager.currentDirection().dot(desiredDir) < 0.95) return;
+		Vec3 currentDirection = rotationManager.currentDirection();
+		if (currentDirection.dot(desiredDir) < 0.95) return;
 
-		Vec3 velocity = currentDirection
+		Vec3 velocity = desiredDir
 			.scale(projectileVelocity);
 
 		projectile.setDeltaMovement(velocity);
