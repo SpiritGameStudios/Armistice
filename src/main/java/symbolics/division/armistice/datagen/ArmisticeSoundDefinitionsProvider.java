@@ -26,6 +26,10 @@ public class ArmisticeSoundDefinitionsProvider extends SoundDefinitionsProvider 
 			.with(sound(Armistice.id("entity/mecha/step1")), sound(Armistice.id("entity/mecha/step2")))
 			.subtitle("sound.armistice.entity.mecha.step"));
 
+		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$MINIGUN, SoundDefinition.definition()
+			.with(sound(Armistice.id("entity/mecha/weapon/minigun")))
+			.subtitle("sound.armistice.entity.mecha.weapon.minigun"));
+
 		add(ArmisticeSoundEventRegistrar.MUSIC$RECALLED, SoundDefinition.definition()
 			.with(sound(Armistice.id("music/recalled")))
 			.subtitle("sound.armistice.music.recalled"));

@@ -27,6 +27,19 @@
         ],
         "uuid": "42ad6570-7edc-da2e-c7b5-31d52709a433",
         "visibility": true
+      },
+      {
+        "autouv": 0,
+        "export": true,
+        "mirror_uv": false,
+        "name": "marker1",
+        "origin": [
+          0.0,
+          30.5,
+          66.0
+        ],
+        "uuid": "a9732f77-3cd7-caf5-7277-d7254319b5a5",
+        "visibility": true
       }
     ],
     "export": true,

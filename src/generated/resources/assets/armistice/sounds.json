@@ -18,6 +18,12 @@
     ],
     "subtitle": "sound.armistice.entity.mecha.step"
   },
+  "entity.mecha.weapon.minigun": {
+    "sounds": [
+      "armistice:entity/mecha/weapon/minigun"
+    ],
+    "subtitle": "sound.armistice.entity.mecha.weapon.minigun"
+  },
   "music.recalled": {
     "sounds": [
       "armistice:music/recalled"

@@ -38,6 +38,9 @@ public final class MechaHudRenderer {
 
 	private static final ResourceLocation SPEEDOMETER = Armistice.id("textures/hud/speedometer.png");
 
+	private static final ResourceLocation SMALL_ELEV_TICK = Armistice.id("textures/hud/small_elev_tick.png");
+	private static final ResourceLocation BIG_ELEV_TICK = Armistice.id("textures/hud/big_elev_tick.png");
+
 	private static final ResourceLocation CROSSHAIR = Armistice.id("textures/hud/crosshair.png");
 
 	@SubscribeEvent
@@ -69,6 +72,7 @@ public final class MechaHudRenderer {
 			renderSpeedometer(drawHelper, mecha);
 			renderCrosshair(drawHelper, mecha);
 			renderHeat(drawHelper, mecha);
+			renderElevation(drawHelper, mecha);
 
 			RenderSystem.disableBlend();
 			RenderSystem.defaultBlendFunc();
@@ -189,6 +193,49 @@ public final class MechaHudRenderer {
 		);
 
 		resetColor();
+	}
+
+	private static void renderElevation(DrawHelper drawHelper, MechaEntity mecha) {
+		float windowH = drawHelper.guiGraphics().guiHeight();
+		float windowW = drawHelper.guiGraphics().guiWidth();
+		int left = drawHelper.guiGraphics().guiWidth() / 3;
+		int right = (drawHelper.guiGraphics().guiWidth() / 3) * 2;
+		float top = drawHelper.guiGraphics().guiHeight() / 5;
+		float bottom = windowH - top;
+		float pitchDeg = Minecraft.getInstance().gameRenderer.getMainCamera().getXRot();
+//		float pitch_delta = drawHelper.guiGraphics().guiHeight() / 30;
+		float maxHudAngle = 30;
+
+		float bottomTick = bottom + (pitchDeg % 20);
+		//Math.clamp(pitchDeg - maxHudAngle, -90, 90);
+
+
+		// need to match pitch to rotation
+		// specifically, the lines should cover the same spots when pitch changes
+		// map pitch degrees to y degrees for consistency
+		// need to use fov
+
+
+		drawHelper.renderFlicker(
+			pos -> {
+				drawHelper.hLine(
+					left - 2 + pos.x,
+					right + 2 + pos.x,
+					pos.y,
+					2
+				);
+
+//				drawHelper.hLine(20, 100, 100, 20);
+//				for (float y = bottomTick; y <= top; y += 10) {
+//					drawHelper.hLine(left - 5, left, y, 2);
+//				}
+			},
+			new Vec2(0, 20),
+//			new Vec2(drawHelper.guiGraphics().guiWidth() / 2f, drawHelper.guiGraphics().guiHeight() / 2f),
+			lightbulbColor()
+		);
+
+
 	}
 
 	private static void renderHeading(DrawHelper drawHelper, MechaEntity mecha) {

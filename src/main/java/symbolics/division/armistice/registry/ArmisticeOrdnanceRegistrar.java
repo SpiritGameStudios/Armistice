@@ -45,9 +45,28 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 	public static final OrdnanceSchematic MINIGUN = new OrdnanceSchematic(
 		1,
 		() -> new HitscanGunOrdnance(
-			3,
+			1,
 			50,
 			1,
+			(core, pos) -> {
+				core.level().playSound(
+					null,
+					pos.x(), pos.y(), pos.z(),
+					ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$MINIGUN,
+					SoundSource.HOSTILE,
+					1,
+					1.3f
+				);
+			}
+		)
+	);
+
+	public static final OrdnanceSchematic LIGHT_MACHINE_GUN = new OrdnanceSchematic(
+		1,
+		() -> new HitscanGunOrdnance(
+			10,
+			30,
+			2,
 			(core, pos) -> {
 				core.level().playSound(
 					null,
