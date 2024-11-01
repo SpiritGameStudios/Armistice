@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import symbolics.division.armistice.Armistice;
+import symbolics.division.armistice.client.ArmisticeClient;
 
 import java.io.IOException;
 
@@ -38,9 +39,7 @@ public final class MechaOverlayRenderer {
 	}
 
 	public static boolean shouldProcessMechaOverlay() {
-		// TEMP: add actual conditional logic
-
-		return true;
+		return !ArmisticeClient.renderVanillaHUD;
 	}
 
 	public static void processMechaOverlay(float partialTick) {
