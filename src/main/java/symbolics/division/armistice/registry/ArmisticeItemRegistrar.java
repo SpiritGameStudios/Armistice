@@ -3,6 +3,7 @@ package symbolics.division.armistice.registry;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import symbolics.division.armistice.item.ComponentTooltipItem;
+import symbolics.division.armistice.item.MechaSchematicItem;
 import symbolics.division.armistice.util.registrar.ItemRegistrar;
 
 @SuppressWarnings("unused")
@@ -27,8 +28,7 @@ public final class ArmisticeItemRegistrar implements ItemRegistrar {
 		.rarity(Rarity.UNCOMMON),
 		ArmisticeDataComponentTypeRegistrar.ORDNANCE_SCHEMATIC);
 
-	public static final Item MECHA_SCHEMATIC = new ComponentTooltipItem(new Item.Properties()
+	public static final Item MECHA_SCHEMATIC = new MechaSchematicItem(new Item.Properties()
 		.stacksTo(1)
-		.rarity(Rarity.RARE),
-		ArmisticeDataComponentTypeRegistrar.MECHA_SCHEMATIC);
+		.rarity(Rarity.RARE));
 }

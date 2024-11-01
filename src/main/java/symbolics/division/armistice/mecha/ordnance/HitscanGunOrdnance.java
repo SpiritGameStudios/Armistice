@@ -1,39 +1,42 @@
 package symbolics.division.armistice.mecha.ordnance;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3fc;
+import symbolics.division.armistice.client.render.hud.DrawHelper;
+import symbolics.division.armistice.client.render.hud.MechaHudRenderer;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
 import symbolics.division.armistice.mecha.MechaCore;
 import symbolics.division.armistice.mecha.OrdnancePart;
 import symbolics.division.armistice.model.MechaModelData;
 
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 
-public class SimpleGunOrdnance extends OrdnancePart {
+public class HitscanGunOrdnance extends OrdnancePart {
 	protected final int cooldown;
 	protected final double maxDistance;
-	protected final double projectileVelocity;
-	protected final BiFunction<MechaCore, Vector3fc, Entity> projectileCreator;
+	protected final double damage;
 	protected final BiConsumer<MechaCore, Vector3fc> onShoot;
 
 	protected int cooldownTicks;
 	protected MechaModelData.MarkerInfo barrelMarker;
 
-	public SimpleGunOrdnance(int cooldown, double maxDistance, double projectileVelocity, BiFunction<MechaCore, Vector3fc, Entity> projectileCreator, BiConsumer<MechaCore, Vector3fc> onShoot) {
+	public HitscanGunOrdnance(int cooldown, double maxDistance, double damage, BiConsumer<MechaCore, Vector3fc> onShoot) {
 		super(1);
 
 		this.cooldown = cooldown;
 		this.maxDistance = maxDistance;
-		this.projectileVelocity = projectileVelocity;
-		this.projectileCreator = projectileCreator;
+		this.damage = damage;
 		this.onShoot = onShoot;
 	}
 
@@ -84,14 +87,10 @@ public class SimpleGunOrdnance extends OrdnancePart {
 
 		Vec3 idealBarrelDir = target.getEntity().position().subtract(absBody).normalize().scale(barrelLength);
 		Vec3 idealBarrelTipPos = absBody.add(idealBarrelDir);
-		Entity projectile = projectileCreator.apply(core, idealBarrelTipPos.toVector3f());
 
 		double x = target.getEntity().getX() - idealBarrelTipPos.x;
 		double z = target.getEntity().getZ() - idealBarrelTipPos.z;
-
-		double horizontalDist = Math.sqrt(x * x + z * z);
-
-		double y = (target.getEntity().getY(1.0 / 3.0) - projectile.getY()) + Math.abs(horizontalDist) * (projectile.getGravity() * 5);
+		double y = target.getEntity().getY(1.0 / 3.0) - idealBarrelTipPos.y;
 
 		// temp: rotation manager example
 		Vec3 desiredDir = new Vec3(x, y, z).normalize();
@@ -107,20 +106,71 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		Vec3 currentDirection = rotationManager.currentDirection();
 		if (currentDirection.dot(desiredDir) < 0.95 || cooldownTicks > 0) return;
 
-		Vec3 velocity = desiredDir
-			.scale(projectileVelocity);
+		HitResult ray = core.level().clip(
+			new ClipContext(
+				idealBarrelTipPos,
+				target.getLocation(),
+				ClipContext.Block.OUTLINE,
+				ClipContext.Fluid.NONE,
+				core.entity()
+			));
 
-		projectile.setDeltaMovement(velocity);
-		projectile.hasImpulse = true;
+		if (ray.getType() != HitResult.Type.MISS) return;
 
-		projectile.setYRot((float) (Mth.atan2(velocity.x, velocity.z) * Mth.RAD_TO_DEG));
-		projectile.setXRot((float) (Mth.atan2(velocity.y, horizontalDist) * Mth.RAD_TO_DEG));
-		projectile.yRotO = projectile.getYRot();
-		projectile.xRotO = projectile.getXRot();
-
-		core.level().addFreshEntity(projectile);
-		onShoot.accept(core, idealBarrelTipPos.toVector3f());
+		this.onShoot.accept(core, idealBarrelTipPos.toVector3f());
+		target.getEntity().hurt(core.entity().damageSources().magic(), (float) damage);
 
 		cooldownTicks = cooldown;
+	}
+
+	@Override
+	public void renderDebug(MultiBufferSource bufferSource, PoseStack poseStack) {
+		super.renderDebug(bufferSource, poseStack);
+
+		MechaModelData.OrdnanceInfo info = core.model().ordnanceInfo(this, core);
+
+		var barrelLength = barrelMarker.origin().with(Direction.Axis.Y, 0).length();
+		var baseRotation = info.mountPoint().rotationInfo().bbRotation().scale(Mth.DEG_TO_RAD);
+
+		Vec3 evilBodyOffsetPleaseUpdateModelData = info.body().origin();
+
+		Vec3 absBody = new Vec3(rel2Abs(
+			new Quaternionf().rotateZYX(
+				(float) baseRotation.z, (float) baseRotation.y, (float) baseRotation.x
+			).transform(evilBodyOffsetPleaseUpdateModelData.toVector3f())
+		));
+
+		Vec3 currentDirection = rotationManager.currentDirection();
+
+		RenderSystem.enableBlend();
+		RenderSystem.blendFuncSeparate(
+			GlStateManager.SourceFactor.SRC_ALPHA,
+			GlStateManager.DestFactor.ONE,
+			GlStateManager.SourceFactor.SRC_ALPHA,
+			GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA
+		);
+
+		DrawHelper.renderHologramFlicker(
+			pos -> {
+				BufferBuilder bufferBuilder = Tesselator.getInstance().begin(
+					VertexFormat.Mode.DEBUG_LINE_STRIP,
+					DefaultVertexFormat.POSITION_COLOR
+				);
+
+				bufferBuilder.addVertex(poseStack.last(), absBody.add(pos).toVector3f())
+					.setColor(1, 1, 1, 1.0f);
+
+				bufferBuilder.addVertex(poseStack.last(), absBody.add(currentDirection.scale(barrelLength + maxDistance)).add(pos).toVector3f())
+					.setColor(1, 1, 1, 1.0f);
+
+				BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+			},
+			Vec3.ZERO,
+			MechaHudRenderer.lightbulbColor()
+		);
+
+		RenderSystem.disableBlend();
+		RenderSystem.defaultBlendFunc();
+		RenderSystem.setShaderColor(1, 1, 1, 1);
 	}
 }
