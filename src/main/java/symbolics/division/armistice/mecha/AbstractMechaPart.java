@@ -1,5 +1,8 @@
 package symbolics.division.armistice.mecha;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+
 public abstract class AbstractMechaPart implements Part {
 	protected MechaCore core;
 
@@ -20,5 +23,10 @@ public abstract class AbstractMechaPart implements Part {
 	@Override
 	public void tick() {
 		if (!ready()) throw new RuntimeException("Part was ticked before it was ready!");
+	}
+
+	@Override
+	public void renderDebug(MultiBufferSource bufferSource, PoseStack poseStack) {
+		if (!ready()) throw new RuntimeException("Part debug render was called before it was ready!");
 	}
 }

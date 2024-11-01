@@ -355,6 +355,8 @@ public class ChassisPart extends AbstractMechaPart {
 
 	@Override
 	public void renderDebug(MultiBufferSource bufferSource, PoseStack poseStack) {
+		super.renderDebug(bufferSource, poseStack);
+
 		for (int i = 0; i < skeleton.getNumChains(); i++) {
 			var effectorLoc = skeleton.getChain(i).getEffectorLocation();
 			poseStack.pushPose();

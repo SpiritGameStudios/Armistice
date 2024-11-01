@@ -1,5 +1,7 @@
 package symbolics.division.armistice.mecha;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.NonNullList;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.joml.Vector3fc;
@@ -89,5 +91,17 @@ public class HullPart extends AbstractMechaPart {
 	@Override
 	public Vector3fc relPos() {
 		return parent().relHullPos();
+	}
+
+	@Override
+	public void renderDebug(MultiBufferSource bufferSource, PoseStack poseStack) {
+		super.renderDebug(bufferSource, poseStack);
+
+		ordnance.forEach(part -> part.renderDebug(bufferSource, poseStack));
+	}
+
+	@Override
+	public boolean ready() {
+		return super.ready() && ordnance.stream().allMatch(AbstractMechaPart::ready);
 	}
 }

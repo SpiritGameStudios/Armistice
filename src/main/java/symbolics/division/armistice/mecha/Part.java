@@ -78,6 +78,6 @@ public interface Part extends Euclidean {
 	Part parent();
 
 	default void renderDebug(MultiBufferSource bufferSource, PoseStack poseStack) {
-
+		
 	}
 }

@@ -8,12 +8,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec2;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import org.joml.Vector4f;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.mecha.MechaEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class MechaHudRenderer {
 	/**
@@ -32,16 +34,20 @@ public final class MechaHudRenderer {
 
 	private static final ResourceLocation HEAT = Armistice.id("textures/gui/heat.png");
 
+	private static final ResourceLocation SPEEDOMETER = Armistice.id("textures/gui/speedometer.png");
+
+
 	@SubscribeEvent
 	private static void registerGuiLayers(RegisterGuiLayersEvent event) {
 		event.registerAboveAll(Armistice.id("mecha_hud"), (guiGraphics, deltaTracker) -> {
 			LocalPlayer player = Minecraft.getInstance().player;
 			if (player == null) return;
 
-			Entity vehicle = player.getVehicle();
-			if (!(vehicle instanceof MechaEntity mecha)) return;
-			if (!mecha.core().ready()) return;
+//			Entity vehicle = player.getVehicle();
+//			if (!(vehicle instanceof MechaEntity mecha)) return;
+//			if (!mecha.core().ready()) return;
 
+			Entity mecha = player;
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(
 				GlStateManager.SourceFactor.SRC_ALPHA,
@@ -54,7 +60,8 @@ public final class MechaHudRenderer {
 
 			renderAltitude(drawHelper, mecha);
 			renderHeading(drawHelper, mecha);
-			renderHeat(drawHelper, mecha);
+			renderSpeedometer(drawHelper, mecha);
+//			renderHeat(drawHelper, mecha);
 
 			RenderSystem.disableBlend();
 			RenderSystem.defaultBlendFunc();
@@ -104,26 +111,20 @@ public final class MechaHudRenderer {
 	}
 
 	private static void renderHeat(DrawHelper drawHelper, MechaEntity mecha) {
-		float heatRadians = Mth.wrapDegrees(Mth.map(
-			mecha.core().getHeat(),
-			0,
-			mecha.core().getMaxHeat(),
-			45,
-			315
-		) + 90) * Mth.DEG_TO_RAD;
+		float heat = (float) mecha.core().getHeat() / (float) mecha.core().getMaxHeat();
 
-		drawHelper.renderFlicker(
-			pos -> drawHelper.aLine(
-				pos,
-				new Vec2(
-					20 * Mth.cos(heatRadians),
-					20 * Mth.sin(heatRadians)
-				).add(pos),
-				2.5F
+		if (heat >= 0.99F) drawHelper.renderFlicker(
+			pos -> drawHelper.guiGraphics().blit(
+				HEAT,
+				(int) pos.x, (int) pos.y,
+				22, 86,
+				22, 0,
+				11, 43,
+				33, 43
 			),
 			new Vec2(
-				32 + 8,
-				drawHelper.guiGraphics().guiHeight() - 32 + 8
+				8,
+				drawHelper.guiGraphics().guiHeight() - 86 - 6
 			),
 			lightbulbColor()
 		);
@@ -132,14 +133,30 @@ public final class MechaHudRenderer {
 			pos -> drawHelper.guiGraphics().blit(
 				HEAT,
 				(int) pos.x, (int) pos.y,
-				64, 64,
-				0, 0,
-				64, 64,
-				64, 64
+				22, Mth.floor(86 * heat),
+				11, 0,
+				11, Mth.floor(43 * heat),
+				33, 43
 			),
 			new Vec2(
-				8,
-				drawHelper.guiGraphics().guiHeight() - 64 + 8
+				drawHelper.guiGraphics().guiWidth() - 8,
+				drawHelper.guiGraphics().guiHeight() - Mth.floor(86 * heat) - 6
+			),
+			lightbulbColor().sub(0, 0, 0, 0.5F)
+		);
+
+		drawHelper.renderFlicker(
+			pos -> drawHelper.guiGraphics().blit(
+				HEAT,
+				(int) pos.x, (int) pos.y,
+				22, 86,
+				0, 0,
+				11, 43,
+				33, 43
+			),
+			new Vec2(
+				drawHelper.guiGraphics().guiWidth() - 8,
+				drawHelper.guiGraphics().guiHeight() - 86 - 6
 			),
 			lightbulbColor()
 		);
@@ -147,7 +164,7 @@ public final class MechaHudRenderer {
 		resetColor();
 	}
 
-	private static void renderHeading(DrawHelper drawHelper, MechaEntity mecha) {
+	private static void renderHeading(DrawHelper drawHelper, Entity mecha) {
 		int left = drawHelper.guiGraphics().guiWidth() / 3;
 		int right = (drawHelper.guiGraphics().guiWidth() / 3) * 2;
 
@@ -164,8 +181,10 @@ public final class MechaHudRenderer {
 
 		int degPerPixel = (drawHelper.guiGraphics().guiWidth() / Minecraft.getInstance().options.fov().get());
 
-		Vec3 dir = mecha.core().direction().normalize();
-		double yaw = Mth.atan2(-dir.x, dir.z) * Mth.RAD_TO_DEG;
+//		Vec3 dir = mecha.core().direction().normalize();
+//		double yaw = Mth.atan2(-dir.x, dir.z) * Mth.RAD_TO_DEG;
+
+		double yaw = mecha.getYRot();
 
 		drawHelper.renderCenteredNumber(
 			Mth.wrapDegrees(Mth.floor(yaw)),
@@ -177,26 +196,12 @@ public final class MechaHudRenderer {
 
 		int offset = (drawHelper.guiGraphics().guiWidth() / 2) - Mth.floor(Mth.wrapDegrees(yaw + 180) * degPerPixel);
 
+		List<Runnable> letters = new ArrayList<>();
+
 		for (int i = -360; i < 360; i++) {
 			int x = (i * degPerPixel) + offset;
 			if (x < left) continue;
 			if (x > right) break;
-
-			if (i % 90 == 0) {
-				int finalI = i;
-				drawHelper.renderFlicker(
-					pos -> drawHelper.guiGraphics().blit(
-						HEADING_FONT,
-						(int) pos.x, (int) pos.y,
-						5, 7,
-						5 * (finalI / 90F), 0,
-						5, 7,
-						20, 7
-					),
-					new Vec2(x - 2.5F, 9 + 5 + 7 + 2),
-					lightbulbColor()
-				);
-			}
 
 			drawHelper.renderFlicker(
 				pos -> drawHelper.vLine(
@@ -208,7 +213,74 @@ public final class MechaHudRenderer {
 				new Vec2(x, 3),
 				lightbulbColor()
 			);
+
+			if (i % 90 == 0) {
+				int finalI = i;
+
+				letters.add(() -> drawHelper.renderFlicker(
+					pos -> drawHelper.guiGraphics().blit(
+						HEADING_FONT,
+						(int) pos.x, (int) pos.y,
+						5, 7,
+						5 * (finalI / 90F), 0,
+						5, 7,
+						20, 7
+					),
+					new Vec2(x - 2.5F, 9 + 5 + 9 + 2),
+					lightbulbColor()
+				));
+			}
 		}
+
+		letters.forEach(Runnable::run);
+
+		resetColor();
+	}
+
+	private static void renderSpeedometer(DrawHelper drawHelper, Entity mecha) {
+		double speed = mecha.getDeltaMovement().length();
+		double progressDegrees = Mth.wrapDegrees(Mth.map(
+			speed,
+			0,
+			4,
+			0,
+			180
+		) + 225.0f);
+
+		float progressRadians = (float) (progressDegrees * Mth.DEG_TO_RAD);
+
+
+		drawHelper.renderFlicker(
+			pos -> drawHelper.aLine(
+				new Vec2(
+					10 * Mth.cos(progressRadians),
+					10 * Mth.sin(progressRadians)
+				).add(pos),
+				pos,
+				2F
+			),
+			new Vec2(
+				25F,
+				drawHelper.guiGraphics().guiHeight() - 17.0f
+			),
+			lightbulbColor()
+		);
+
+		drawHelper.renderFlicker(
+			pos -> drawHelper.guiGraphics().blit(
+				SPEEDOMETER,
+				(int) pos.x, (int) pos.y,
+				34, 34,
+				0, 0,
+				34, 34,
+				34, 34
+			),
+			new Vec2(
+				8,
+				drawHelper.guiGraphics().guiHeight() - 34
+			),
+			lightbulbColor()
+		);
 
 		resetColor();
 	}

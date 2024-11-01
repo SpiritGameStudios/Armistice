@@ -23,6 +23,8 @@ public final class MechaDebugRenderer {
 		if (player == null) return;
 
 		player.level().getEntities(ArmisticeEntityTypeRegistrar.MECHA, player.getBoundingBox().inflate(100.0), ignored -> true).forEach(mecha -> {
+			if (!mecha.core().ready()) return;
+
 			poseStack.pushPose();
 
 			Vec3 offset = mecha.position().subtract(camera);

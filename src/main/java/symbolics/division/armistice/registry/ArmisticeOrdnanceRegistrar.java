@@ -14,4 +14,22 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 			1.5
 		)
 	);
+
+	public static final OrdnanceSchematic FLAMETHROWER = new OrdnanceSchematic(
+		1,
+		() -> new SimpleGunOrdnance(
+			1,
+			50,
+			1.5
+		)
+	);
+
+	public static final OrdnanceSchematic MINIGUN = new OrdnanceSchematic(
+		1,
+		() -> new SimpleGunOrdnance(
+			2,
+			150,
+			1.5
+		)
+	);
 }

@@ -20,8 +20,8 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 	private static final RandomSource RANDOM = RandomSource.create();
 
 	/**
-	 * Each number is 5 x 7
-	 * Spritesheet is 55 x 7
+	 * Each number is 5 x 9
+	 * Spritesheet is 55 x 9
 	 * Numbers are at 5 * number
 	 */
 	private static final ResourceLocation NUMBER_FONT = Armistice.id("textures/gui/number.png");
@@ -169,12 +169,12 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 				pos -> guiGraphics.blit(
 					NUMBER_FONT,
 					(int) pos.x, (int) pos.y,
-					Mth.floor(5 * size), Mth.floor(7 * size),
+					Mth.floor(5 * size), Mth.floor(9 * size),
 					5 * digit, 0,
-					5, 7,
-					55, 7
+					5, 9,
+					55, 9
 				),
-				new Vec2(x + (7 * size) * i.get(), y),
+				new Vec2(x + (9 * size) * i.get(), y),
 				color
 			);
 
@@ -184,14 +184,14 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 
 	public void renderCenteredNumber(int number, float x, float y, float size, Vector4f color) {
 		int count = String.valueOf(number).length();
-		float width = 7 * size * count;
+		float width = 9 * size * count;
 
 		renderNumber(number, x - (width / 2), y, size, color);
 	}
 
 	public void renderLeftNumber(int number, float x, float y, float size, Vector4f color) {
 		int count = String.valueOf(number).length();
-		float width = 7 * size * count;
+		float width = 9 * size * count;
 
 		renderNumber(number, x - width, y, size, color);
 	}
