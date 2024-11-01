@@ -13,6 +13,8 @@ import symbolics.division.armistice.registry.ArmisticeEntityTypeRegistrar;
 @EventBusSubscriber(bus = EventBusSubscriber.Bus.MOD)
 @Mod(value = Armistice.MODID, dist = Dist.CLIENT)
 public class ArmisticeClient {
+	public static boolean renderVanillaHUD = true;
+
 	@SubscribeEvent
 	public static void handleRegisterEntityRenderEvent(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerEntityRenderer(ArmisticeEntityTypeRegistrar.MECHA, MechaEntityRenderer::new);

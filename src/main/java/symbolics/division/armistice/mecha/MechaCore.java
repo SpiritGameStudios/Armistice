@@ -19,6 +19,7 @@ import org.joml.Vector3f;
 import symbolics.division.armistice.mecha.movement.Euclidean;
 import symbolics.division.armistice.mecha.schematic.MechaSchematic;
 import symbolics.division.armistice.model.MechaModelData;
+import symbolics.division.armistice.registry.ArmisticeSoundEventRegistrar;
 
 import java.util.List;
 
@@ -40,6 +41,8 @@ public class MechaCore implements Part {
 	protected final HullPart hull;
 	protected final MechaModelData model;
 	private MechaEntity entity = null;
+
+	private int soundCooldown;
 
 	public MechaCore(MechaSchematic schematic) {
 		this.schematic = schematic;
@@ -71,6 +74,18 @@ public class MechaCore implements Part {
 
 		chassis.serverTick();
 		entity.setDeltaMovement(acceleration());
+
+		soundCooldown--;
+
+		if (soundCooldown <= 0) {
+			entity.playSound(
+				entity.getRandom().nextBoolean() ? ArmisticeSoundEventRegistrar.AMBIENT$MECHA1 : ArmisticeSoundEventRegistrar.AMBIENT$MECHA2,
+				1.0F,
+				entity.getRandom().nextFloat() * (1.25F - 0.75F) + 0.75F
+			);
+
+			soundCooldown = entity.getRandom().nextIntBetweenInclusive(20 * 20, 40 * 20);
+		}
 	}
 
 	@Override

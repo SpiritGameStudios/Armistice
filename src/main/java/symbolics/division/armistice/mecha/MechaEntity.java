@@ -117,7 +117,6 @@ public class MechaEntity extends Entity {
 		return true;
 	}
 
-
 	@NotNull
 	@Override
 	protected Vec3 getPassengerAttachmentPoint(@NotNull Entity entity, @NotNull EntityDimensions dimensions, float partialTick) {

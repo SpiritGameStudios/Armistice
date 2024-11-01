@@ -24,7 +24,7 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 	 * Spritesheet is 55 x 9
 	 * Numbers are at 5 * number
 	 */
-	private static final ResourceLocation NUMBER_FONT = Armistice.id("textures/gui/number.png");
+	private static final ResourceLocation NUMBER_FONT = Armistice.id("textures/hud/number.png");
 
 	public void fill(float minX, float minY, float maxX, float maxY) {
 		if (maxX > minX) {

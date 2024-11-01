@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
@@ -29,8 +28,8 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 	}
 
 	@Override
-	public void render(MechaEntity mecha, float entityYaw, float partialTick, PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
-		int color = FastColor.ARGB32.color(255, 255, 255, 255);
+	public void render(MechaEntity mecha, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
+		int color = 0xFFFFFFFF;
 
 		//  render in absolute space
 
