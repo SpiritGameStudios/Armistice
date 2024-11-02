@@ -204,7 +204,7 @@ public final class MechaHudRenderer {
 		resetColor();
 	}
 
-	private static void elevationHelper(DrawHelper drawHelper, MechaEntity mecha) {
+	private static void renderElevation(DrawHelper drawHelper, MechaEntity mecha) {
 		float windowW = drawHelper.guiGraphics().guiWidth();
 		float windowH = drawHelper.guiGraphics().guiHeight();
 		float left = windowW / 3;
@@ -221,31 +221,35 @@ public final class MechaHudRenderer {
 
 		for (float i = bottomTick; i > 0; i -= tickSep) {
 			if (i > top && i < bottom) {
-				drawHelper.hLine(
-					left - tickWidth + tickDif * sign,
-					left,
-					i,
-					2
+				float finalI = i;
+				float finalSign = sign;
+
+				drawHelper.renderFlicker(
+					pos -> drawHelper.hLine(
+						(left - tickWidth) + (tickDif * finalSign) + pos.x,
+						left + pos.x,
+						finalI + pos.y,
+						2
+					),
+					Vec2.ZERO,
+					lightbulbColor()
 				);
-				drawHelper.hLine(
-					right,
-					right + tickWidth - tickDif * sign,
-					i,
-					1.5f
+
+				drawHelper.renderFlicker(
+					pos ->
+						drawHelper.hLine(
+							right + pos.x,
+							((right + tickWidth) - (tickDif * finalSign)) + pos.x,
+							finalI + pos.y,
+							2f
+						),
+					Vec2.ZERO,
+					lightbulbColor()
 				);
 			}
 			sign = -sign;
 		}
-	}
 
-	private static void renderElevation(DrawHelper drawHelper, MechaEntity mecha) {
-		drawHelper.renderFlicker(
-			pos -> {
-				elevationHelper(drawHelper, mecha);
-			},
-			new Vec2(0, 0),
-			lightbulbColor()
-		);
 		resetColor();
 	}
 
