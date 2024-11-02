@@ -1,8 +1,6 @@
 package symbolics.division.armistice.client.render.model;
 
 import au.edu.federation.caliko.FabrikBone3D;
-import au.edu.federation.caliko.FabrikChain3D;
-import au.edu.federation.utils.Vec3f;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
@@ -13,6 +11,7 @@ import org.joml.Quaternionf;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.client.render.debug.ArmisticeClientDebugValues;
 import symbolics.division.armistice.mecha.MechaEntity;
+import symbolics.division.armistice.mecha.movement.ChassisLeg;
 import symbolics.division.armistice.mecha.movement.IKUtil;
 import symbolics.division.armistice.model.BBModelTree;
 import symbolics.division.armistice.model.OutlinerNode;
@@ -75,29 +74,29 @@ public class ChassisRenderer {
 		}
 
 		public void render(MechaEntity mecha, PoseStack matrices, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
-			FabrikChain3D chain = mecha.core().skeleton().getChain(index + 1);
+			ChassisLeg leg = mecha.core().getLegForRender(index);
 			// skip fake base bone that's not present in model
-			float parentYaw = Mth.PI - chain.getBone(1).getGlobalYawDegs();
-			for (int i = 0; i < quadArrays.size(); i++) {
-				if (quadArrays.get(i).length != 0) {
-					var bone = chain.getBone(i + 1);
-					float yaw = bone.getGlobalYawDegs() * Mth.DEG_TO_RAD;
-					Vec3f base = bone.getStartLocation();
-					matrices.pushPose();
-					{
-						matrices.translate(base.x, base.y, base.z);
-						yaw = Mth.PI - yaw;
-						float calcPitch = interpretPitch(bone, yaw, parentYaw);
-
-						matrices.mulPose(new Quaternionf().rotateZYX(0, yaw, calcPitch + Mth.PI));
-						var seg = segmentNodes.get(i).origin();
-						matrices.translate(-seg.x, -seg.y, -seg.z);
-
-						PartRenderer.renderQuads(quadArrays.get(i), texture, matrices.last(), bufferSource, color, packedLight, packedOverlay);
-					}
-					matrices.popPose();
-				}
-			}
+//			float parentYaw = Mth.PI - chain.getBone(1).getGlobalYawDegs();
+//			for (int i = 0; i < quadArrays.size(); i++) {
+//				if (quadArrays.get(i).length != 0) {
+//					var bone = chain.getBone(i + 1);
+//					float yaw = bone.getGlobalYawDegs() * Mth.DEG_TO_RAD;
+//					Vec3f base = bone.getStartLocation();
+//					matrices.pushPose();
+//					{
+//						matrices.translate(base.x, base.y, base.z);
+//						yaw = Mth.PI - yaw;
+//						float calcPitch = interpretPitch(bone, yaw, parentYaw);
+//
+//						matrices.mulPose(new Quaternionf().rotateZYX(0, yaw, calcPitch + Mth.PI));
+//						var seg = segmentNodes.get(i).origin();
+//						matrices.translate(-seg.x, -seg.y, -seg.z);
+//
+//						PartRenderer.renderQuads(quadArrays.get(i), texture, matrices.last(), bufferSource, color, packedLight, packedOverlay);
+//					}
+//					matrices.popPose();
+//				}
+//			}
 		}
 
 		private float interpretPitch(FabrikBone3D bone, float yawRad, float yawParentRad) {

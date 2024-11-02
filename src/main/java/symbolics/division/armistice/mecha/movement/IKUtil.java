@@ -13,9 +13,9 @@ public class IKUtil {
 
 	public static void configureDefaultChainSettings(FabrikChain3D chain) {
 		// Caliko Structures don't preserve all chain settings when added
-		chain.setMinIterationChange(0.1f);
-		chain.setSolveDistanceThreshold(0.1f);
-		chain.setMaxIterationAttempts(100);
+		chain.setMinIterationChange(0.3f);
+		chain.setSolveDistanceThreshold(0.3f);
+		chain.setMaxIterationAttempts(20);
 	}
 
 	// flipped x version for left handed system conversion (confusing!)

@@ -1,8 +1,6 @@
 package symbolics.division.armistice.mecha;
 
-import au.edu.federation.caliko.FabrikBone3D;
 import au.edu.federation.caliko.FabrikChain3D;
-import au.edu.federation.caliko.FabrikStructure3D;
 import au.edu.federation.utils.Vec3f;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -11,8 +9,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.Direction;
-import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -20,9 +16,9 @@ import org.joml.Vector3fc;
 import symbolics.division.armistice.client.render.hud.DrawHelper;
 import symbolics.division.armistice.client.render.hud.MechaHudRenderer;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
+import symbolics.division.armistice.math.GeometryUtil;
 import symbolics.division.armistice.mecha.movement.ChassisLeg;
 import symbolics.division.armistice.mecha.movement.DirectionState;
-import symbolics.division.armistice.mecha.movement.IKUtil;
 import symbolics.division.armistice.mecha.movement.LegMap;
 import symbolics.division.armistice.mecha.schematic.ChassisSchematic;
 
@@ -49,7 +45,7 @@ public class ChassisPart extends AbstractMechaPart {
 	protected Vec3 movement = Vec3.ZERO;
 	protected Vec3 pathingTarget = Vec3.ZERO;
 	protected LegMap legMap;
-	protected FabrikStructure3D skeleton;
+//	protected FabrikStructure3D skeleton;
 
 	protected boolean legsReady = false;
 	protected Vec3 prevPos = Vec3.ZERO;
@@ -100,30 +96,27 @@ public class ChassisPart extends AbstractMechaPart {
 		core.hull.init(core);
 		this.legMap = new LegMap(core.model(), this);
 
-
 		// the skeleton appears
-		this.skeleton = new FabrikStructure3D();
-		var p = absPos();
-		FabrikBone3D rootBone = new FabrikBone3D(new Vec3f(p.x, p.y, p.z), new Vec3f(p.x, p.y, p.z + 1));
-		rootBone.setName("root");
-		FabrikChain3D rootChain = new FabrikChain3D();
-		rootChain.addBone(rootBone);
-		rootChain.setGlobalHingedBasebone(
-			IKUtil.Y_AXIS,
-			180, 180, IKUtil.Z_AXIS
-		);
+//		this.skeleton = new FabrikStructure3D();
+//		var p = absPos();
+//		FabrikBone3D rootBone = new FabrikBone3D(new Vec3f(p.x, p.y, p.z), new Vec3f(p.x, p.y, p.z + 1));
+//		rootBone.setName("root");
+//		FabrikChain3D rootChain = new FabrikChain3D();
+//		rootChain.addBone(rootBone);
+//		rootChain.setGlobalHingedBasebone(
+//			IKUtil.Y_AXIS,
+//			0, 0, IKUtil.Z_AXIS
+//		);
 
-		this.skeleton.addChain(rootChain);
-
-		IKUtil.configureDefaultChainSettings(this.skeleton.getChain(0));
-		this.skeleton.getChain(0).setSolveDistanceThreshold(0.3f);
-		this.skeleton.getChain(0).setFixedBaseMode(false);
+//		this.skeleton.addChain(rootChain);
+//		IKUtil.configureDefaultChainSettings(this.skeleton.getChain(0));
+//		this.skeleton.getChain(0).setSolveDistanceThreshold(0.3f);
 
 		// root bone is like the "nose" of the skeleton, guides the center towards desired position.
 		// each leg determines its own fixed rotation relative to the nose, and adds its chain to the skeleton.
 		this.legs = new ArrayList<>();
 		for (int i = 0; i < core.model().legInfo().size(); i++) {
-			legs.add(new ChassisLeg(core.model().legInfo().get(i), this, i, skeleton));
+			legs.add(new ChassisLeg(core.model().legInfo().get(i), this, i));
 		}
 	}
 
@@ -141,92 +134,122 @@ public class ChassisPart extends AbstractMechaPart {
 		super.serverTick();
 
 		// update desired movement
-		if (pathingTarget != null && !pathingTarget.closerThan(new Vec3(absPos()), followTolerance)) {
-			// if we're not facing the target, try to rotate towards it.
-			Vec3 targetHorizontalDir = pathingTarget.subtract(core.position()).with(Direction.Axis.Y, 0).normalize();
-			if (direction().dot(targetHorizontalDir) < 0.95) {
-				// kindly ask our legs to rotate us
-				float sign = (direction().yRot(Mth.PI / 2).dot(targetHorizontalDir) < 0) ? -1 : 1;
-				legMap.setMapRotation(sign * Mth.PI / 6);
-			} else {
-				// otherwise we are facing it, so we ask our legs to move us towards it.
-				// temp: set from model data
-				float stepOffsetDistance = 0.5f;
-				legMap.setMapOffset(new Vec3(0, 0, stepOffsetDistance));
-				legMap.setMapRotation(0);
-			}
-		} else {// don't need to go anywhere, give our legs a rest
-			legMap.setMapOffset(Vec3.ZERO);
-			legMap.setMapRotation(0);
-		}
+//		if (pathingTarget != null && !pathingTarget.closerThan(new Vec3(absPos()), followTolerance)) {
+//			// if we're not facing the target, try to rotate towards it.
+//			Vec3 targetHorizontalDir = pathingTarget.subtract(core.position()).with(Direction.Axis.Y, 0).normalize();
+//			Vec3 dir = direction();
+//			var dirYaw = GeometryUtil.yaw(dir);
+//			var hdirYaw = GeometryUtil.yaw(targetHorizontalDir);
+//			var degreesDifference = Mth.degreesDifference((float) dirYaw * Mth.RAD_TO_DEG, (float) hdirYaw * Mth.RAD_TO_DEG);
+//			if (Mth.abs(degreesDifference) > 10) {
+//				// kindly ask our legs to rotate us
+//				float sign = Mth.sign(degreesDifference);
+//				legMap.setMapRotation(sign * Mth.PI / 6);
+//			} else {
+//				// otherwise we are facing it, so we ask our legs to move us towards it.
+//				// temp: set from model data
+//				float stepOffsetDistance = 0.5f;
+//				legMap.setMapOffset(new Vec3(0, 0, stepOffsetDistance));
+//				legMap.setMapRotation(0);
+//			}
+//		} else {// don't need to go anywhere, give our legs a rest
+//			legMap.setMapOffset(Vec3.ZERO);
+//			legMap.setMapRotation(0);
+//		}
 
-		List<ChassisLeg> lowp = new ArrayList<>();
-		for (ChassisLeg leg : legs) {
-			if (leg.priority) {
-				leg.tick();
-			} else {
-				lowp.add(leg);
-				leg.priority = true;
-			}
-		}
-		for (ChassisLeg leg : lowp) {
-			leg.tick();
-		}
+//		List<ChassisLeg> lowp = new ArrayList<>();
+//		for (ChassisLeg leg : legs) {
+//			leg.tick();
+//			if (leg.priority) {
+//				leg.tick();
+//			} else {
+//				lowp.add(leg);
+//				leg.priority = true;
+//			}
+//		}
+//		for (ChassisLeg leg : lowp) {
+//			leg.tick();
+//		}
 
 		if (firstTick) {
 			firstTick = false;
 			prevPos = core.position();
-		} else {
+		} else if (ArmisticeDebugValues.ikSolving) {
 			// legmap is currently rotated or forwards depending on where we want our legs.
 			// legs will attempt to move into position, then we want to move to be between our legs.
 
-			Vec3 desiredDir = legMap.targetDir(effectors());
-			Vec3 desiredPos = legMap.targetCentroid(desiredDir, effectors());
+			// leg tips have been updated, use tips to update chassis position
+			List<Vec3> effectors = effectors();
 
-			// move to centroid
+			//// update current direction ////
+			Vec3 desiredDir = legMap.targetDir(effectors);
+
+
+//			direction.setTarget(desiredDir);
+//			direction.tick();
+//			direction.setAbsolute(desiredDir);
+			Vec3 curDir = direction();
+
+			//// update current position ////
+			// legmap needs current direction as reference to calculate new centroid
+			Vec3 desiredPos = legMap.targetCentroid(curDir, effectors);
 			if (prevPos == Vec3.ZERO) prevPos = core.position();
-			var curPos = IKUtil.f2m(skeleton.getChain(0).getBone(0).getEndLocation());
-			float ticksPerBlock = 30;
-			var delta = desiredPos.subtract(curPos);
-			Vec3f tgt = IKUtil.m2f(curPos.add(delta.normalize().scale(1 / ticksPerBlock)));
+			Vec3 oldPos = core.position();
+			// move towards centroid
+			float blocksPerTick = 1f / 30;
+			var movementDirection = desiredPos.subtract(oldPos).normalize();
+			Vec3 newPos = oldPos; //.add(movementDirection.scale(blocksPerTick));
+//			core.entity().setPos(newPos);
 
-			// rotate base
-			var baseDir = IKUtil.f2m(skeleton.getChain(0).getBone(0).getDirectionUV());
-			var angleDelta = Math.acos(baseDir.dot(desiredDir));
-			if (Math.abs(angleDelta) > 0.1) {
-				var oldBase = IKUtil.f2m(skeleton.getChain(0).getBaseLocation());
-				var tip = IKUtil.f2m(skeleton.getChain(0).getBone(0).getEndLocation());
-				var newBase = tip.subtract(desiredDir);
-				var baseDelta = newBase.subtract(oldBase);
-				var interpolated = IKUtil.m2f(oldBase.add(baseDelta.normalize().scale(0.01)));
-
-				skeleton.getChain(0).setBaseLocation(interpolated);
-				skeleton.getChain(0).getBone(0).setStartLocation(interpolated);
+			//// update legs based on new position and direction ////
+			for (ChassisLeg leg : legs) {
+				leg.tick();
 			}
 
-			// bug in caliko: targeting an effector's base is undefined
-			var baseBone = skeleton.getChain(0).getBone(0);
-			Vec3f baseStart = baseBone.getStartLocation();
-			if (baseStart.approximatelyEquals(tgt, 0.01f)) { // apply perturbation
-				baseBone.setStartLocation(new Vec3f(baseStart.x + 0.01f, baseStart.y, baseStart.z));
-			}
+			//// update client ////
+			setClientDir(direction().toVector3f());
+			setClientPos(newPos.toVector3f());
+			setLegTickTargets(effectors.stream().map(Vec3::toVector3f).toList());
 
-			if (ArmisticeDebugValues.ikSolving) {
-				skeleton.solveForTarget(tgt);
-				legsReady = true;
-			}
-			core.entity().setPos(IKUtil.f2m(skeleton.getChain(0).getBone(0).getEndLocation()));
+			var rot = absRot();
 
-			for (var leg : legs) {
-				// live-update chain (caliko bug: fixedbase doesn't update on time)
-				leg.getChain().getBone(0).setStartLocation(baseBone.getEndLocation());
-			}
+//			// rotate base
+//			var baseDir = IKUtil.f2m(skeleton.getChain(0).getBone(0).getDirectionUV());
+//			var angleDelta = Math.acos(baseDir.dot(desiredDir));
+//			if (Math.abs(angleDelta) > 0.1) {
+//				var oldBase = IKUtil.f2m(skeleton.getChain(0).getBaseLocation());
+//				var tip = IKUtil.f2m(skeleton.getChain(0).getBone(0).getEndLocation());
+//				var newBase = tip.subtract(desiredDir);
+//				var baseDelta = newBase.subtract(oldBase);
+//				var interpolated = IKUtil.m2f(oldBase.add(baseDelta.normalize().scale(0.01)));
+//
+//				skeleton.getChain(0).setBaseLocation(interpolated);
+//				skeleton.getChain(0).getBone(0).setStartLocation(interpolated);
+//			}
 
-			// update client
-			setClientPos(absPos());
-			var ddd = direction().toVector3f();
-			setClientDir(ddd);
-			setLegTickTargets(effectors().stream().map(Vec3::toVector3f).toList());
+//			// bug in caliko: targeting an effector's base is undefined
+//			var baseBone = skeleton.getChain(0).getBone(0);
+//			Vec3f baseStart = baseBone.getStartLocation();
+//			if (baseStart.approximatelyEquals(tgt, 0.01f)) { // apply perturbation
+//				baseBone.setStartLocation(new Vec3f(baseStart.x + 0.01f, baseStart.y, baseStart.z));
+//			}
+//
+//			if (ArmisticeDebugValues.ikSolving) {
+//				skeleton.solveForTarget(tgt);
+//				legsReady = true;
+//			}
+//			core.entity().setPos(IKUtil.f2m(skeleton.getChain(0).getBone(0).getEndLocation()));
+//
+//			for (var leg : legs) {
+//				// live-update chain (caliko bug: fixedbase doesn't update on time)
+//				leg.getChain().getBone(0).setStartLocation(baseBone.getEndLocation());
+//			}
+//
+//			// update client
+//			setClientPos(absPos());
+//			var ddd = direction().toVector3f();
+//			setClientDir(ddd);
+//			setLegTickTargets(effectors().stream().map(Vec3::toVector3f).toList());
 		}
 
 		core.hull.serverTick();
@@ -243,35 +266,42 @@ public class ChassisPart extends AbstractMechaPart {
 
 		core.hull.clientTick(tickDelta);
 
-		if (!ArmisticeDebugValues.ikSolving) return;
-		if (firstTick || getLegTickTargets().isEmpty()) {
+		if (firstTick) {
 			firstTick = false;
-			return;
+		} else if (ArmisticeDebugValues.ikSolving && !getLegTickTargets().isEmpty()) {
+			Vec3 clientPos = new Vec3(getClientPos());
+			Vec3 clientDir = new Vec3(getClientDir());
+			List<Vec3> tickTargets = getLegTickTargets().stream().map(Vec3::new).toList();
+
+			core.entity().setPos(clientPos);
+			direction.setAbsolute(clientDir);
+			for (int i = 0; i < legs.size(); i++) {
+				legs.get(i).setTickTarget(tickTargets.get(i));
+				legs.get(i).tick();
+			}
 		}
 
-		Vec3 clientPos = new Vec3(getClientPos());
-		Vec3 clientDir = new Vec3(getClientDir());
-		List<Vec3> tickTargets = getLegTickTargets().stream().map(Vec3::new).toList();
-		Vec3f target = IKUtil.m2f(clientPos);
 
-		var baseChain = skeleton.getChain(0);
-		var baseBone = baseChain.getBone(0);
-		Vec3f baseLoc = IKUtil.m2f(clientPos.subtract(clientDir));
-		fixBaseLocation(baseChain, baseLoc);
-		baseBone.setEndLocation(target);
-
-		for (int i = 0; i < tickTargets.size(); i++) {
-			legs.get(i).getChain().updateEmbeddedTarget(IKUtil.m2f(tickTargets.get(i)));
-
-			// for debug render
-			legs.get(i).setTickTarget(tickTargets.get(i));
-		}
-
-		skeleton.solveForTarget(target);
-
-		for (var leg : legs) {
-			leg.getChain().getBone(0).setStartLocation(baseBone.getEndLocation());
-		}
+//		Vec3f target = IKUtil.m2f(clientPos);
+//
+//		var baseChain = skeleton.getChain(0);
+//		var baseBone = baseChain.getBone(0);
+//		Vec3f baseLoc = IKUtil.m2f(clientPos.subtract(clientDir));
+//		fixBaseLocation(baseChain, baseLoc);
+//		baseBone.setEndLocation(target);
+//
+//		for (int i = 0; i < tickTargets.size(); i++) {
+//			legs.get(i).getChain().updateEmbeddedTarget(IKUtil.m2f(tickTargets.get(i)));
+//
+//			// for debug render
+//			legs.get(i).setTickTarget(tickTargets.get(i));
+//		}
+//
+//		skeleton.solveForTarget(target);
+//
+//		for (var leg : legs) {
+////			leg.getChain().getBone(0).setStartLocation(baseBone.getEndLocation());
+//		}
 	}
 
 	private static void fixBaseLocation(FabrikChain3D chain, Vec3f loc) {
@@ -286,7 +316,7 @@ public class ChassisPart extends AbstractMechaPart {
 
 	@Override
 	public Quaternionf relRot() {
-		return new Quaternionf().rotateTo(new Vector3f(0, 0, 1), this.direction().toVector3f());
+		return new Quaternionf().rotateYXZ((float) GeometryUtil.yaw(this.direction()), 0, 0);
 	}
 
 	Vector3fc relHullPos() {
@@ -326,16 +356,12 @@ public class ChassisPart extends AbstractMechaPart {
 		if (core.entity().level().isClientSide) {
 			return new Vec3(getClientDir());
 		} else {
-			var sd = skeleton.getChain(0).getBone(0).getDirectionUV();
-			return new Vec3(sd.x, sd.y, sd.z);
+			return direction.curDir();
 		}
 	}
 
 	public List<Vec3> effectors() {
-		return legs.stream().map(l -> {
-			var loc = l.getTickTarget(); //getChain().getEffectorLocation();
-			return new Vec3(loc.x, loc.y, loc.z);
-		}).toList();
+		return legs.stream().map(ChassisLeg::tipPos).toList();
 	}
 
 	public boolean neighborsStepping(int leg) {
@@ -357,11 +383,20 @@ public class ChassisPart extends AbstractMechaPart {
 	public void renderDebug(MultiBufferSource bufferSource, PoseStack poseStack) {
 		super.renderDebug(bufferSource, poseStack);
 
-		for (int i = 0; i < skeleton.getNumChains(); i++) {
-			var effectorLoc = skeleton.getChain(i).getEffectorLocation();
+		for (var servPos : getLegTickTargets()) {
+			Vec3 sv = new Vec3(servPos);
+			drawVec(sv, sv, poseStack, bufferSource);
+		}
+
+		var q = legMap.legTarget(0);
+		drawVec(q, legs.get(0).w2m(q), poseStack, bufferSource);
+
+		List<Vec3> effectors = effectors();
+		for (int i = 0; i < legs.size(); i++) {
+			var tipPosition = legs.get(i).tipPos();
 			poseStack.pushPose();
 			{
-				poseStack.translate(effectorLoc.x, effectorLoc.y, effectorLoc.z);
+				poseStack.translate(tipPosition.x, tipPosition.y, tipPosition.z);
 				poseStack.mulPose(Minecraft.getInstance().gameRenderer.getMainCamera().rotation());
 				poseStack.scale(0.03f, -0.03f, 0.03f);
 				Minecraft.getInstance().font.drawInBatch(String.valueOf(i), 0.0F, 0.0F, -1, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
@@ -378,25 +413,23 @@ public class ChassisPart extends AbstractMechaPart {
 				GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA
 			);
 
-			skeleton.getChain(i).getChain().forEach(
-				bone -> {
-					DrawHelper.renderHologramFlicker(
-						pos -> drawSeg(
-							new Vector3f(bone.getStartLocationAsArray()).add(pos.toVector3f()),
-							new Vector3f(bone.getEndLocationAsArray()).add(pos.toVector3f()),
-							1,
-							1,
-							1,
-							poseStack,
-							bufferSource
-						),
-						Vec3.ZERO,
-						MechaHudRenderer.lightbulbColor()
-					);
-
-				}
-			);
-
+			List<Vec3> jointPositions = legs.get(i).jointPositions();
+			for (int j = 0; j < jointPositions.size() - 1; j++) {
+				final int whyAreYouUsingCallbacksForThisPleaseBeNormal = j;
+				DrawHelper.renderHologramFlicker(
+					pos -> drawSeg(
+						jointPositions.get(whyAreYouUsingCallbacksForThisPleaseBeNormal).toVector3f(),
+						jointPositions.get(whyAreYouUsingCallbacksForThisPleaseBeNormal + 1).toVector3f(),
+						1,
+						1,
+						1,
+						poseStack,
+						bufferSource
+					),
+					Vec3.ZERO,
+					MechaHudRenderer.lightbulbColor()
+				);
+			}
 
 			RenderSystem.disableBlend();
 			RenderSystem.defaultBlendFunc();
@@ -409,6 +442,7 @@ public class ChassisPart extends AbstractMechaPart {
 
 		Vec3 desiredPos = legMap.targetCentroid(td, effectors());
 
+		// GREEN: target centroid
 		drawLoc(desiredPos.toVector3f(), 0, 1, 0, poseStack, bufferSource);
 
 		for (int i = 0; i < legs.size(); i++) {
@@ -420,16 +454,18 @@ public class ChassisPart extends AbstractMechaPart {
 			quad.addVertex(poseStack.last(), target.add(tol, 0, -tol).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
 			quad.addVertex(poseStack.last(), target.add(tol, 0, tol).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
 			quad.addVertex(poseStack.last(), target.add(-tol, 0, tol).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+			// BLUE: legmap target
 			drawLoc(target.toVector3f(), 0, 0, 1, poseStack, bufferSource);
 			poseStack.pushPose();
 			{
 				poseStack.translate(target.x, target.y + 0.4, target.z);
 				poseStack.mulPose(Minecraft.getInstance().gameRenderer.getMainCamera().rotation());
 				poseStack.scale(0.03f, -0.03f, 0.03f);
-				Minecraft.getInstance().font.drawInBatch(String.valueOf(i + 1), 0.0F, 0.0F, -1, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+				Minecraft.getInstance().font.drawInBatch(String.valueOf(i), 0.0F, 0.0F, -1, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
 			}
 			poseStack.popPose();
 
+			// YELLOW: leg i tick target
 			drawLoc(legs.get(i).getTickTarget().toVector3f(), 1, 1, 0, poseStack, bufferSource);
 		}
 
@@ -442,6 +478,19 @@ public class ChassisPart extends AbstractMechaPart {
 
 		core.hull.renderDebug(bufferSource, poseStack);
 	}
+
+	public static void drawVec(Vec3 pos, Vec3 value, PoseStack poseStack, MultiBufferSource bufferSource) {
+		String v = "%1d, %d, %d";
+		poseStack.pushPose();
+		{
+			poseStack.translate(pos.x, pos.y, pos.z);
+			poseStack.mulPose(Minecraft.getInstance().gameRenderer.getMainCamera().rotation());
+			poseStack.scale(0.03f, -0.03f, 0.03f);
+			Minecraft.getInstance().font.drawInBatch(v, 0.0F, 0.0F, -1, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+		}
+		poseStack.popPose();
+	}
+
 
 	private static void drawLoc(Vector3f p, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
 		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
