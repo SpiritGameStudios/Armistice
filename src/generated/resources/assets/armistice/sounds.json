@@ -11,12 +11,41 @@
     ],
     "subtitle": "sound.armistice.ambient.mecha2"
   },
-  "entity.mecha.step": {
+  "entity.mecha.boot": {
     "sounds": [
-      "armistice:entity/mecha/step1",
+      "armistice:entity/mecha/boot"
+    ],
+    "subtitle": "sound.armistice.entity.mecha.boot"
+  },
+  "entity.mecha.step1": {
+    "sounds": [
+      "armistice:entity/mecha/step1"
+    ],
+    "subtitle": "sound.armistice.entity.mecha.step1"
+  },
+  "entity.mecha.step2": {
+    "sounds": [
       "armistice:entity/mecha/step2"
     ],
-    "subtitle": "sound.armistice.entity.mecha.step"
+    "subtitle": "sound.armistice.entity.mecha.step2"
+  },
+  "entity.mecha.step3": {
+    "sounds": [
+      "armistice:entity/mecha/step3"
+    ],
+    "subtitle": "sound.armistice.entity.mecha.step3"
+  },
+  "entity.mecha.weapon.high_cal": {
+    "sounds": [
+      "armistice:entity/mecha/weapon/high_cal"
+    ],
+    "subtitle": "sound.armistice.entity.mecha.weapon.high_cal"
+  },
+  "entity.mecha.weapon.low_cal": {
+    "sounds": [
+      "armistice:entity/mecha/weapon/low_cal"
+    ],
+    "subtitle": "sound.armistice.entity.mecha.weapon.low_cal"
   },
   "entity.mecha.weapon.minigun": {
     "sounds": [

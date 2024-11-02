@@ -22,9 +22,30 @@ public class ArmisticeSoundDefinitionsProvider extends SoundDefinitionsProvider 
 			.with(sound(Armistice.id("ambient/mecha2")))
 			.subtitle("sound.armistice.ambient.mecha2"));
 
-		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$STEP, SoundDefinition.definition()
-			.with(sound(Armistice.id("entity/mecha/step1")), sound(Armistice.id("entity/mecha/step2")))
-			.subtitle("sound.armistice.entity.mecha.step"));
+
+		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$BOOT, SoundDefinition.definition()
+			.with(sound(Armistice.id("entity/mecha/boot")))
+			.subtitle("sound.armistice.entity.mecha.boot"));
+
+		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$STEP1, SoundDefinition.definition()
+			.with(sound(Armistice.id("entity/mecha/step1")))
+			.subtitle("sound.armistice.entity.mecha.step1"));
+
+		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$STEP2, SoundDefinition.definition()
+			.with(sound(Armistice.id("entity/mecha/step2")))
+			.subtitle("sound.armistice.entity.mecha.step2"));
+
+		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$STEP3, SoundDefinition.definition()
+			.with(sound(Armistice.id("entity/mecha/step3")))
+			.subtitle("sound.armistice.entity.mecha.step3"));
+
+		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$LOW_CAL, SoundDefinition.definition()
+			.with(sound(Armistice.id("entity/mecha/weapon/low_cal")))
+			.subtitle("sound.armistice.entity.mecha.weapon.low_cal"));
+
+		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$HIGH_CAL, SoundDefinition.definition()
+			.with(sound(Armistice.id("entity/mecha/weapon/high_cal")))
+			.subtitle("sound.armistice.entity.mecha.weapon.high_cal"));
 
 		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$MINIGUN, SoundDefinition.definition()
 			.with(sound(Armistice.id("entity/mecha/weapon/minigun")))
