@@ -1,0 +1,59 @@
+[
+  {
+    "autouv": 0,
+    "children": [
+      "b00a163e-13fa-61b7-3331-c81d224efaef",
+      "c0e49293-082b-ec05-faf9-8ac2d4b9a4cb",
+      {
+        "autouv": 0,
+        "children": [
+          "f383f742-4c3b-d983-d7c8-c3a4a4f3b6a2",
+          "4f4a14ac-129e-f627-ba00-76c2e9050c34",
+          "c77a7f94-e66b-5194-1878-65b4c74ef5ca",
+          "bf04ba13-53f3-3acb-bfee-a4636521fffb",
+          "c4475bd7-553d-3851-c9c7-3a3fc0289870",
+          "ad7eccf3-4a19-93e8-d09f-48e71f2e4789",
+          "6d8aadfc-0464-95fe-6255-53615e05c1f0",
+          "c8231be8-e33c-5437-5436-a83865110963",
+          "6c7c48b8-84a1-6f6d-7b4d-3cb1b592d7b3",
+          "7e2fe58d-b1e5-e06a-d5cb-dad62d7c6502",
+          "a0d5db67-e9c6-b1b3-a1f2-b8a989c13a75",
+          "e0bfb8d3-0efc-ee73-b7f1-00d82fec1b36"
+        ],
+        "export": true,
+        "mirror_uv": false,
+        "name": "body",
+        "origin": [
+          0.0,
+          29.0,
+          0.0
+        ],
+        "uuid": "42ad6570-7edc-da2e-c7b5-31d52709a433",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "export": true,
+        "mirror_uv": false,
+        "name": "marker1",
+        "origin": [
+          0.0,
+          31.0,
+          36.0
+        ],
+        "uuid": "1eb26d1e-1e80-c79f-c0a2-3ed83607ec9a",
+        "visibility": true
+      }
+    ],
+    "export": true,
+    "mirror_uv": false,
+    "name": "root",
+    "origin": [
+      0.0,
+      9.0,
+      0.0
+    ],
+    "uuid": "361c8398-f18a-c6df-5ac1-b8e7e0c09779",
+    "visibility": true
+  }
+]

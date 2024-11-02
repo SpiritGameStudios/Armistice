@@ -23,6 +23,11 @@ public final class ArmisticeDatagen {
 
 		generator.addProvider(
 			event.includeServer(),
+			new ArmisticeItemModelProvider(output, existingFileHelper)
+		);
+
+		generator.addProvider(
+			event.includeServer(),
 			new ArmisticeLootTableProvider(output, lookupProvider)
 		);
 
