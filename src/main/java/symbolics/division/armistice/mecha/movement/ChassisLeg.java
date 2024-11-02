@@ -16,12 +16,14 @@ import symbolics.division.armistice.model.MechaModelData;
 import java.util.ArrayList;
 import java.util.List;
 
+import static symbolics.division.armistice.mecha.MechaEntity.JOINT_POSITIONS;
 import static symbolics.division.armistice.mecha.movement.IKUtil.f2m;
 import static symbolics.division.armistice.mecha.movement.IKUtil.m2f;
 
 public class ChassisLeg {
 
 	protected final int legIndex;
+	protected final MechaCore core;
 	protected ChassisPart chassis;
 	protected FabrikChain3D chain = new FabrikChain3D();
 
@@ -34,12 +36,13 @@ public class ChassisLeg {
 
 	private final float tempInitialY = 0;
 
-	public ChassisLeg(MechaModelData.LegInfo info, ChassisPart chassis, int index) {
+	public ChassisLeg(MechaModelData.LegInfo info, ChassisPart chassis, int index, MechaCore core) {
 		// WARNING: CALIKO ROTATION SYSTEM IS LEFT-HANDED
 		// THIS MEANS X AXIS IS FLIPPED OVER Z COMPARED TO MINECRAFT
 
 		this.chassis = chassis;
 		this.legIndex = index;
+		this.core = core;
 		// model format:
 		// leg1 -> seg1: yaw bone. get default yaw and limits
 		// seg1 -> seg2: get x-axis rotation and limits
@@ -254,9 +257,14 @@ public class ChassisLeg {
 	}
 
 	public List<Vec3> jointPositions() {
-		List<Vec3> joints = new ArrayList<>();
+		List<Vec3> joints = new ArrayList<>(core.entity().getEntityData().get(JOINT_POSITIONS).stream().map(
+			vec -> new Vec3(vec.x(), vec.y(), vec.z())
+		).toList());
+
 		chain.getChain().stream().map(bone -> m2w(f2m(bone.getStartLocation()))).forEach(joints::add);
 		joints.add(m2w(f2m(chain.getChain().getLast().getEndLocation())));
+
+		core.entity().getEntityData().set(JOINT_POSITIONS, joints.stream().map(Vec3::toVector3f).toList());
 		return joints;
 	}
 }

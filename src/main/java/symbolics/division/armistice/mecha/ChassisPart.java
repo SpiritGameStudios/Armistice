@@ -116,7 +116,7 @@ public class ChassisPart extends AbstractMechaPart {
 		// each leg determines its own fixed rotation relative to the nose, and adds its chain to the skeleton.
 		this.legs = new ArrayList<>();
 		for (int i = 0; i < core.model().legInfo().size(); i++) {
-			legs.add(new ChassisLeg(core.model().legInfo().get(i), this, i));
+			legs.add(new ChassisLeg(core.model().legInfo().get(i), this, i, core));
 		}
 	}
 
