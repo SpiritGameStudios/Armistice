@@ -219,7 +219,7 @@ public class ChassisPart extends AbstractMechaPart {
 
 			for (var leg : legs) {
 				// live-update chain (caliko bug: fixedbase doesn't update on time)
-				leg.getChain().getBone(0).setStartLocation(baseBone.getEndLocation());
+				leg.setStartLocation(baseBone.getEndLocation());
 			}
 
 			// update client
@@ -261,7 +261,7 @@ public class ChassisPart extends AbstractMechaPart {
 		baseBone.setEndLocation(target);
 
 		for (int i = 0; i < tickTargets.size(); i++) {
-			legs.get(i).getChain().updateEmbeddedTarget(IKUtil.m2f(tickTargets.get(i)));
+			legs.get(i).updateEmbeddedTarget(tickTargets.get(i));
 
 			// for debug render
 			legs.get(i).setTickTarget(tickTargets.get(i));
@@ -270,7 +270,7 @@ public class ChassisPart extends AbstractMechaPart {
 		skeleton.solveForTarget(target);
 
 		for (var leg : legs) {
-			leg.getChain().getBone(0).setStartLocation(baseBone.getEndLocation());
+			leg.setStartLocation(baseBone.getEndLocation());
 		}
 	}
 

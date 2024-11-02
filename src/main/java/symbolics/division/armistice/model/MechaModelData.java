@@ -205,7 +205,7 @@ public class MechaModelData {
 
 			Vec3 legEnd = root.getChild(id + "_tip").orElseThrow().origin();
 			segments.add(new SegmentInfo(
-				Math.max(0.01f, tipPos.distance(legEnd.toVector3f()) * 0.8),
+				Math.max(0.01f, tipPos.distance(legEnd.toVector3f())),
 				segment.rotation().x,
 				segment.parameters().getOrDefault("minAngle", 45d),
 				segment.parameters().getOrDefault("maxAngle", 45d)

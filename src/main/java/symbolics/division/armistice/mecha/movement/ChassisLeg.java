@@ -10,10 +10,14 @@ import symbolics.division.armistice.math.GeometryUtil;
 import symbolics.division.armistice.mecha.ChassisPart;
 import symbolics.division.armistice.model.MechaModelData;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ChassisLeg {
 
 	protected final int legIndex;
 	protected ChassisPart chassis;
+	protected FabrikChain3D segChain = new FabrikChain3D();
 	protected FabrikChain3D chain = new FabrikChain3D();
 
 	protected Vec3 tickTarget = Vec3.ZERO;
@@ -63,14 +67,36 @@ public class ChassisLeg {
 			IKUtil.rotateFabYawDeg(IKUtil.Z_AXIS, relativeYaw)
 		);
 
-		for (int i = 1; i < info.segments().size(); i++) {
+		var segment1 = info.segments().get(1);
+		float deg1 = (float) segment1.baseAngleDeg();
+		deg1 = Mth.abs(deg1); // might need to change for some models, but apparently fixes rotation in test model?
+		var r1 = Vec3f.rotateAboutAxisDegs(IKUtil.Z_AXIS, deg1, IKUtil.X_AXIS);
+		r1.set(Mth.abs(r1.x) < 0.001f ? 0.0f : r1.x, Mth.abs(r1.y) < 0.001f ? 0.0f : r1.y, Mth.abs(r1.z) < 0.001f ? 0.0f : r1.z);
+
+		segChain.setEmbeddedTargetMode(true);
+		segChain.addBone(new FabrikBone3D(new Vec3f(), new Vec3f(0, 0, 1), (float) segment1.length()));
+		segChain.setLocalHingedBasebone(
+			IKUtil.X_AXIS,
+			(float) segment1.minAngleDeg(), (float) segment1.maxAngleDeg(), r1
+		);
+//		segChain.addConsecutiveHingedBone(
+//			IKUtil.Z_AXIS,
+//			(float) segment1.length(),
+//			FabrikJoint3D.JointType.LOCAL_HINGE,
+//			IKUtil.X_AXIS,
+//			(float) segment1.minAngleDeg(), (float) segment1.maxAngleDeg(),
+//			r
+//		);
+
+
+		for (int i = 2; i < info.segments().size(); i++) {
 			var segment = info.segments().get(i);
 			float deg = (float) segment.baseAngleDeg();
 			deg = Mth.abs(deg); // might need to change for some models, but apparently fixes rotation in test model?
 			var r = Vec3f.rotateAboutAxisDegs(IKUtil.Z_AXIS, deg, IKUtil.X_AXIS);
 			r.set(Mth.abs(r.x) < 0.001f ? 0.0f : r.x, Mth.abs(r.y) < 0.001f ? 0.0f : r.y, Mth.abs(r.z) < 0.001f ? 0.0f : r.z);
 
-			chain.addConsecutiveHingedBone(
+			segChain.addConsecutiveHingedBone(
 				IKUtil.Z_AXIS,
 				(float) segment.length(),
 				FabrikJoint3D.JointType.LOCAL_HINGE,
@@ -85,19 +111,29 @@ public class ChassisLeg {
 		baseBone.setName(legName + "_base");
 		chain.getBone(1).setName(legName + "_yaw");
 		// skip first 2 in enumeration (root and yaw bones)
-		for (int i = 2; i < chain.getChain().size(); i++) {
-			chain.getBone(i).setName(legName + "_seg" + (i - 1));
-		}
+//		for (int i = 2; i < chain.getChain().size(); i++) {
+//			chain.getBone(i).setName(legName + "_seg" + (i - 1));
+//		}
 
 		// skeleton makes a copy, so we need to snag it back after skeleton gets it.
 		// this is fine as long as we don't modify the chain, only read from it and update embedded targets.
 		skeleton.connectChain(chain, 0, 0, BoneConnectionPoint.END);
 		chain = skeleton.getChain(skeleton.getNumChains() - 1);
+		skeleton.connectChain(segChain, skeleton.getNumChains() - 1, 1, BoneConnectionPoint.END);
+		segChain = skeleton.getChain(skeleton.getNumChains() - 1);
 		IKUtil.configureDefaultChainSettings(chain);
+		IKUtil.configureDefaultChainSettings(segChain);
 	}
 
-	public FabrikChain3D getChain() {
-		return chain;
+	public void setStartLocation(Vec3f loc) {
+		chain.getBone(0).setStartLocation(loc);
+		segChain.getBone(0).setStartLocation(chain.getBone(1).getEndLocation());
+	}
+
+	public void updateEmbeddedTarget(Vec3 tgt) {
+		Vec3f t2 = IKUtil.m2f(tgt);
+		chain.updateEmbeddedTarget(t2);
+		segChain.updateEmbeddedTarget(t2);
 	}
 
 	protected float totalTicksToStep = 1;
@@ -150,6 +186,7 @@ public class ChassisLeg {
 
 		// set target for this tick
 		chain.updateEmbeddedTarget(new Vec3f((float) tickTarget.x, (float) tickTarget.y, (float) tickTarget.z));
+		segChain.updateEmbeddedTarget(new Vec3f((float) tickTarget.x, (float) tickTarget.y, (float) tickTarget.z));
 
 		// attempt initial solve. this will be repeated after the body updates based on this result.
 		trySolve(null);
@@ -174,7 +211,7 @@ public class ChassisLeg {
 	}
 
 	public Vec3 tipPos() {
-		Vec3f loc = chain.getEffectorLocation();
+		Vec3f loc = segChain.getEffectorLocation();
 		return new Vec3(loc.x, loc.y, loc.z);
 	}
 
@@ -188,5 +225,12 @@ public class ChassisLeg {
 
 	public void setTickTarget(Vec3 tickTarget) {
 		this.tickTarget = tickTarget;
+	}
+
+	public List<FabrikBone3D> getBonesForRender() {
+		List<FabrikBone3D> bones = new ArrayList<>();
+		bones.addAll(chain.getChain());
+		bones.addAll(segChain.getChain());
+		return bones;
 	}
 }

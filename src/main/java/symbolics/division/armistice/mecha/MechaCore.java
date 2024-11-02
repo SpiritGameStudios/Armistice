@@ -1,6 +1,5 @@
 package symbolics.division.armistice.mecha;
 
-import au.edu.federation.caliko.FabrikStructure3D;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -16,6 +15,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.joml.Vector3f;
+import symbolics.division.armistice.mecha.movement.ChassisLeg;
 import symbolics.division.armistice.mecha.movement.Euclidean;
 import symbolics.division.armistice.mecha.schematic.MechaSchematic;
 import symbolics.division.armistice.model.MechaModelData;
@@ -209,9 +209,9 @@ public class MechaCore implements Part {
 		return barrelRotations.get(index);
 	}
 
-	public FabrikStructure3D skeleton() {
+	public ChassisLeg leg(int leg) {
 		// temp: ONLY for rendering!
-		return chassis.skeleton;
+		return chassis.legs.get(leg);
 	}
 
 	@VisibleForTesting
