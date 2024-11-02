@@ -80,18 +80,23 @@ public final class MechaHudRenderer {
 	}
 
 	private static void renderAltitude(DrawHelper drawHelper, Entity mecha) {
+		float windowW = drawHelper.guiGraphics().guiWidth();
+		float windowH = drawHelper.guiGraphics().guiHeight();
+		final float elementHeight = 118;
+		final float rightOffset = windowW - windowW / 4;
+		final float topOffset = windowH / 2 - elementHeight / 2;
 		drawHelper.renderFlicker(
 			pos -> drawHelper.guiGraphics().blit(
 				ALTITUDE_SPRITESHEET,
 				(int) pos.x, (int) pos.y,
-				8, 118,
+				8, (int) elementHeight,
 				0, 0,
 				3, 61,
 				16, 64
 			),
 			new Vec2(
-				drawHelper.guiGraphics().guiWidth() - 14,
-				8
+				rightOffset,
+				topOffset
 			),
 			lightbulbColor()
 		);
@@ -106,8 +111,8 @@ public final class MechaHudRenderer {
 				32, 128
 			),
 			new Vec2(
-				drawHelper.guiGraphics().guiWidth() - 14 - 8 - 2,
-				3.5F + Mth.map(
+				rightOffset - 8 - 2,
+				topOffset + Mth.map(
 					(int) mecha.getY(),
 					mecha.level().getMinBuildHeight(),
 					mecha.level().getMaxBuildHeight(),
@@ -126,7 +131,7 @@ public final class MechaHudRenderer {
 			pos -> drawHelper.guiGraphics().blit(
 				CROSSHAIR,
 				(int) pos.x, (int) pos.y,
-				15, 15,
+				7, 7,
 				0, 0,
 				15, 15,
 				15, 15
@@ -142,6 +147,10 @@ public final class MechaHudRenderer {
 	}
 
 	private static void renderHeat(DrawHelper drawHelper, MechaEntity mecha) {
+		final float windowW = drawHelper.guiGraphics().guiWidth();
+		final float windowH = drawHelper.guiGraphics().guiWidth();
+		final float leftOffset = windowW / 4.3f;
+		final float topOffset = windowH / 3.6f;
 		float heat = (float) mecha.core().getHeat() / (float) mecha.core().getMaxHeat();
 
 		if (heat >= 0.99F) drawHelper.renderFlicker(
@@ -154,8 +163,8 @@ public final class MechaHudRenderer {
 				33, 43
 			),
 			new Vec2(
-				drawHelper.guiGraphics().guiWidth() - 22 - 8,
-				drawHelper.guiGraphics().guiHeight() - 86 - 6
+				leftOffset - 8,
+				topOffset - 86
 			),
 			lightbulbColor()
 		);
@@ -170,8 +179,8 @@ public final class MechaHudRenderer {
 				33, 43
 			),
 			new Vec2(
-				drawHelper.guiGraphics().guiWidth() - 22 - 8,
-				drawHelper.guiGraphics().guiHeight() - Mth.floor(86 * heat) - 6
+				leftOffset - 8,
+				topOffset - Mth.floor(86 * heat)
 			),
 			lightbulbColor().sub(0, 0, 0, 0.5F)
 		);
@@ -186,8 +195,8 @@ public final class MechaHudRenderer {
 				33, 43
 			),
 			new Vec2(
-				drawHelper.guiGraphics().guiWidth() - 22 - 8,
-				drawHelper.guiGraphics().guiHeight() - 86 - 6
+				leftOffset - 8,
+				topOffset - 86
 			),
 			lightbulbColor()
 		);
@@ -195,49 +204,55 @@ public final class MechaHudRenderer {
 		resetColor();
 	}
 
-	private static void renderElevation(DrawHelper drawHelper, MechaEntity mecha) {
-		float windowH = drawHelper.guiGraphics().guiHeight();
+	private static void elevationHelper(DrawHelper drawHelper, MechaEntity mecha) {
 		float windowW = drawHelper.guiGraphics().guiWidth();
-		int left = drawHelper.guiGraphics().guiWidth() / 3;
-		int right = (drawHelper.guiGraphics().guiWidth() / 3) * 2;
-		float top = drawHelper.guiGraphics().guiHeight() / 5F;
+		float windowH = drawHelper.guiGraphics().guiHeight();
+		float left = windowW / 3;
+		float right = windowW - left;
+		float top = drawHelper.guiGraphics().guiHeight() / 4F;
 		float bottom = windowH - top;
-		float pitchDeg = Minecraft.getInstance().gameRenderer.getMainCamera().getXRot();
-//		float pitch_delta = drawHelper.guiGraphics().guiHeight() / 30;
-		float maxHudAngle = 30;
+		float pitchDeg = Minecraft.getInstance().gameRenderer.getMainCamera().getXRot() / 2;
 
-		float bottomTick = bottom + (pitchDeg % 20);
-		//Math.clamp(pitchDeg - maxHudAngle, -90, 90);
+		float tickSep = 40;
+		float tickWidth = 15;
+		float bottomTick = windowH + pitchDeg + 90;
+		float tickDif = 5;
+		float sign = 1;
 
-
-		// need to match pitch to rotation
-		// specifically, the lines should cover the same spots when pitch changes
-		// map pitch degrees to y degrees for consistency
-		// need to use fov
-
-		drawHelper.renderFlicker(
-			pos -> {
+		for (float i = bottomTick; i > 0; i -= tickSep) {
+			if (i > top && i < bottom) {
 				drawHelper.hLine(
-					left - 2 + pos.x,
-					right + 2 + pos.x,
-					pos.y,
+					left - tickWidth + tickDif * sign,
+					left,
+					i,
 					2
 				);
-				for (float y = bottomTick; y <= top; y += 10) {
-					drawHelper.hLine(left - 5, left, y, 2);
-				}
+				drawHelper.hLine(
+					right,
+					right + tickWidth - tickDif * sign,
+					i,
+					1.5f
+				);
+			}
+			sign = -sign;
+		}
+	}
+
+	private static void renderElevation(DrawHelper drawHelper, MechaEntity mecha) {
+		drawHelper.renderFlicker(
+			pos -> {
+				elevationHelper(drawHelper, mecha);
 			},
-//			new Vec2(0, 20),
-			new Vec2(drawHelper.guiGraphics().guiWidth() / 2f, drawHelper.guiGraphics().guiHeight() / 2f),
+			new Vec2(0, 0),
 			lightbulbColor()
 		);
-
 		resetColor();
 	}
 
 	private static void renderHeading(DrawHelper drawHelper, MechaEntity mecha) {
 		int left = drawHelper.guiGraphics().guiWidth() / 3;
 		int right = (drawHelper.guiGraphics().guiWidth() / 3) * 2;
+		final float topOffset = 50;
 
 		drawHelper.renderFlicker(
 			pos -> drawHelper.hLine(
@@ -246,19 +261,19 @@ public final class MechaHudRenderer {
 				pos.y,
 				2
 			),
-			new Vec2(0, 9),
+			new Vec2(0, topOffset + 6),
 			lightbulbColor()
 		);
 
 		int degPerPixel = (drawHelper.guiGraphics().guiWidth() / Minecraft.getInstance().options.fov().get());
 
-		Vec3 dir = mecha.core().direction().normalize();
+		Vec3 dir = Minecraft.getInstance().player.getLookAngle();
 		double yaw = Mth.atan2(-dir.x, dir.z) * Mth.RAD_TO_DEG;
 
 		drawHelper.renderCenteredNumber(
 			Mth.wrapDegrees(Mth.floor(yaw)),
 			drawHelper.guiGraphics().guiWidth() / 2F,
-			9 + 5,
+			topOffset + 6 + 5,
 			1,
 			lightbulbColor()
 		);
@@ -279,7 +294,7 @@ public final class MechaHudRenderer {
 					6 + pos.y,
 					1
 				),
-				new Vec2(x, 3),
+				new Vec2(x, topOffset),
 				lightbulbColor()
 			);
 
@@ -295,7 +310,7 @@ public final class MechaHudRenderer {
 						5, 7,
 						20, 7
 					),
-					new Vec2(x - 2.5F, 9 + 5 + 9 + 2),
+					new Vec2(x - 2.5F, topOffset + 6 + 5 + 9 + 2),
 					lightbulbColor()
 				));
 			}
@@ -307,6 +322,8 @@ public final class MechaHudRenderer {
 	}
 
 	private static void renderSpeedometer(DrawHelper drawHelper, Entity mecha) {
+		final float bottomOffset = drawHelper.guiGraphics().guiHeight() - drawHelper.guiGraphics().guiHeight() / 3f;
+		final float leftOffset = drawHelper.guiGraphics().guiWidth() / 4.6f;
 		double speed = mecha.getDeltaMovement().length();
 		double progressDegrees = Mth.wrapDegrees(Mth.map(
 			speed,
@@ -329,8 +346,8 @@ public final class MechaHudRenderer {
 				2F
 			),
 			new Vec2(
-				25F,
-				drawHelper.guiGraphics().guiHeight() - 17.0f
+				leftOffset + 17f,
+				bottomOffset - 17.0f
 			),
 			lightbulbColor()
 		);
@@ -345,8 +362,8 @@ public final class MechaHudRenderer {
 				34, 34
 			),
 			new Vec2(
-				8,
-				drawHelper.guiGraphics().guiHeight() - 34
+				leftOffset,
+				bottomOffset - 34
 			),
 			lightbulbColor()
 		);
