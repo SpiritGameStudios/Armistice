@@ -6,7 +6,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -43,9 +42,11 @@ public class ArtilleryShell extends Projectile {
 		super.onHit(result);
 		if (level().isClientSide) return;
 		LOGGER.debug("Shell hit! At {}", result.getLocation());
+
+		Vec3 hitLocation = result.getLocation();
 		level().broadcastEntityEvent(this, (byte)3);
 		DamageSource damagesource = damageSources().explosion(this, getOwner());
-		level().explode(this, damagesource, null, getX(), getY(), getZ(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
+		level().explode(this, damagesource, null, hitLocation.x(), hitLocation.y(), hitLocation.z(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
 		discard();
 	}
 
