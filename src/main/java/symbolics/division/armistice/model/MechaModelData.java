@@ -165,6 +165,7 @@ public class MechaModelData {
 			OutlinerNode rootLegSegment = root.getChild(id).orElseThrow();
 			List<SegmentInfo> segments = new ArrayList<>();
 			Matrix4f transform = new Matrix4f();
+			double defaultConstraintAngle = 180;
 
 			// first segment rotation is yaw
 			Optional<OutlinerNode> segmentOptional = getChild(rootLegSegment, 0);
@@ -179,8 +180,8 @@ public class MechaModelData {
 				new SegmentInfo(
 					Math.max(0.01, basePos.distance(tipPos)),
 					rootLegSegment.rotation().y,
-					rootLegSegment.parameters().getOrDefault("minAngle", 45d),
-					rootLegSegment.parameters().getOrDefault("maxAngle", 45d)
+					rootLegSegment.parameters().getOrDefault("minAngle", defaultConstraintAngle),
+					rootLegSegment.parameters().getOrDefault("maxAngle", defaultConstraintAngle)
 				));
 
 			Optional<OutlinerNode> nextNode = getChild(segment, 0);
@@ -193,10 +194,10 @@ public class MechaModelData {
 				);
 				segments.add(
 					new SegmentInfo(
-						Math.max(0.01, basePos.distance(tipPos)),
+						Math.max(0.01, basePos.distance(tipPos) * 0.8),
 						segment.rotation().x,
-						segment.parameters().getOrDefault("minAngle", 45d),
-						segment.parameters().getOrDefault("maxAngle", 45d)
+						segment.parameters().getOrDefault("minAngle", defaultConstraintAngle),
+						segment.parameters().getOrDefault("maxAngle", defaultConstraintAngle)
 					)
 				);
 				segment = nextNode.get();
@@ -207,8 +208,8 @@ public class MechaModelData {
 			segments.add(new SegmentInfo(
 				Math.max(0.01f, tipPos.distance(legEnd.toVector3f()) * 0.8),
 				segment.rotation().x,
-				segment.parameters().getOrDefault("minAngle", 45d),
-				segment.parameters().getOrDefault("maxAngle", 45d)
+				segment.parameters().getOrDefault("minAngle", defaultConstraintAngle),
+				segment.parameters().getOrDefault("maxAngle", defaultConstraintAngle)
 			));
 			return new LegInfo(rootLegSegment.origin(), legEnd, segments);
 		}

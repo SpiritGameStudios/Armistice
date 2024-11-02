@@ -42,6 +42,11 @@ public class MechaEntity extends Entity {
 		EntityDataSerializers.VECTOR3
 	);
 
+	public static final EntityDataAccessor<List<Vector3f>> JOINT_POSITIONS = SynchedEntityData.defineId(
+		MechaEntity.class,
+		ArmisticeEntityDataSerializerRegistrar.VEC3_LIST
+	);
+
 	public static final EntityDataAccessor<List<Vector2f>> BARREL_ROTATIONS = SynchedEntityData.defineId(
 		MechaEntity.class,
 		ArmisticeEntityDataSerializerRegistrar.VEC2_LIST
@@ -96,6 +101,7 @@ public class MechaEntity extends Entity {
 	@Override
 	protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
 		builder.define(LEG_TICK_TARGETS, List.of());
+		builder.define(JOINT_POSITIONS, List.of());
 		builder.define(CLIENT_POS, new Vector3f());
 		builder.define(CLIENT_DIR, new Vector3f());
 		builder.define(HEAT, 0);

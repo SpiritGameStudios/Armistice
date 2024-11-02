@@ -9,8 +9,8 @@ public class DirectionState {
 	private final Vector3f lastDirection = new Vector3f(0, 0, 1);
 	private final Vector3f targetDirection = new Vector3f(0, 0, 1);
 	private Vector3f axis = new Vector3f(0, 1, 0);
-	private float radiansPerTick = (float) Math.PI / 32;
-	private double tolerance = 0;
+	private final float radiansPerTick;
+	private double tolerance = 0.1;
 
 	public DirectionState(double radiansPerSecond) {
 		radiansPerTick = (float) (radiansPerSecond * 0.05);
@@ -35,6 +35,7 @@ public class DirectionState {
 
 	public void tick() {
 		lastDirection.set(currentDirection);
+		tolerance = 0.5;
 		if (currentDirection.distanceSquared(targetDirection) <= tolerance * tolerance) {
 			currentDirection.set(targetDirection);
 		} else {

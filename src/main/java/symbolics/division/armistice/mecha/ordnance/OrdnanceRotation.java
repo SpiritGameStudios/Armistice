@@ -56,10 +56,7 @@ public class OrdnanceRotation {
 		// transform to model space
 		Matrix4f w2m = new Matrix4f();
 		w2m.rotate(ord.baseRotation().conjugate());
-		var ab = ord.absPos();
-		var t = target.toVector3f().sub(ab);
-
-		Vector3f modelspaceTarget = w2m.transformPosition(t);
+		Vector3f modelspaceTarget = w2m.transformPosition(target.toVector3f().sub(ord.absPos()));
 		chain.solveForTarget(new Vec3f(modelspaceTarget.x, modelspaceTarget.y, modelspaceTarget.z));
 	}
 
