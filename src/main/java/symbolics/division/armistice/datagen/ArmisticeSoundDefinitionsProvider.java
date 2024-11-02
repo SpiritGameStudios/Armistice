@@ -54,5 +54,30 @@ public class ArmisticeSoundDefinitionsProvider extends SoundDefinitionsProvider 
 		add(ArmisticeSoundEventRegistrar.MUSIC$RECALLED, SoundDefinition.definition()
 			.with(sound(Armistice.id("music/recalled")))
 			.subtitle("sound.armistice.music.recalled"));
+
+		add(ArmisticeSoundEventRegistrar.BLOCK$ARMISTEEL$PLACE, SoundDefinition.definition()
+			.with(sound(Armistice.id("block/armisteel/place"))));
+
+		add(ArmisticeSoundEventRegistrar.BLOCK$ARMISTEEL$BREAK, SoundDefinition.definition()
+			.with(sound(Armistice.id("block/armisteel/break"))));
+
+		add(ArmisticeSoundEventRegistrar.BLOCK$ARMISTEEL$FALL, SoundDefinition.definition()
+			.with(sound(Armistice.id("block/armisteel/fall"))));
+
+		add(ArmisticeSoundEventRegistrar.BLOCK$ARMISTEEL$HIT, SoundDefinition.definition()
+			.with(
+				sound(Armistice.id("block/armisteel/hit1")),
+				sound(Armistice.id("block/armisteel/hit2")),
+				sound(Armistice.id("block/armisteel/hit3")),
+				sound(Armistice.id("block/armisteel/hit4"))
+			));
+
+		add(ArmisticeSoundEventRegistrar.BLOCK$ARMISTEEL$STEP, SoundDefinition.definition()
+			.with(
+				sound(Armistice.id("block/armisteel/step1")),
+				sound(Armistice.id("block/armisteel/step2")),
+				sound(Armistice.id("block/armisteel/step3")),
+				sound(Armistice.id("block/armisteel/step4"))
+			));
 	}
 }

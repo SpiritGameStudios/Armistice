@@ -1,6 +1,7 @@
 package symbolics.division.armistice.registry;
 
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.level.block.SoundType;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.util.registrar.SoundEventRegistrar;
 
@@ -21,5 +22,30 @@ public final class ArmisticeSoundEventRegistrar implements SoundEventRegistrar {
 	public static final SoundEvent ENTITY$MECHA$WEAPON$MINIGUN = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.weapon.minigun"));
 
 	public static final SoundEvent MUSIC$RECALLED = SoundEvent.createVariableRangeEvent(Armistice.id("music.recalled"));
+
+	public static final SoundEvent BLOCK$ARMISTEEL$PLACE = SoundEvent.createVariableRangeEvent(Armistice.id("block.armisteel.place"));
+
+	public static final SoundEvent BLOCK$ARMISTEEL$BREAK = SoundEvent.createVariableRangeEvent(Armistice.id("block.armisteel.break"));
+
+	public static final SoundEvent BLOCK$ARMISTEEL$FALL = SoundEvent.createVariableRangeEvent(Armistice.id("block.armisteel.fall"));
+
+	public static final SoundEvent BLOCK$ARMISTEEL$HIT = SoundEvent.createVariableRangeEvent(Armistice.id("block.armisteel.hit"));
+
+	public static final SoundEvent BLOCK$ARMISTEEL$STEP = SoundEvent.createVariableRangeEvent(Armistice.id("block.armisteel.step"));
+
+
+	@SuppressWarnings("deprecation")
+	public static class Types {
+		public static final SoundType ARMISTEEL = new SoundType(
+			1.0F,
+			1.0F,
+			BLOCK$ARMISTEEL$BREAK,
+			BLOCK$ARMISTEEL$STEP,
+			BLOCK$ARMISTEEL$PLACE,
+			BLOCK$ARMISTEEL$HIT,
+			BLOCK$ARMISTEEL$FALL
+		);
+	}
+
 
 }

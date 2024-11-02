@@ -26,7 +26,7 @@ public final class ArmisticeBlockRegistrar implements BlockRegistrar {
 	public static final Block ARMISTEEL_PLATING = new Block(
 		BlockBehaviour.Properties.of()
 			.strength(3.0F, 6.0F)
-			.sound(SoundType.NETHERITE_BLOCK)
+			.sound(ArmisticeSoundEventRegistrar.Types.ARMISTEEL)
 			.mapColor(MapColor.METAL)
 			.requiresCorrectToolForDrops()
 	);
@@ -34,7 +34,7 @@ public final class ArmisticeBlockRegistrar implements BlockRegistrar {
 	public static final Block CORRUGATED_ARMISTEEL = new Block(
 		BlockBehaviour.Properties.of()
 			.strength(3.0F, 6.0F)
-			.sound(SoundType.NETHERITE_BLOCK)
+			.sound(ArmisticeSoundEventRegistrar.Types.ARMISTEEL)
 			.mapColor(MapColor.METAL)
 			.requiresCorrectToolForDrops()
 	);
@@ -42,7 +42,7 @@ public final class ArmisticeBlockRegistrar implements BlockRegistrar {
 	public static final Block ARMISTEEL_PIPING = new Block(
 		BlockBehaviour.Properties.of()
 			.strength(3.0F, 6.0F)
-			.sound(SoundType.NETHERITE_BLOCK)
+			.sound(ArmisticeSoundEventRegistrar.Types.ARMISTEEL)
 			.mapColor(MapColor.METAL)
 			.requiresCorrectToolForDrops()
 	);
@@ -50,7 +50,7 @@ public final class ArmisticeBlockRegistrar implements BlockRegistrar {
 	public static final Block ARMISTEEL_VENT = new Block(
 		BlockBehaviour.Properties.of()
 			.strength(3.0F, 6.0F)
-			.sound(SoundType.NETHERITE_BLOCK)
+			.sound(ArmisticeSoundEventRegistrar.Types.ARMISTEEL)
 			.mapColor(MapColor.METAL)
 			.requiresCorrectToolForDrops()
 	);
@@ -58,7 +58,7 @@ public final class ArmisticeBlockRegistrar implements BlockRegistrar {
 	public static final Block ARMISTEEL_MESH = new Block(
 		BlockBehaviour.Properties.of()
 			.strength(3.0F, 6.0F)
-			.sound(SoundType.NETHERITE_BLOCK)
+			.sound(ArmisticeSoundEventRegistrar.Types.ARMISTEEL)
 			.mapColor(MapColor.METAL)
 			.requiresCorrectToolForDrops()
 	);
@@ -66,7 +66,7 @@ public final class ArmisticeBlockRegistrar implements BlockRegistrar {
 	public static final Block RIGIDIZED_ARMISTEEL = new Block(
 		BlockBehaviour.Properties.of()
 			.strength(3.0F, 6.0F)
-			.sound(SoundType.NETHERITE_BLOCK)
+			.sound(ArmisticeSoundEventRegistrar.Types.ARMISTEEL)
 			.mapColor(MapColor.METAL)
 			.requiresCorrectToolForDrops()
 	);
@@ -74,7 +74,7 @@ public final class ArmisticeBlockRegistrar implements BlockRegistrar {
 	public static final Block ARMISTEEL_BLOCK = new Block(
 		BlockBehaviour.Properties.of()
 			.strength(3.0F, 6.0F)
-			.sound(SoundType.NETHERITE_BLOCK)
+			.sound(ArmisticeSoundEventRegistrar.Types.ARMISTEEL)
 			.mapColor(MapColor.METAL)
 			.requiresCorrectToolForDrops()
 	);
@@ -82,7 +82,7 @@ public final class ArmisticeBlockRegistrar implements BlockRegistrar {
 	public static final Block ARMISTEEL_BULB = new CopperBulbBlock(
 		BlockBehaviour.Properties.of()
 			.strength(3.0F, 6.0F)
-			.sound(SoundType.NETHERITE_BLOCK)
+			.sound(ArmisticeSoundEventRegistrar.Types.ARMISTEEL)
 			.mapColor(MapColor.METAL)
 			.requiresCorrectToolForDrops()
 			.isRedstoneConductor((state, level, pos) -> false)

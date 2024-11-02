@@ -20,7 +20,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 			(core, pos) -> core.level().playSound(
 				null,
 				pos.x(), pos.y(), pos.z(),
-				SoundEvents.SNOWBALL_THROW,
+				ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$HIGH_CAL,
 				SoundSource.HOSTILE
 			)
 		)
@@ -71,7 +71,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 				core.level().playSound(
 					null,
 					pos.x(), pos.y(), pos.z(),
-					SoundEvents.WITHER_SHOOT,
+					ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$LOW_CAL,
 					SoundSource.HOSTILE
 				);
 			}

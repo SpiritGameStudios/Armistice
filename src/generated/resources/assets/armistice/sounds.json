@@ -11,6 +11,37 @@
     ],
     "subtitle": "sound.armistice.ambient.mecha2"
   },
+  "block.armisteel.break": {
+    "sounds": [
+      "armistice:block/armisteel/break"
+    ]
+  },
+  "block.armisteel.fall": {
+    "sounds": [
+      "armistice:block/armisteel/fall"
+    ]
+  },
+  "block.armisteel.hit": {
+    "sounds": [
+      "armistice:block/armisteel/hit1",
+      "armistice:block/armisteel/hit2",
+      "armistice:block/armisteel/hit3",
+      "armistice:block/armisteel/hit4"
+    ]
+  },
+  "block.armisteel.place": {
+    "sounds": [
+      "armistice:block/armisteel/place"
+    ]
+  },
+  "block.armisteel.step": {
+    "sounds": [
+      "armistice:block/armisteel/step1",
+      "armistice:block/armisteel/step2",
+      "armistice:block/armisteel/step3",
+      "armistice:block/armisteel/step4"
+    ]
+  },
   "entity.mecha.boot": {
     "sounds": [
       "armistice:entity/mecha/boot"
