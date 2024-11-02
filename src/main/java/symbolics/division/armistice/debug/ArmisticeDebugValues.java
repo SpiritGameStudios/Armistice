@@ -7,10 +7,19 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.SpectralArrow;
+import net.minecraft.world.item.ArrowItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import symbolics.division.armistice.mecha.MechaEntity;
+import symbolics.division.armistice.projectile.ArtilleryShell;
+import symbolics.division.armistice.registry.ArmisticeEntityTypeRegistrar;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -51,7 +60,31 @@ public final class ArmisticeDebugValues {
 							mecha.core().setHeat(heat);
 
 							return Command.SINGLE_SUCCESS;
-						})))
+						})
+					)
+				)
+				.then(Commands.literal("artilleryShell")
+					.requires(src -> src.hasPermission(Commands.LEVEL_ADMINS))
+					.executes(ctx -> {
+						ServerPlayer player = ctx.getSource().getPlayer();
+						if (player == null) return 0;
+						AbstractArrow arrow = ((ArrowItem) Items.SPECTRAL_ARROW).createArrow(player.level(), new ItemStack(Items.SPECTRAL_ARROW), player, null);
+						arrow.setOwner(player);
+						arrow.setPos(player.getX(), player.getEyeY(), player.getZ());
+						arrow.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 3F, 0);
+						player.level().addFreshEntity(arrow);
+
+						ArtilleryShell artilleryShell = new ArtilleryShell(
+							ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL,
+							player.level()
+						);
+						artilleryShell.setOwner(player);
+						artilleryShell.setPos(player.getX(), player.getEyeY(), player.getZ());
+//						artilleryShell.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 10F, 0);
+//						player.level().addFreshEntity(artilleryShell);
+						return Command.SINGLE_SUCCESS;
+					})
+				)
 		);
 	}
 
