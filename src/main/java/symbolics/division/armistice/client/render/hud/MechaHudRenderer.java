@@ -200,7 +200,7 @@ public final class MechaHudRenderer {
 		float windowW = drawHelper.guiGraphics().guiWidth();
 		int left = drawHelper.guiGraphics().guiWidth() / 3;
 		int right = (drawHelper.guiGraphics().guiWidth() / 3) * 2;
-		float top = drawHelper.guiGraphics().guiHeight() / 5;
+		float top = drawHelper.guiGraphics().guiHeight() / 5F;
 		float bottom = windowH - top;
 		float pitchDeg = Minecraft.getInstance().gameRenderer.getMainCamera().getXRot();
 //		float pitch_delta = drawHelper.guiGraphics().guiHeight() / 30;
@@ -215,7 +215,6 @@ public final class MechaHudRenderer {
 		// map pitch degrees to y degrees for consistency
 		// need to use fov
 
-
 		drawHelper.renderFlicker(
 			pos -> {
 				drawHelper.hLine(
@@ -224,18 +223,16 @@ public final class MechaHudRenderer {
 					pos.y,
 					2
 				);
-
-//				drawHelper.hLine(20, 100, 100, 20);
-//				for (float y = bottomTick; y <= top; y += 10) {
-//					drawHelper.hLine(left - 5, left, y, 2);
-//				}
+				for (float y = bottomTick; y <= top; y += 10) {
+					drawHelper.hLine(left - 5, left, y, 2);
+				}
 			},
-			new Vec2(0, 20),
-//			new Vec2(drawHelper.guiGraphics().guiWidth() / 2f, drawHelper.guiGraphics().guiHeight() / 2f),
+//			new Vec2(0, 20),
+			new Vec2(drawHelper.guiGraphics().guiWidth() / 2f, drawHelper.guiGraphics().guiHeight() / 2f),
 			lightbulbColor()
 		);
 
-
+		resetColor();
 	}
 
 	private static void renderHeading(DrawHelper drawHelper, MechaEntity mecha) {

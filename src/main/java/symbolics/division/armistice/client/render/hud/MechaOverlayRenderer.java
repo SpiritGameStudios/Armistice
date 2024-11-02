@@ -8,6 +8,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.client.ArmisticeClient;
+import symbolics.division.armistice.client.render.debug.ArmisticeClientDebugValues;
 
 import java.io.IOException;
 
@@ -39,7 +40,7 @@ public final class MechaOverlayRenderer {
 	}
 
 	public static boolean shouldProcessMechaOverlay() {
-		return !ArmisticeClient.renderVanillaHUD;
+		return !ArmisticeClient.renderVanillaHUD && ArmisticeClientDebugValues.showOverlay;
 	}
 
 	public static void processMechaOverlay(float partialTick) {

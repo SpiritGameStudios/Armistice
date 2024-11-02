@@ -21,12 +21,14 @@ public final class ArmisticeClientDebugValues {
 	public static boolean showHull = true;
 	public static boolean showOrdnance = true;
 	public static boolean showChassis = true;
+	public static boolean showOverlay = true;
 
 	@SubscribeEvent
 	private static void onRegisterClientCommands(RegisterClientCommandsEvent event) {
 		event.getDispatcher().register(Commands.literal("armistice_debug_client")
 			.then(Commands.literal("mecha")
 				.then(setter("debug", value -> debugRenderer = value, () -> debugRenderer))
+				.then(setter("overlay", value -> showOverlay = value, () -> showOverlay))
 				.then(
 					setter("part", value -> {
 						showChassis = value;

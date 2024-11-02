@@ -3,6 +3,7 @@ package symbolics.division.armistice.client.render.hud;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -38,6 +39,8 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 			minY = maxY;
 			maxY = prevMinY;
 		}
+
+		RenderSystem.setShader(GameRenderer::getPositionShader);
 
 		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(
 			VertexFormat.Mode.QUADS,
@@ -98,6 +101,8 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 			end = new Vec2(start.x, start.y);
 			start = new Vec2(prevX, prevY);
 		}
+
+		RenderSystem.setShader(GameRenderer::getPositionShader);
 
 		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(
 			VertexFormat.Mode.QUADS,
