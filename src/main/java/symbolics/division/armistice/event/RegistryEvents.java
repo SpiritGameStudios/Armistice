@@ -22,7 +22,9 @@ import symbolics.division.armistice.mecha.schematic.HeatData;
 import symbolics.division.armistice.mecha.schematic.HullSchematic;
 import symbolics.division.armistice.model.ModelElementReloadListener;
 import symbolics.division.armistice.model.ModelOutlinerReloadListener;
+import symbolics.division.armistice.network.ExtendedParticlePacket;
 import symbolics.division.armistice.network.MechaMovementRequestC2SPayload;
+import symbolics.division.armistice.network.MechaTargetRequestC2SPayload;
 import symbolics.division.armistice.network.OutlinerSyncS2CPayload;
 import symbolics.division.armistice.recipe.MechaSchematicRecipe;
 import symbolics.division.armistice.recipe.MechaSkinRecipe;
@@ -130,10 +132,22 @@ public final class RegistryEvents {
 				OutlinerSyncS2CPayload::receive
 			);
 
+			registrar.playToClient(
+				ExtendedParticlePacket.TYPE,
+				ExtendedParticlePacket.STREAM_CODEC,
+				ExtendedParticlePacket::receive
+			);
+
 			registrar.playToServer(
 				MechaMovementRequestC2SPayload.TYPE,
 				MechaMovementRequestC2SPayload.STREAM_CODEC,
 				MechaMovementRequestC2SPayload::receive
+			);
+
+			registrar.playToServer(
+				MechaTargetRequestC2SPayload.TYPE,
+				MechaTargetRequestC2SPayload.STREAM_CODEC,
+				MechaTargetRequestC2SPayload::receive
 			);
 		}
 	}

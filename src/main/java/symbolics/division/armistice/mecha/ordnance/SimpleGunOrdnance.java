@@ -3,13 +3,12 @@ package symbolics.division.armistice.mecha.ordnance;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
-import org.joml.Vector3fc;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
+import symbolics.division.armistice.math.PositionInfo;
 import symbolics.division.armistice.mecha.MechaCore;
 import symbolics.division.armistice.mecha.OrdnancePart;
 import symbolics.division.armistice.model.MechaModelData;
@@ -21,13 +20,13 @@ public class SimpleGunOrdnance extends OrdnancePart {
 	protected final int cooldown;
 	protected final double maxDistance;
 	protected final double projectileVelocity;
-	protected final BiFunction<MechaCore, Vector3fc, Entity> projectileCreator;
-	protected final BiConsumer<MechaCore, Vector3fc> onShoot;
+	protected final BiFunction<MechaCore, PositionInfo, Entity> projectileCreator;
+	protected final BiConsumer<MechaCore, PositionInfo> onShoot;
 
 	protected int cooldownTicks;
 	protected MechaModelData.MarkerInfo barrelMarker;
 
-	public SimpleGunOrdnance(int cooldown, double maxDistance, double projectileVelocity, BiFunction<MechaCore, Vector3fc, Entity> projectileCreator, BiConsumer<MechaCore, Vector3fc> onShoot) {
+	public SimpleGunOrdnance(int cooldown, double maxDistance, double projectileVelocity, BiFunction<MechaCore, PositionInfo, Entity> projectileCreator, BiConsumer<MechaCore, PositionInfo> onShoot) {
 		super(1);
 
 		this.cooldown = cooldown;
@@ -56,16 +55,19 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		if (!ArmisticeDebugValues.simpleGun) return;
 
 		// region temp: debug targeting
-		Player player = core.level().getNearestPlayer(core.entity(), 100);
-		if (player != null) {
-			HitResult result = new EntityHitResult(player);
-			startTargeting(result);
-		}
+//		Player player = core.level().getNearestPlayer(core.entity(), 100);
+//		if (player != null) {
+//			HitResult result = new EntityHitResult(player);
+//			startTargeting(result);
+//		}
 		// endregion
 
 		cooldownTicks--;
-		if (targets().isEmpty() || !(targets().getFirst() instanceof EntityHitResult target))
+		if (targets().isEmpty())
 			return;
+
+		HitResult target = targets().getFirst();
+		Vec3 targetPos = target instanceof EntityHitResult entity ? entity.getLocation().multiply(1, 1F / 3F, 1) : target.getLocation();
 
 		// temp: inappropriate use of rotationmanager. also, try to apply logic to ordnance in general.
 		MechaModelData.OrdnanceInfo info = core.model().ordnanceInfo(this, core);
@@ -82,16 +84,23 @@ public class SimpleGunOrdnance extends OrdnancePart {
 			).transform(evilBodyOffsetPleaseUpdateModelData.toVector3f())
 		));
 
-		Vec3 idealBarrelDir = target.getEntity().position().subtract(absBody).normalize().scale(barrelLength);
+		Vec3 idealBarrelDir = targetPos.subtract(absBody).normalize().scale(barrelLength);
 		Vec3 idealBarrelTipPos = absBody.add(idealBarrelDir);
-		Entity projectile = projectileCreator.apply(core, idealBarrelTipPos.toVector3f());
+		Entity projectile = projectileCreator.apply(
+			core,
+			new PositionInfo(
+				idealBarrelTipPos.toVector3f(),
+				idealBarrelDir.toVector3f(),
+				new Quaternionf()
+			)
+		);
 
-		double x = target.getEntity().getX() - idealBarrelTipPos.x;
-		double z = target.getEntity().getZ() - idealBarrelTipPos.z;
+		double x = targetPos.x() - idealBarrelTipPos.x;
+		double z = targetPos.z() - idealBarrelTipPos.z;
 
 		double horizontalDist = Math.sqrt(x * x + z * z);
 
-		double y = (target.getEntity().getY(1.0 / 3.0) - projectile.getY()) + Math.abs(horizontalDist) * (projectile.getGravity() * 5);
+		double y = (targetPos.y() - projectile.getY()) + Math.abs(horizontalDist) * (projectile.getGravity() * 5);
 
 		// temp: rotation manager example
 		Vec3 desiredDir = new Vec3(x, y, z).normalize();
@@ -119,7 +128,14 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		projectile.xRotO = projectile.getXRot();
 
 		core.level().addFreshEntity(projectile);
-		onShoot.accept(core, idealBarrelTipPos.toVector3f());
+		onShoot.accept(
+			core,
+			new PositionInfo(
+				idealBarrelTipPos.toVector3f(),
+				idealBarrelDir.toVector3f(),
+				new Quaternionf()
+			)
+		);
 
 		cooldownTicks = cooldown;
 	}

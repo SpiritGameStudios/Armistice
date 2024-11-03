@@ -74,8 +74,10 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 	}
 
 	public boolean startTargeting(HitResult hitResult) {
-		if (!isValidTarget(hitResult) || targets.size() >= maxTargets) return false;
-		targets.add(hitResult);
+		if (!isValidTarget(hitResult)) return false;
+		if (targets.size() >= maxTargets) targets.set(0, hitResult);
+		else targets.add(hitResult);
+
 		return true;
 	}
 

@@ -3,10 +3,17 @@ package symbolics.division.armistice.util;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.Util;
+import net.minecraft.core.Direction;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.joml.Vector4d;
 
 import java.util.List;
@@ -18,6 +25,49 @@ public final class CodecHelper {
 	public static final StreamCodec<ByteBuf, UUID> UUID_STREAM = ByteBufCodecs.STRING_UTF8.map(
 		java.util.UUID::fromString,
 		java.util.UUID::toString
+	);
+
+	public static final StreamCodec<ByteBuf, Vec3> VEC3 = ByteBufCodecs.VECTOR3F.map(
+		Vec3::new,
+		vec -> new Vector3f((float) vec.x(), (float) vec.y(), (float) vec.z())
+	);
+
+	public static final StreamCodec<FriendlyByteBuf, HitResult> HIT_RESULT = StreamCodec.of(
+		(buffer, value) -> {
+			buffer.writeVec3(value.getLocation());
+			buffer.writeEnum(value.getType());
+
+			switch (value) {
+				case BlockHitResult block -> {
+					buffer.writeEnum(block.getDirection());
+					buffer.writeBlockPos(block.getBlockPos());
+					buffer.writeBoolean(block.isInside());
+				}
+				case EntityHitResult entity -> {
+					buffer.writeInt(entity.getEntity().getId());
+				}
+				default -> {
+				}
+			}
+		},
+		buffer -> {
+			Vec3 location = buffer.readVec3();
+			HitResult.Type type = buffer.readEnum(HitResult.Type.class);
+
+			return switch (type) {
+				case BLOCK -> new BlockHitResult(
+					location,
+					buffer.readEnum(Direction.class),
+					buffer.readBlockPos(),
+					buffer.readBoolean()
+				);
+				case ENTITY -> new PartialEntityHitResult(
+					buffer.readInt(),
+					location
+				);
+				default -> throw new IllegalArgumentException();
+			};
+		}
 	);
 
 	public static final Codec<Vector4d> VECTOR4D = Codec.DOUBLE
