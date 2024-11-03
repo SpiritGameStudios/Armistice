@@ -13,6 +13,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import symbolics.division.armistice.mecha.MechaEntity;
 import symbolics.division.armistice.projectile.ArtilleryShell;
+import symbolics.division.armistice.projectile.Missile;
 import symbolics.division.armistice.registry.ArmisticeEntityTypeRegistrar;
 
 import java.util.function.Consumer;
@@ -71,6 +72,23 @@ public final class ArmisticeDebugValues {
 						artilleryShell.setPos(player.getX(), player.getEyeY(), player.getZ());
 						artilleryShell.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 5F, 0);
 						player.level().addFreshEntity(artilleryShell);
+						return Command.SINGLE_SUCCESS;
+					})
+				)
+				.then(Commands.literal("missile")
+					.requires(src -> src.hasPermission(Commands.LEVEL_ADMINS))
+					.executes(ctx -> {
+						ServerPlayer player = ctx.getSource().getPlayer();
+						if (player == null) return 0;
+
+						Missile missile = new Missile(
+							ArmisticeEntityTypeRegistrar.MISSILE,
+							player.level()
+						);
+						missile.setOwner(player);
+						missile.setPos(player.getX(), player.getEyeY(), player.getZ());
+						missile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 0.5F, 0);
+						player.level().addFreshEntity(missile);
 						return Command.SINGLE_SUCCESS;
 					})
 				)

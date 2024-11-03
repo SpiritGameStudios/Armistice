@@ -20,6 +20,7 @@ public class ArmisticeClient {
 	public static void handleRegisterEntityRenderEvent(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerEntityRenderer(ArmisticeEntityTypeRegistrar.MECHA, MechaEntityRenderer::new);
 		event.registerEntityRenderer(ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL, ArtilleryShellRenderer::new);
+		event.registerEntityRenderer(ArmisticeEntityTypeRegistrar.MISSILE, ArtilleryShellRenderer::new);
 	}
 
 	@SubscribeEvent

@@ -14,7 +14,7 @@ import net.neoforged.neoforge.event.EventHooks;
 
 import static symbolics.division.armistice.Armistice.LOGGER;
 
-public class ArtilleryShell extends Projectile {
+public class ArtilleryShell extends AbstractOrdnanceProjectile {
 
 	public ArtilleryShell(EntityType<? extends ArtilleryShell> entityType, Level level) {
 		super(entityType, level);
@@ -24,11 +24,7 @@ public class ArtilleryShell extends Projectile {
 	public void tick() {
 		super.tick();
 
-		HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
-		if (hitresult.getType() != HitResult.Type.MISS && !EventHooks.onProjectileImpact(this, hitresult)) {
-			this.hitTargetOrDeflectSelf(hitresult);
-		}
-
+		// Movement code
 		Vec3 vec3 = this.getDeltaMovement();
 		double d0 = this.getX() + vec3.x;
 		double d1 = this.getY() + vec3.y;
@@ -47,7 +43,6 @@ public class ArtilleryShell extends Projectile {
 		level().broadcastEntityEvent(this, (byte)3);
 		DamageSource damagesource = damageSources().explosion(this, getOwner());
 		level().explode(this, damagesource, null, hitLocation.x(), hitLocation.y(), hitLocation.z(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
-		discard();
 	}
 
 	@Override
@@ -61,16 +56,6 @@ public class ArtilleryShell extends Projectile {
 		super.onHitBlock(result);
 //		level().setBlock(result.getBlockPos(), Blocks.MAGMA_BLOCK.defaultBlockState(), 11);
 		LOGGER.debug("Shell block hit!");
-	}
-
-	@Override
-	public boolean canUsePortal(boolean allowPassengers) {
-		return false;
-	}
-
-	@Override
-	protected double getDefaultGravity() {
-		return 0.05d;
 	}
 
 	@Override

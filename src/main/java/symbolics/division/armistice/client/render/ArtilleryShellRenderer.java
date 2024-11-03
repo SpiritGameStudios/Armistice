@@ -10,18 +10,19 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import symbolics.division.armistice.projectile.ArtilleryShell;
+import symbolics.division.armistice.projectile.AbstractOrdnanceProjectile;
 
 // TODO make actual renderer. For now it's just Spectral Arrow renderer
-public class ArtilleryShellRenderer extends EntityRenderer<ArtilleryShell> {
+public class ArtilleryShellRenderer extends EntityRenderer<AbstractOrdnanceProjectile> {
 
 	public static final ResourceLocation SPECTRAL_ARROW_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/projectiles/spectral_arrow.png");
+//	public static final ResourceLocation PROJECTILE_TEXTURES = ResourceLocation.fromNamespaceAndPath(MODID, "textures/entity/projectiles.png");
 
 	public ArtilleryShellRenderer(EntityRendererProvider.Context context) {
 		super(context);
 	}
 
-	public void render(ArtilleryShell entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
+	public void render(AbstractOrdnanceProjectile entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int packedLight) {
 		poseStack.pushPose();
 		poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) - 90.0F));
 		poseStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
@@ -57,7 +58,7 @@ public class ArtilleryShellRenderer extends EntityRenderer<ArtilleryShell> {
 	}
 
 	@Override
-	public ResourceLocation getTextureLocation(ArtilleryShell artilleryShell) {
+	public ResourceLocation getTextureLocation(AbstractOrdnanceProjectile artilleryShell) {
 		return SPECTRAL_ARROW_LOCATION;
 	}
 }
