@@ -4,6 +4,7 @@ import au.edu.federation.caliko.*;
 import au.edu.federation.utils.Vec3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -14,6 +15,8 @@ import symbolics.division.armistice.mecha.ChassisPart;
 import symbolics.division.armistice.mecha.MechaCore;
 import symbolics.division.armistice.mecha.MechaEntity;
 import symbolics.division.armistice.model.MechaModelData;
+import symbolics.division.armistice.registry.ArmisticeSoundEventRegistrar;
+import symbolics.division.armistice.util.AudioUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -154,6 +157,8 @@ public class ChassisLeg {
 		 */
 		if (!ArmisticeDebugValues.ikSolving) return;
 
+		MechaCore core = (MechaCore) chassis.parent();
+
 		float ticksPerBlock = 1;
 		Vec3 mapTarget = chassis.legMap().legTarget(legIndex);
 		Vec3 tip = tipPos();
@@ -164,7 +169,7 @@ public class ChassisLeg {
 
 		// check if we need to do a new step
 		if (!chassis.atRest() && !stepping() && !inRange && !chassis.neighborsStepping(legIndex)) {
-			if (prevStepTarget != finalStepTarget) {
+			if (!prevStepTarget.equals(finalStepTarget)) {
 				prevStepTarget = tip;
 			}
 			finalStepTarget = nearestValidStepPosition(mapTarget);
@@ -187,6 +192,7 @@ public class ChassisLeg {
 				ticksToStep = 0;
 				tickTarget = finalStepTarget;
 				prevStepTarget = finalStepTarget;
+				core.entity().level().playSound(core.entity(), BlockPos.containing(finalStepTarget), ArmisticeSoundEventRegistrar.ENTITY$MECHA$STEP3, SoundSource.HOSTILE, 3, AudioUtil.randomizedPitch(core.entity().getRandom(), 1, 0.2f));
 			}
 		}
 

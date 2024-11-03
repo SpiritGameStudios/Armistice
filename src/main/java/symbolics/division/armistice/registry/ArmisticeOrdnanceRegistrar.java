@@ -6,11 +6,12 @@ import net.minecraft.world.entity.projectile.Snowball;
 import symbolics.division.armistice.mecha.ordnance.HitscanGunOrdnance;
 import symbolics.division.armistice.mecha.ordnance.SimpleGunOrdnance;
 import symbolics.division.armistice.mecha.schematic.OrdnanceSchematic;
+import symbolics.division.armistice.util.AudioUtil;
 import symbolics.division.armistice.util.registrar.OrdnanceRegistrar;
 
 @SuppressWarnings("unused")
 public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
-	public static float BASE_GUN_ATTENUATION = 30;
+	public static float BASE_GUN_ATTENUATION = 3;
 
 	public static final OrdnanceSchematic CROSSBOW = new OrdnanceSchematic(
 		1,
@@ -57,7 +58,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 					ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$MINIGUN,
 					SoundSource.HOSTILE,
 					BASE_GUN_ATTENUATION,
-					1.3f
+					AudioUtil.randomizedPitch(core.level().getRandom(), 1.3f, 0.05f)
 				);
 			}
 		)
@@ -76,7 +77,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 					ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$LOW_CAL,
 					SoundSource.HOSTILE,
 					BASE_GUN_ATTENUATION,
-					1
+					AudioUtil.randomizedPitch(core.level().getRandom(), 1, 0.05f)
 				);
 			}
 		)
@@ -95,7 +96,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 					ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$LOW_CAL,
 					SoundSource.HOSTILE,
 					BASE_GUN_ATTENUATION,
-					0.6f
+					AudioUtil.randomizedPitch(core.level().getRandom(), 0.6f, 0.05f)
 				);
 			}
 		)

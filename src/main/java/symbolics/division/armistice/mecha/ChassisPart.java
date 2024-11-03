@@ -151,7 +151,7 @@ public class ChassisPart extends AbstractMechaPart {
 			if (direction().dot(targetHorizontalDir) < 0.95) {
 				// kindly ask our legs to rotate us
 				float sign = (direction().yRot(Mth.PI / 2).dot(targetHorizontalDir) < 0) ? -1 : 1;
-				legMap.setMapRotation(sign * Mth.PI / 6);
+				legMap.setMapRotation(sign * Mth.PI / 4);
 			} else {
 				// otherwise we are facing it, so we ask our legs to move us towards it.
 				// temp: set from model data
@@ -168,15 +168,16 @@ public class ChassisPart extends AbstractMechaPart {
 
 		List<ChassisLeg> lowp = new ArrayList<>();
 		for (ChassisLeg leg : legs) {
-			if (leg.priority) {
-				leg.tick();
-			} else {
-				lowp.add(leg);
-				leg.priority = true;
-			}
+			leg.tick();
+//			if (leg.priority) {
+//				leg.tick();
+//			} else {
+//				lowp.add(leg);
+//				leg.priority = true;
+//			}
 		}
 		for (ChassisLeg leg : lowp) {
-			leg.tick();
+//			leg.tick();
 		}
 
 		if (firstTick) {
