@@ -239,4 +239,9 @@ public class MechaCore implements Part {
 	public void setPathingTarget(Vector3f pos) {
 		chassis.setPathingTarget(new Vec3(pos));
 	}
+
+	@Nullable
+	public Vec3 getPathingTarget() {
+		return chassis.pathingTarget;
+	}
 }

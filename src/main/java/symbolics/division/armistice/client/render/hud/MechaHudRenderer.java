@@ -2,8 +2,10 @@ package symbolics.division.armistice.client.render.hud;
 
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -11,10 +13,14 @@ import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.client.ArmisticeClient;
 import symbolics.division.armistice.mecha.MechaEntity;
+import symbolics.division.armistice.mixin.GameRenderAccessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +48,7 @@ public final class MechaHudRenderer {
 	private static final ResourceLocation BIG_ELEV_TICK = Armistice.id("textures/hud/big_elev_tick.png");
 
 	private static final ResourceLocation CROSSHAIR = Armistice.id("textures/hud/crosshair.png");
+	private static final ResourceLocation PATHTARGET = Armistice.id("textures/hud/pathtarget.png");
 
 	@SubscribeEvent
 	private static void registerGuiLayers(RegisterGuiLayersEvent event) {
@@ -73,6 +80,7 @@ public final class MechaHudRenderer {
 			renderCrosshair(drawHelper, mecha);
 			renderHeat(drawHelper, mecha);
 			renderElevation(drawHelper, mecha);
+			renderPathtarget(drawHelper, mecha);
 
 			RenderSystem.disableBlend();
 			RenderSystem.defaultBlendFunc();
@@ -323,6 +331,68 @@ public final class MechaHudRenderer {
 		letters.forEach(Runnable::run);
 
 		resetColor();
+	}
+
+	private static void renderPathtarget(DrawHelper drawHelper, Entity mecha) {
+		float gw = drawHelper.guiGraphics().guiWidth();
+		float gh = drawHelper.guiGraphics().guiHeight();
+		float ar = gw / gh;
+		if (mecha instanceof MechaEntity mechaEntity) {
+			var tgt = mechaEntity.core().getPathingTarget();
+			if (tgt != null) {
+				GameRenderer gr = Minecraft.getInstance().gameRenderer;
+				Entity cameraEntity = Minecraft.getInstance().getCameraEntity();
+				Camera cam = gr.getMainCamera();
+
+				double fov = Math.max(
+					Minecraft.getInstance().options.fov().get().intValue(),
+					((GameRenderAccessor) gr).invokeGetFov(cam, cam.getPartialTickTime(), false)
+				);
+
+				// camera to screen matrix
+				Matrix4f mat = gr.getProjectionMatrix(fov);
+
+				// world to camera matrix
+				Vec3 camPos = cameraEntity.getEyePosition(cam.getPartialTickTime());
+				mat.rotate(cam.rotation().conjugate(new Quaternionf()));
+				mat.translate((float) -camPos.x, (float) -camPos.y, (float) -camPos.z);
+
+				Vector3f p = mat.transformPosition(tgt.toVector3f());
+
+				if (p.z < 0) return; // not in frame
+
+				// perspective division!!!!!!
+				p.mul(1 / p.z);
+				float screenX = gw / 2 * (p.x + 1);
+				float screenY = gh / 2 * (-p.y + 1);
+
+				drawHelper.renderFlicker(
+					pos -> drawHelper.guiGraphics().blit(
+						PATHTARGET,
+						(int) pos.x, (int) pos.y,
+						15, 15,
+						0, 0,
+						15, 15,
+						15, 15
+					),
+					new Vec2(
+						screenX - 9,
+						screenY - 9
+					),
+					lightbulbColor()
+				);
+
+				drawHelper.renderCenteredNumber(
+					(int) camPos.distanceTo(tgt),
+					screenX,
+					screenY + 10,
+					1,
+					lightbulbColor()
+				);
+
+				resetColor();
+			}
+		}
 	}
 
 	private static void renderSpeedometer(DrawHelper drawHelper, Entity mecha) {

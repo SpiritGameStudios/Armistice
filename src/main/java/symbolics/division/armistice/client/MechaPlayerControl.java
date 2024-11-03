@@ -82,11 +82,11 @@ public class MechaPlayerControl {
 
 		HitResult raycast = Minecraft.getInstance().getCameraEntity().pick(200, 0, false);
 		if (raycast.getType() == HitResult.Type.MISS) return;
-
 		player.connection.send(new MechaMovementRequestC2SPayload(raycast.getLocation().toVector3f()));
 		mecha.core().setPathingTarget(raycast.getLocation().toVector3f());
-		System.out.println("sound");
 		player.playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 0.3f, AudioUtil.randomizedPitch(player.getRandom(), 1, 0.4f));
+
+
 	}
 
 }
