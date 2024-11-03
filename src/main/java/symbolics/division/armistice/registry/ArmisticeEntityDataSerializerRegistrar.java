@@ -6,6 +6,7 @@ import net.minecraft.network.syncher.EntityDataSerializer;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import symbolics.division.armistice.mecha.MechaCore;
 import symbolics.division.armistice.util.CodecHelper;
 import symbolics.division.armistice.util.registrar.Registrar;
 
@@ -17,6 +18,9 @@ public final class ArmisticeEntityDataSerializerRegistrar implements Registrar<E
 
 	public static final EntityDataSerializer<List<Vector2f>> VEC2_LIST =
 		EntityDataSerializer.forValueType(CodecHelper.VECTOR2F.apply(ByteBufCodecs.list()));
+
+	public static final EntityDataSerializer<MechaCore> CORE =
+		EntityDataSerializer.forValueType(MechaCore.TO_CLIENT_STREAM_CODEC);
 
 
 	@Override

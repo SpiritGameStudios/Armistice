@@ -2,8 +2,11 @@ package symbolics.division.armistice.mecha;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -43,6 +46,13 @@ public class MechaCore implements Part {
 	private MechaEntity entity = null;
 
 	private int soundCooldown;
+
+	public static final StreamCodec<ByteBuf, MechaCore> TO_CLIENT_STREAM_CODEC = StreamCodec.of(
+		(buffer, value) -> {
+			value.schematic.streamCodec().encode(buffer, value.schematic);
+		},
+		buffer -> new MechaCore(ByteBufCodecs.fromCodec(MechaSchematic.CODEC).decode(buffer))
+	);
 
 	public MechaCore(MechaSchematic schematic) {
 		this.schematic = schematic;

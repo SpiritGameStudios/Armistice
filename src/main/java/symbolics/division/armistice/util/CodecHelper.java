@@ -3,6 +3,7 @@ package symbolics.division.armistice.util;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.Util;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2f;
@@ -13,6 +14,11 @@ import java.util.UUID;
 
 public final class CodecHelper {
 	public static final Codec<UUID> UUID = Codec.stringResolver(java.util.UUID::toString, java.util.UUID::fromString);
+
+	public static final StreamCodec<ByteBuf, UUID> UUID_STREAM = ByteBufCodecs.STRING_UTF8.map(
+		java.util.UUID::fromString,
+		java.util.UUID::toString
+	);
 
 	public static final Codec<Vector4d> VECTOR4D = Codec.DOUBLE
 		.listOf()

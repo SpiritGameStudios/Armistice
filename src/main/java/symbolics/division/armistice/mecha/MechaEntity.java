@@ -2,6 +2,7 @@ package symbolics.division.armistice.mecha;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -52,12 +53,14 @@ public class MechaEntity extends Entity {
 		EntityDataSerializers.INT
 	);
 
-	protected final MechaCore core;
-	private boolean firstTick = true;
+	protected static final EntityDataAccessor<MechaCore> CORE = SynchedEntityData.defineId(
+		MechaEntity.class,
+		ArmisticeEntityDataSerializerRegistrar.CORE
+	);
 
 	protected MechaEntity(EntityType<? extends Entity> entityType, Level level, MechaCore core) {
 		super(entityType, level);
-		this.core = core;
+		getEntityData().set(CORE, core);
 		setViewScale(10.0);
 		this.noCulling = true;
 	}
@@ -77,39 +80,44 @@ public class MechaEntity extends Entity {
 	@Override
 	public void tick() {
 		super.tick();
-		if (firstTick) {
-			firstTick = false;
-			core.initCore(this);
-		}
+		if (core().entity() == null) core().initCore(this);
 
 		if (this.level().isClientSide())
-			core.clientTick(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true));
-		else core.serverTick();
+			core().clientTick(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true));
+		else core().serverTick();
 
 		this.move(MoverType.SELF, this.getDeltaMovement());
 	}
 
 	public MechaCore core() {
-		return core;
+		return getEntityData().get(CORE);
 	}
 
 	@Override
 	protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
+		HullSchematic hull = ArmisticeRegistries.HULL.get(Armistice.id("test_hull"));
+		ChassisSchematic chassis = ArmisticeRegistries.CHASSIS.get(Armistice.id("test_chassis"));
+		List<OrdnanceSchematic> ordnance = List.of(ArmisticeOrdnanceRegistrar.MINIGUN);
+		ArmorSchematic armor = ArmisticeRegistries.ARMOR.get(Armistice.id("test_armor"));
+
 		builder.define(LEG_TICK_TARGETS, List.of());
 		builder.define(CLIENT_POS, new Vector3f());
 		builder.define(CLIENT_DIR, new Vector3f());
 		builder.define(HEAT, 0);
+		builder.define(CORE, new MechaCore(new MechaSchematic(hull, ordnance, chassis, armor)));
 		builder.define(BARREL_ROTATIONS, List.of());
 	}
 
 	@Override
 	protected void readAdditionalSaveData(@NotNull CompoundTag compound) {
+		MechaCore core = new MechaCore(MechaSchematic.CODEC.decode(NbtOps.INSTANCE, compound.get("core")).getOrThrow().getFirst());
 
+		getEntityData().set(CORE, core);
 	}
 
 	@Override
 	protected void addAdditionalSaveData(@NotNull CompoundTag compound) {
-
+		compound.put("core", core().schematic.codec().encodeStart(NbtOps.INSTANCE, core().schematic).getOrThrow());
 	}
 
 	@Override
@@ -120,7 +128,7 @@ public class MechaEntity extends Entity {
 	@NotNull
 	@Override
 	protected Vec3 getPassengerAttachmentPoint(@NotNull Entity entity, @NotNull EntityDimensions dimensions, float partialTick) {
-		return Optional.ofNullable(core.model().seatOffset())
+		return Optional.ofNullable(core().model().seatOffset())
 			.orElse(super.getPassengerAttachmentPoint(entity, dimensions, partialTick));
 	}
 
