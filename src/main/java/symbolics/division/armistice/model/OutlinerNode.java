@@ -28,7 +28,7 @@ public record OutlinerNode(
 	List<Either<OutlinerNode, String>> children,
 	Map<String, Double> parameters
 ) {
-	public static final float BASE_SCALE_FACTOR = 1f / 16;
+	public static final float BASE_SCALE_FACTOR = 1f / 4;
 
 	public static final Codec<OutlinerNode> CODEC =
 		Codec.recursive(

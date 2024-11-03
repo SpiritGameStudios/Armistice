@@ -57,20 +57,12 @@ public class ChassisRenderer {
 				String cname = nextNode.node.name();
 				matrices.pushPose();
 				{
-					matrices.mulPose(new Quaternionf().rotationZYX((float) segment.node.rotation().z() * Mth.DEG_TO_RAD, (float) segment.node.rotation().y() * Mth.DEG_TO_RAD, (float) segment.node.rotation().x() * Mth.DEG_TO_RAD).invert());
-					matrices.translate(-segment.node.origin().x, -segment.node.origin().y, -segment.node.origin().z);
-					segmentQuads.add(ModelBaker.bake(segment, n -> !n.node.name().equals(cname), matrices));
+					segmentQuads.add(ModelBaker.bakeNoTransform(new ArrayList<>(), segment, matrices, n -> !n.node.name().equals(cname)));
+					addSegment(nextNode, matrices);
 				}
 				matrices.popPose();
-				addSegment(nextNode, matrices);
 			} else {
-				matrices.pushPose();
-				{
-					matrices.mulPose(new Quaternionf().rotationZYX((float) segment.node.rotation().z() * Mth.DEG_TO_RAD, (float) segment.node.rotation().y() * Mth.DEG_TO_RAD, (float) segment.node.rotation().x() * Mth.DEG_TO_RAD).invert());
-					matrices.translate(-segment.node.origin().x, -segment.node.origin().y, -segment.node.origin().z);
-					segmentQuads.add(ModelBaker.bake(segment, n -> true, matrices));
-				}
-				matrices.popPose();
+				segmentQuads.add(ModelBaker.bakeNoTransform(new ArrayList<>(), segment, matrices, n -> true));
 			}
 		}
 
@@ -90,10 +82,9 @@ public class ChassisRenderer {
 						yaw = Mth.PI - yaw;
 						float calcPitch = interpretPitch(bone, yaw, parentYaw);
 
-						matrices.mulPose(new Quaternionf().rotateZYX(0, yaw, calcPitch + Mth.PI));
 						var seg = segmentNodes.get(i).origin();
+						matrices.mulPose(new Quaternionf().rotateZYX(0, yaw, calcPitch + Mth.PI));
 						matrices.translate(-seg.x, -seg.y, -seg.z);
-
 						PartRenderer.renderQuads(quadArrays.get(i), texture, matrices.last(), bufferSource, color, packedLight, packedOverlay);
 					}
 					matrices.popPose();

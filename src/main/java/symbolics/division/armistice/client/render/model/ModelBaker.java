@@ -68,6 +68,15 @@ public class ModelBaker {
 		return bake(new ArrayList<>(), tree, poseStack, filter);
 	}
 
+	public static List<Quad> bakeNoTransform(List<Quad> quads, BBModelTree tree, PoseStack poseStack, Predicate<BBModelTree> filter) {
+		if (!filter.test(tree)) return quads;
+
+		for (Element element : tree.elements()) addElement(quads, poseStack, element);
+		for (BBModelTree child : tree.children()) bake(quads, child, poseStack, filter);
+
+		return quads;
+	}
+
 	private static List<Quad> bake(List<Quad> quads, BBModelTree tree, PoseStack poseStack, Predicate<BBModelTree> filter) {
 		if (!filter.test(tree)) return quads;
 		Vector3fc origin = tree.node.origin().toVector3f();

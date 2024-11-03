@@ -43,7 +43,7 @@ public class ChassisPart extends AbstractMechaPart {
 	public final List<Vec3> debugStepTargets = new ArrayList<>();
 	protected final DirectionState direction = new DirectionState(Math.PI);
 	protected final ChassisSchematic schematic;
-	protected final double followTolerance = 4; // temp: related to model diameter
+	protected final double followTolerance = 20; // temp: related to model diameter
 	protected final double moveSpeed;
 	protected List<ChassisLeg> legs;
 	protected Vec3 movement = Vec3.ZERO;
@@ -151,7 +151,7 @@ public class ChassisPart extends AbstractMechaPart {
 			} else {
 				// otherwise we are facing it, so we ask our legs to move us towards it.
 				// temp: set from model data
-				float stepOffsetDistance = 0.5f;
+				float stepOffsetDistance = 10f;
 				legMap.setMapOffset(new Vec3(0, 0, stepOffsetDistance));
 				legMap.setMapRotation(0);
 			}
@@ -186,7 +186,7 @@ public class ChassisPart extends AbstractMechaPart {
 			// move to centroid
 			if (prevPos == Vec3.ZERO) prevPos = core.position();
 			var curPos = IKUtil.f2m(skeleton.getChain(0).getBone(0).getEndLocation());
-			float ticksPerBlock = 30;
+			float ticksPerBlock = 2;
 			var delta = desiredPos.subtract(curPos);
 			Vec3f tgt = IKUtil.m2f(curPos.add(delta.normalize().scale(1 / ticksPerBlock)));
 

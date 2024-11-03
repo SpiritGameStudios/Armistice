@@ -149,7 +149,7 @@ public class ChassisLeg {
 		 */
 		if (!ArmisticeDebugValues.ikSolving) return;
 
-		float ticksPerBlock = 15;
+		float ticksPerBlock = 1;
 		Vec3 mapTarget = chassis.legMap().legTarget(legIndex);
 		Vec3 tip = tipPos();
 		float mapDelta = (float) mapTarget.distanceTo(tip);
@@ -175,7 +175,7 @@ public class ChassisLeg {
 				ticksToStep--;
 				float stepPercent = (totalTicksToStep - ticksToStep) / totalTicksToStep;
 				tickTarget = prevStepTarget.add(finalStepTarget.subtract(prevStepTarget).scale(stepPercent))
-					.add(0, GeometryUtil.easedCurve(stepPercent), 0);
+					.add(0, GeometryUtil.easedCurve(stepPercent) * 5, 0);
 
 			} else { //final tick
 				ticksToStep = 0;
