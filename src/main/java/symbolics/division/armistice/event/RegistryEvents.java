@@ -41,6 +41,7 @@ import static symbolics.division.armistice.Armistice.MODID;
 public final class RegistryEvents {
 	public static void init(IEventBus modEventBus) {
 		NeoForge.EVENT_BUS.register(RegistryEvents.class);
+		ArmisticeJukeboxSongs.DEFERRED_SOUNDS.register(modEventBus);
 		modEventBus.register(ModEvents.class);
 	}
 
@@ -76,6 +77,11 @@ public final class RegistryEvents {
 					registry.register(Armistice.id("mecha_schematic"), MechaSchematicRecipe.SERIALIZER);
 					registry.register(Armistice.id("skin"), MechaSkinRecipe.SERIALIZER);
 				}
+			);
+
+			event.register(
+				Registries.JUKEBOX_SONG,
+				ArmisticeJukeboxSongs::registerAll
 			);
 
 			// region Debug

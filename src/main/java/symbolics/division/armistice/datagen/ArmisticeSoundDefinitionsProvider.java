@@ -5,6 +5,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SoundDefinition;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
 import symbolics.division.armistice.Armistice;
+import symbolics.division.armistice.registry.ArmisticeJukeboxSongs;
 import symbolics.division.armistice.registry.ArmisticeSoundEventRegistrar;
 
 public class ArmisticeSoundDefinitionsProvider extends SoundDefinitionsProvider {
@@ -82,9 +83,13 @@ public class ArmisticeSoundDefinitionsProvider extends SoundDefinitionsProvider 
 			.with(sound(Armistice.id("entity/mecha/weapon/laser_end")))
 			.subtitle("sound.armistice.entity.mecha.weapon.laser_end"));
 
-		add(ArmisticeSoundEventRegistrar.MUSIC$RECALLED, SoundDefinition.definition()
+		add(ArmisticeJukeboxSongs.MUSIC$RECALLED, SoundDefinition.definition()
 			.with(sound(Armistice.id("music/recalled")))
 			.subtitle("sound.armistice.music.recalled"));
+
+		add(ArmisticeJukeboxSongs.MUSIC$PEACE_ENGINES, SoundDefinition.definition()
+			.with(sound(Armistice.id("music/peace_engines")))
+			.subtitle("sound.armistice.music.peace_engines"));
 
 		add(ArmisticeSoundEventRegistrar.BLOCK$ARMISTEEL$PLACE, SoundDefinition.definition()
 			.with(sound(Armistice.id("block/armisteel/place"))));

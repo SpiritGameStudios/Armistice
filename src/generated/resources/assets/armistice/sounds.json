@@ -132,6 +132,12 @@
     ],
     "subtitle": "sound.armistice.entity.mecha.weapon.minigun"
   },
+  "music.peace_engines": {
+    "sounds": [
+      "armistice:music/peace_engines"
+    ],
+    "subtitle": "sound.armistice.music.peace_engines"
+  },
   "music.recalled": {
     "sounds": [
       "armistice:music/recalled"

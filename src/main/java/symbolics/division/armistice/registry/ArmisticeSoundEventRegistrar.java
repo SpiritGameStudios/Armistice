@@ -30,8 +30,6 @@ public final class ArmisticeSoundEventRegistrar implements SoundEventRegistrar {
 	public static final SoundEvent WEAPON$LASER = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.weapon.laser"));
 	public static final SoundEvent WEAPON$LASER_END = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.weapon.laser_end"));
 
-	public static final SoundEvent MUSIC$RECALLED = SoundEvent.createVariableRangeEvent(Armistice.id("music.recalled"));
-
 	public static final SoundEvent BLOCK$ARMISTEEL$PLACE = SoundEvent.createVariableRangeEvent(Armistice.id("block.armisteel.place"));
 
 	public static final SoundEvent BLOCK$ARMISTEEL$BREAK = SoundEvent.createVariableRangeEvent(Armistice.id("block.armisteel.break"));
@@ -41,7 +39,6 @@ public final class ArmisticeSoundEventRegistrar implements SoundEventRegistrar {
 	public static final SoundEvent BLOCK$ARMISTEEL$HIT = SoundEvent.createVariableRangeEvent(Armistice.id("block.armisteel.hit"));
 
 	public static final SoundEvent BLOCK$ARMISTEEL$STEP = SoundEvent.createVariableRangeEvent(Armistice.id("block.armisteel.step"));
-
 
 	@SuppressWarnings("deprecation")
 	public static class Types {
