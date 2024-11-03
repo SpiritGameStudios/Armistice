@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import symbolics.division.armistice.Armistice;
@@ -65,8 +66,8 @@ public class MechaEntity extends Entity {
 		this.noCulling = true;
 	}
 
-	public MechaEntity(EntityType<? extends Entity> entityType, Level level, MechaSchematic schematic) {
-		this(entityType, level, schematic.make());
+	public MechaEntity(EntityType<? extends Entity> entityType, Level level, MechaSchematic schematic, @Nullable MechaSkin skin) {
+		this(entityType, level, schematic.make(skin));
 	}
 
 	public static MechaEntity temp(EntityType<? extends Entity> entityType, Level level) {
@@ -74,7 +75,7 @@ public class MechaEntity extends Entity {
 		ChassisSchematic chassis = ArmisticeRegistries.CHASSIS.get(Armistice.id("test_chassis"));
 		List<OrdnanceSchematic> ordnance = List.of(ArmisticeOrdnanceRegistrar.MINIGUN);
 		ArmorSchematic armor = ArmisticeRegistries.ARMOR.get(Armistice.id("test_armor"));
-		return new MechaEntity(entityType, level, new MechaSchematic(hull, ordnance, chassis, armor));
+		return new MechaEntity(entityType, level, new MechaSchematic(hull, ordnance, chassis, armor), null);
 	}
 
 	@Override
@@ -104,19 +105,23 @@ public class MechaEntity extends Entity {
 		builder.define(CLIENT_POS, new Vector3f());
 		builder.define(CLIENT_DIR, new Vector3f());
 		builder.define(HEAT, 0);
-		builder.define(CORE, new MechaCore(new MechaSchematic(hull, ordnance, chassis, armor)));
+		builder.define(CORE, new MechaCore(new MechaSchematic(hull, ordnance, chassis, armor), null));
 		builder.define(BARREL_ROTATIONS, List.of());
 	}
 
 	@Override
 	protected void readAdditionalSaveData(@NotNull CompoundTag compound) {
-		MechaCore core = new MechaCore(MechaSchematic.CODEC.decode(NbtOps.INSTANCE, compound.get("core")).getOrThrow().getFirst());
+		MechaCore core = new MechaCore(
+			MechaSchematic.CODEC.decode(NbtOps.INSTANCE, compound.get("core")).getOrThrow().getFirst(),
+			MechaSkin.CODEC.decode(NbtOps.INSTANCE, compound.get("skin")).getOrThrow().getFirst()
+		);
 
 		getEntityData().set(CORE, core);
 	}
 
 	@Override
 	protected void addAdditionalSaveData(@NotNull CompoundTag compound) {
+		compound.put("skin", MechaSkin.CODEC.encodeStart(NbtOps.INSTANCE, core().skin()).getOrThrow());
 		compound.put("core", core().schematic.codec().encodeStart(NbtOps.INSTANCE, core().schematic).getOrThrow());
 	}
 

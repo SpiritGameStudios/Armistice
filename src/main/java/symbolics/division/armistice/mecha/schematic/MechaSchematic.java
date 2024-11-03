@@ -3,6 +3,7 @@ package symbolics.division.armistice.mecha.schematic;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import symbolics.division.armistice.mecha.MechaCore;
+import symbolics.division.armistice.mecha.MechaSkin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,14 @@ public record MechaSchematic(
 		if (!verify())
 			throw new IllegalStateException("Mecha schematic is invalid");
 
-		return new MechaCore(this);
+		return new MechaCore(this, null);
+	}
+
+	public MechaCore make(MechaSkin skin) {
+		if (!verify())
+			throw new IllegalStateException("Mecha schematic is invalid");
+
+		return new MechaCore(this, skin);
 	}
 
 	@Override

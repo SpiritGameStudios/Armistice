@@ -30,7 +30,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 	);
 
 	public static final OrdnanceSchematic FLAMETHROWER = new OrdnanceSchematic(
-		1,
+		2,
 		() -> new SimpleGunOrdnance(
 			1,
 			50,

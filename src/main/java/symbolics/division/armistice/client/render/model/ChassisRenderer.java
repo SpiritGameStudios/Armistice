@@ -4,7 +4,6 @@ import au.edu.federation.caliko.FabrikBone3D;
 import au.edu.federation.utils.Vec3f;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
@@ -12,6 +11,7 @@ import org.joml.Quaternionf;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.client.render.debug.ArmisticeClientDebugValues;
 import symbolics.division.armistice.mecha.MechaEntity;
+import symbolics.division.armistice.mecha.MechaSkin;
 import symbolics.division.armistice.mecha.movement.ChassisLeg;
 import symbolics.division.armistice.mecha.movement.IKUtil;
 import symbolics.division.armistice.model.BBModelTree;
@@ -25,7 +25,6 @@ import java.util.regex.Pattern;
 public class ChassisRenderer {
 	private static final ChassisRenderer MISSING = new ChassisRenderer();
 
-	private final ResourceLocation texture;
 	private final ModelBaker.Quad[] quads;
 	private final LegRenderer[] legRenderers;
 
@@ -71,6 +70,8 @@ public class ChassisRenderer {
 			List<FabrikBone3D> bones = leg.getBonesForRender();
 			// skip fake base bone that's not present in model
 			float parentYaw = Mth.PI - bones.get(1).getGlobalYawDegs();
+
+			MechaSkin skin = mecha.core().skin();
 			for (int i = 0; i < quadArrays.size(); i++) {
 				if (quadArrays.get(i).length != 0) {
 					var bone = bones.get(i + 1);
@@ -85,7 +86,15 @@ public class ChassisRenderer {
 						var seg = segmentNodes.get(i).origin();
 						matrices.mulPose(new Quaternionf().rotateZYX(0, yaw, calcPitch + Mth.PI));
 						matrices.translate(-seg.x, -seg.y, -seg.z);
-						PartRenderer.renderQuads(quadArrays.get(i), texture, matrices.last(), bufferSource, color, packedLight, packedOverlay);
+						PartRenderer.renderQuads(
+							quadArrays.get(i),
+							ResourceLocation.fromNamespaceAndPath(skin.id().getNamespace(), "textures/chassis/" + skin.id().getPath() + ".png"),
+							matrices.last(),
+							bufferSource,
+							color,
+							packedLight,
+							packedOverlay
+						);
 					}
 					matrices.popPose();
 				}
@@ -107,7 +116,6 @@ public class ChassisRenderer {
 
 	private ChassisRenderer() {
 		quads = ModelBaker.DEBUG_QUADS.toArray(new ModelBaker.Quad[0]);
-		texture = MissingTextureAtlasSprite.getLocation();
 		legRenderers = new LegRenderer[0];
 	}
 
@@ -125,12 +133,6 @@ public class ChassisRenderer {
 				legRenderers[index - 1] = new LegRenderer(child, index - 1);
 			}
 		}
-		// temp: hardcode texture
-		texture = ResourceLocation.fromNamespaceAndPath(
-			id.getNamespace(),
-			"textures/chassis/standard.png"
-//			"textures/chassis/" + id.getPath() + ".png"
-		);
 	}
 
 	public static void dispatch(MechaEntity mecha, PoseStack poseStack, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
@@ -140,7 +142,7 @@ public class ChassisRenderer {
 		if (chassis != null) {
 			poseStack.pushPose();
 			mecha.core().chassisEuclidean().transformAbsolute(poseStack);
-			chassis.render(poseStack.last(), bufferSource, color, packedLight, packedOverlay);
+			chassis.render(poseStack.last(), mecha.core().skin(), bufferSource, color, packedLight, packedOverlay);
 			poseStack.popPose();
 			for (var leg : chassis.legRenderers) {
 				leg.render(mecha, poseStack, bufferSource, color, packedLight, packedOverlay);
@@ -150,7 +152,15 @@ public class ChassisRenderer {
 		}
 	}
 
-	public void render(PoseStack.Pose pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
-		PartRenderer.renderQuads(quads, texture, pose, bufferSource, color, packedLight, packedOverlay);
+	public void render(PoseStack.Pose pose, MechaSkin skin, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
+		PartRenderer.renderQuads(
+			quads,
+			ResourceLocation.fromNamespaceAndPath(skin.id().getNamespace(), "textures/chassis/" + skin.id().getPath() + ".png"),
+			pose,
+			bufferSource,
+			color,
+			packedLight,
+			packedOverlay
+		);
 	}
 }

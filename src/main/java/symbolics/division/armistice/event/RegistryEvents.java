@@ -10,10 +10,12 @@ import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
+import net.neoforged.neoforge.registries.DataPackRegistryEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.debug.command.HealCommand;
+import symbolics.division.armistice.mecha.MechaSkin;
 import symbolics.division.armistice.mecha.schematic.ArmorSchematic;
 import symbolics.division.armistice.mecha.schematic.ChassisSchematic;
 import symbolics.division.armistice.mecha.schematic.HeatData;
@@ -22,6 +24,7 @@ import symbolics.division.armistice.model.ModelElementReloadListener;
 import symbolics.division.armistice.model.ModelOutlinerReloadListener;
 import symbolics.division.armistice.network.OutlinerSyncS2CPayload;
 import symbolics.division.armistice.recipe.MechaSchematicRecipe;
+import symbolics.division.armistice.recipe.MechaSkinRecipe;
 import symbolics.division.armistice.registry.*;
 import symbolics.division.armistice.util.registrar.ArmorRegistrar;
 import symbolics.division.armistice.util.registrar.ChassisRegistrar;
@@ -66,7 +69,10 @@ public final class RegistryEvents {
 
 			event.register(
 				Registries.RECIPE_SERIALIZER,
-				registry -> registry.register(Armistice.id("mecha_schematic"), MechaSchematicRecipe.SERIALIZER)
+				registry -> {
+					registry.register(Armistice.id("mecha_schematic"), MechaSchematicRecipe.SERIALIZER);
+					registry.register(Armistice.id("skin"), MechaSkinRecipe.SERIALIZER);
+				}
 			);
 
 			// region Debug
@@ -97,6 +103,15 @@ public final class RegistryEvents {
 			event.register(ArmisticeRegistries.HULL);
 			event.register(ArmisticeRegistries.ARMOR);
 			event.register(ArmisticeRegistries.CHASSIS);
+		}
+
+		@SubscribeEvent
+		private static void onRegisterDatapackRegistry(DataPackRegistryEvent.NewRegistry event) {
+			event.dataPackRegistry(
+				ArmisticeRegistries.SKIN_KEY,
+				MechaSkin.CODEC,
+				MechaSkin.CODEC
+			);
 		}
 
 		@SubscribeEvent

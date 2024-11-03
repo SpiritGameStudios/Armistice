@@ -13,6 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
@@ -43,6 +44,7 @@ public class MechaCore implements Part {
 	protected final ChassisPart chassis;
 	protected final HullPart hull;
 	protected final MechaModelData model;
+	protected final MechaSkin skin;
 	private MechaEntity entity = null;
 
 	private int soundCooldown;
@@ -50,15 +52,20 @@ public class MechaCore implements Part {
 	public static final StreamCodec<ByteBuf, MechaCore> TO_CLIENT_STREAM_CODEC = StreamCodec.of(
 		(buffer, value) -> {
 			value.schematic.streamCodec().encode(buffer, value.schematic);
+			MechaSkin.STREAM_CODEC.encode(buffer, value.skin);
 		},
-		buffer -> new MechaCore(ByteBufCodecs.fromCodec(MechaSchematic.CODEC).decode(buffer))
+		buffer -> new MechaCore(
+			ByteBufCodecs.fromCodec(MechaSchematic.CODEC).decode(buffer),
+			MechaSkin.STREAM_CODEC.decode(buffer)
+		)
 	);
 
-	public MechaCore(MechaSchematic schematic) {
+	public MechaCore(MechaSchematic schematic, @Nullable MechaSkin skin) {
 		this.schematic = schematic;
 		this.chassis = schematic.chassis().make();
 		this.hull = schematic.hull().make();
 		this.model = new MechaModelData(schematic);
+		this.skin = skin == null ? MechaSkin.DEFAULT : skin;
 	}
 
 	public void initCore(MechaEntity e) {
@@ -169,6 +176,10 @@ public class MechaCore implements Part {
 
 	public int getMaxHeat() {
 		return hull.getMaxHeat();
+	}
+
+	public MechaSkin skin() {
+		return skin;
 	}
 
 	@Override

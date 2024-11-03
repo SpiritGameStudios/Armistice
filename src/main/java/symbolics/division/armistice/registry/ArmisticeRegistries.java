@@ -4,6 +4,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.registries.RegistryBuilder;
 import symbolics.division.armistice.Armistice;
+import symbolics.division.armistice.mecha.MechaSkin;
 import symbolics.division.armistice.mecha.schematic.ArmorSchematic;
 import symbolics.division.armistice.mecha.schematic.ChassisSchematic;
 import symbolics.division.armistice.mecha.schematic.HullSchematic;
@@ -21,6 +22,9 @@ public final class ArmisticeRegistries {
 	public static final ResourceKey<Registry<ArmorSchematic>> ARMOR_KEY = ResourceKey.createRegistryKey(Armistice.id("armor"));
 
 	public static final ResourceKey<Registry<ChassisSchematic>> CHASSIS_KEY = ResourceKey.createRegistryKey(Armistice.id("chassis"));
+
+	public static final ResourceKey<Registry<MechaSkin>> SKIN_KEY = ResourceKey.createRegistryKey(Armistice.id("skin"));
+
 	// endregion
 
 	// region Registries

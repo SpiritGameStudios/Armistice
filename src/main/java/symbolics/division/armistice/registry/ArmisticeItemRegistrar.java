@@ -31,4 +31,8 @@ public final class ArmisticeItemRegistrar implements ItemRegistrar {
 	public static final Item MECHA_SCHEMATIC = new MechaSchematicItem(new Item.Properties()
 		.stacksTo(1)
 		.rarity(Rarity.RARE));
+
+	public static final Item MECHA_SKIN = new Item(new Item.Properties()
+		.stacksTo(1)
+		.rarity(Rarity.RARE));
 }

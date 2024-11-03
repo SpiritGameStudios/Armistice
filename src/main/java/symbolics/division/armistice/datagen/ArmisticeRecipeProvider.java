@@ -8,6 +8,7 @@ import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import org.jetbrains.annotations.NotNull;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.recipe.MechaSchematicRecipe;
+import symbolics.division.armistice.recipe.MechaSkinRecipe;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -19,5 +20,6 @@ public class ArmisticeRecipeProvider extends RecipeProvider {
 	@Override
 	protected void buildRecipes(@NotNull RecipeOutput recipeOutput) {
 		SpecialRecipeBuilder.special(MechaSchematicRecipe::new).save(recipeOutput, Armistice.id("mecha_schematic"));
+		SpecialRecipeBuilder.special(MechaSkinRecipe::new).save(recipeOutput, Armistice.id("skin"));
 	}
 }
