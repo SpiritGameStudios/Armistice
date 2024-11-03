@@ -1,5 +1,6 @@
 package symbolics.division.armistice.mecha;
 
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -111,12 +112,14 @@ public class MechaEntity extends Entity {
 
 	@Override
 	protected void readAdditionalSaveData(@NotNull CompoundTag compound) {
-		MechaCore core = new MechaCore(
-			MechaSchematic.CODEC.decode(NbtOps.INSTANCE, compound.get("core")).getOrThrow().getFirst(),
-			MechaSkin.CODEC.decode(NbtOps.INSTANCE, compound.get("skin")).getOrThrow().getFirst()
-		);
+		if (compound.contains("core")) {
+			MechaCore core = new MechaCore(
+				MechaSchematic.CODEC.decode(NbtOps.INSTANCE, compound.get("core")).getOrThrow().getFirst(),
+				MechaSkin.CODEC.decode(NbtOps.INSTANCE, compound.get("skin")).map(Pair::getFirst).result().orElse(null)
+			);
 
-		getEntityData().set(CORE, core);
+			getEntityData().set(CORE, core);
+		}
 	}
 
 	@Override
