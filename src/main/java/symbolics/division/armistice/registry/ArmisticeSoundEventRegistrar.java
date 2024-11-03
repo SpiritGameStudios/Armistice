@@ -10,16 +10,25 @@ public final class ArmisticeSoundEventRegistrar implements SoundEventRegistrar {
 
 	public static final SoundEvent AMBIENT$MECHA2 = SoundEvent.createVariableRangeEvent(Armistice.id("ambient.mecha2"));
 
+	public static final SoundEvent AMBIENT$GEIGER = SoundEvent.createVariableRangeEvent(Armistice.id("ambient.geiger"));
+
 	public static final SoundEvent ENTITY$MECHA$BOOT = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.boot"));
 
+	public static final SoundEvent ENTITY$MECHA$ALERT = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.alert"));
+	public static final SoundEvent ENTITY$MECHA$ALLGOOD = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.allgood"));
+	public static final SoundEvent ENTITY$MECHA$STEAM = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.steam"));
+	public static final SoundEvent ENTITY$MECHA$EMPTY = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.empty"));
 
 	public static final SoundEvent ENTITY$MECHA$STEP1 = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.step1"));
 	public static final SoundEvent ENTITY$MECHA$STEP2 = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.step2"));
 	public static final SoundEvent ENTITY$MECHA$STEP3 = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.step3"));
 
-	public static final SoundEvent ENTITY$MECHA$WEAPON$LOW_CAL = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.weapon.low_cal"));
-	public static final SoundEvent ENTITY$MECHA$WEAPON$HIGH_CAL = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.weapon.high_cal"));
-	public static final SoundEvent ENTITY$MECHA$WEAPON$MINIGUN = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.weapon.minigun"));
+	public static final SoundEvent WEAPON$LOW_CAL = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.weapon.low_cal"));
+	public static final SoundEvent WEAPON$HIGH_CAL = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.weapon.high_cal"));
+	public static final SoundEvent WEAPON$MINIGUN = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.weapon.minigun"));
+	public static final SoundEvent WEAPON$LASER_START = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.weapon.laser_start"));
+	public static final SoundEvent WEAPON$LASER = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.weapon.laser"));
+	public static final SoundEvent WEAPON$LASER_END = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.weapon.laser_end"));
 
 	public static final SoundEvent MUSIC$RECALLED = SoundEvent.createVariableRangeEvent(Armistice.id("music.recalled"));
 

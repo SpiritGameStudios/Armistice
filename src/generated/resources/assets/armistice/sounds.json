@@ -1,4 +1,10 @@
 {
+  "ambient.geiger": {
+    "sounds": [
+      "armistice:ambient/geiger"
+    ],
+    "subtitle": "sound.armistice.ambient.geiger"
+  },
   "ambient.mecha1": {
     "sounds": [
       "armistice:ambient/mecha1"
@@ -42,11 +48,35 @@
       "armistice:block/armisteel/step4"
     ]
   },
+  "entity.mecha.alert": {
+    "sounds": [
+      "armistice:entity/mecha/alert"
+    ],
+    "subtitle": "sound.armistice.entity.mecha.alert"
+  },
+  "entity.mecha.allgood": {
+    "sounds": [
+      "armistice:entity/mecha/allgood"
+    ],
+    "subtitle": "sound.armistice.entity.mecha.allgood"
+  },
   "entity.mecha.boot": {
     "sounds": [
       "armistice:entity/mecha/boot"
     ],
     "subtitle": "sound.armistice.entity.mecha.boot"
+  },
+  "entity.mecha.empty": {
+    "sounds": [
+      "armistice:entity/mecha/empty"
+    ],
+    "subtitle": "sound.armistice.entity.mecha.empty"
+  },
+  "entity.mecha.steam": {
+    "sounds": [
+      "armistice:entity/mecha/steam"
+    ],
+    "subtitle": "sound.armistice.entity.mecha.steam"
   },
   "entity.mecha.step1": {
     "sounds": [
@@ -71,6 +101,24 @@
       "armistice:entity/mecha/weapon/high_cal"
     ],
     "subtitle": "sound.armistice.entity.mecha.weapon.high_cal"
+  },
+  "entity.mecha.weapon.laser": {
+    "sounds": [
+      "armistice:entity/mecha/weapon/laser"
+    ],
+    "subtitle": "sound.armistice.entity.mecha.weapon.laser"
+  },
+  "entity.mecha.weapon.laser_end": {
+    "sounds": [
+      "armistice:entity/mecha/weapon/laser_end"
+    ],
+    "subtitle": "sound.armistice.entity.mecha.weapon.laser_end"
+  },
+  "entity.mecha.weapon.laser_start": {
+    "sounds": [
+      "armistice:entity/mecha/weapon/laser_start"
+    ],
+    "subtitle": "sound.armistice.entity.mecha.weapon.laser_start"
   },
   "entity.mecha.weapon.low_cal": {
     "sounds": [

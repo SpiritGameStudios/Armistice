@@ -23,7 +23,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 			(core, pos) -> core.level().playSound(
 				null,
 				pos.x(), pos.y(), pos.z(),
-				ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$HIGH_CAL,
+				ArmisticeSoundEventRegistrar.WEAPON$HIGH_CAL,
 				SoundSource.HOSTILE
 			)
 		)
@@ -55,7 +55,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 				core.level().playSound(
 					null,
 					pos.x(), pos.y(), pos.z(),
-					ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$MINIGUN,
+					ArmisticeSoundEventRegistrar.WEAPON$MINIGUN,
 					SoundSource.HOSTILE,
 					BASE_GUN_ATTENUATION,
 					AudioUtil.randomizedPitch(core.level().getRandom(), 1.3f, 0.05f)
@@ -74,7 +74,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 				core.level().playSound(
 					null,
 					pos.x(), pos.y(), pos.z(),
-					ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$LOW_CAL,
+					ArmisticeSoundEventRegistrar.WEAPON$LOW_CAL,
 					SoundSource.HOSTILE,
 					BASE_GUN_ATTENUATION,
 					AudioUtil.randomizedPitch(core.level().getRandom(), 1, 0.05f)
@@ -93,7 +93,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 				core.level().playSound(
 					null,
 					pos.x(), pos.y(), pos.z(),
-					ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$LOW_CAL,
+					ArmisticeSoundEventRegistrar.WEAPON$LOW_CAL,
 					SoundSource.HOSTILE,
 					BASE_GUN_ATTENUATION,
 					AudioUtil.randomizedPitch(core.level().getRandom(), 0.6f, 0.05f)

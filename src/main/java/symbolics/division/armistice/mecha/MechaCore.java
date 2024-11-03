@@ -7,11 +7,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -108,19 +104,19 @@ public class MechaCore implements Part {
 	@Override
 	public void tick() {
 		// region temp: debug pathing
-		Player player = level().getNearestPlayer(entity(), 100);
-		if (player != null) {
-			Vec3 eye = player.getEyePosition();
-			Vec3 limit = eye.add(player.getLookAngle().scale(30));
-			BlockHitResult raycast = level().clip(new ClipContext(
-				player.getEyePosition(),
-				limit,
-				ClipContext.Block.OUTLINE,
-				ClipContext.Fluid.NONE,
-				player
-			));
-			if (raycast.getType() == HitResult.Type.BLOCK) chassis.setPathingTarget(raycast.getLocation());
-		}
+//		Player player = level().getNearestPlayer(entity(), 100);
+//		if (player != null) {
+//			Vec3 eye = player.getEyePosition();
+//			Vec3 limit = eye.add(player.getLookAngle().scale(30));
+//			BlockHitResult raycast = level().clip(new ClipContext(
+//				player.getEyePosition(),
+//				limit,
+//				ClipContext.Block.OUTLINE,
+//				ClipContext.Fluid.NONE,
+//				player
+//			));
+//			if (raycast.getType() == HitResult.Type.BLOCK) chassis.setPathingTarget(raycast.getLocation());
+//		}
 		// endregion
 	}
 
@@ -238,5 +234,9 @@ public class MechaCore implements Part {
 	@VisibleForTesting
 	public void setHeat(int heat) {
 		hull.setHeat(heat);
+	}
+
+	public void setPathingTarget(Vector3f pos) {
+		chassis.setPathingTarget(new Vec3(pos));
 	}
 }

@@ -22,10 +22,29 @@ public class ArmisticeSoundDefinitionsProvider extends SoundDefinitionsProvider 
 			.with(sound(Armistice.id("ambient/mecha2")))
 			.subtitle("sound.armistice.ambient.mecha2"));
 
+		add(ArmisticeSoundEventRegistrar.AMBIENT$GEIGER, SoundDefinition.definition()
+			.with(sound(Armistice.id("ambient/geiger")))
+			.subtitle("sound.armistice.ambient.geiger"));
 
 		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$BOOT, SoundDefinition.definition()
 			.with(sound(Armistice.id("entity/mecha/boot")))
 			.subtitle("sound.armistice.entity.mecha.boot"));
+
+		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, SoundDefinition.definition()
+			.with(sound(Armistice.id("entity/mecha/alert")))
+			.subtitle("sound.armistice.entity.mecha.alert"));
+
+		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALLGOOD, SoundDefinition.definition()
+			.with(sound(Armistice.id("entity/mecha/allgood")))
+			.subtitle("sound.armistice.entity.mecha.allgood"));
+
+		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$STEAM, SoundDefinition.definition()
+			.with(sound(Armistice.id("entity/mecha/steam")))
+			.subtitle("sound.armistice.entity.mecha.steam"));
+
+		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$EMPTY, SoundDefinition.definition()
+			.with(sound(Armistice.id("entity/mecha/empty")))
+			.subtitle("sound.armistice.entity.mecha.empty"));
 
 		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$STEP1, SoundDefinition.definition()
 			.with(sound(Armistice.id("entity/mecha/step1")))
@@ -39,17 +58,29 @@ public class ArmisticeSoundDefinitionsProvider extends SoundDefinitionsProvider 
 			.with(sound(Armistice.id("entity/mecha/step3")))
 			.subtitle("sound.armistice.entity.mecha.step3"));
 
-		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$LOW_CAL, SoundDefinition.definition()
+		add(ArmisticeSoundEventRegistrar.WEAPON$LOW_CAL, SoundDefinition.definition()
 			.with(sound(Armistice.id("entity/mecha/weapon/low_cal")))
 			.subtitle("sound.armistice.entity.mecha.weapon.low_cal"));
 
-		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$HIGH_CAL, SoundDefinition.definition()
+		add(ArmisticeSoundEventRegistrar.WEAPON$HIGH_CAL, SoundDefinition.definition()
 			.with(sound(Armistice.id("entity/mecha/weapon/high_cal")))
 			.subtitle("sound.armistice.entity.mecha.weapon.high_cal"));
 
-		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$MINIGUN, SoundDefinition.definition()
+		add(ArmisticeSoundEventRegistrar.WEAPON$MINIGUN, SoundDefinition.definition()
 			.with(sound(Armistice.id("entity/mecha/weapon/minigun")))
 			.subtitle("sound.armistice.entity.mecha.weapon.minigun"));
+
+		add(ArmisticeSoundEventRegistrar.WEAPON$LASER_START, SoundDefinition.definition()
+			.with(sound(Armistice.id("entity/mecha/weapon/laser_start")))
+			.subtitle("sound.armistice.entity.mecha.weapon.laser_start"));
+
+		add(ArmisticeSoundEventRegistrar.WEAPON$LASER, SoundDefinition.definition()
+			.with(sound(Armistice.id("entity/mecha/weapon/laser")))
+			.subtitle("sound.armistice.entity.mecha.weapon.laser"));
+
+		add(ArmisticeSoundEventRegistrar.WEAPON$LASER_END, SoundDefinition.definition()
+			.with(sound(Armistice.id("entity/mecha/weapon/laser_end")))
+			.subtitle("sound.armistice.entity.mecha.weapon.laser_end"));
 
 		add(ArmisticeSoundEventRegistrar.MUSIC$RECALLED, SoundDefinition.definition()
 			.with(sound(Armistice.id("music/recalled")))
