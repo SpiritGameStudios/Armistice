@@ -16,7 +16,7 @@ public class LegMap {
 	protected final Vec3 centroidOffset;
 	protected Vec3 mapOffset = Vec3.ZERO;
 	protected float mapYaw = 0;
-	protected double stepTolerance = 3;
+	protected double stepTolerance = 5;
 	protected double[] directionWeights;
 
 	public LegMap(MechaModelData data, ChassisPart chassis) {

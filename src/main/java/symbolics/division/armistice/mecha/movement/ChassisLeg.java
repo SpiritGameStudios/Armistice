@@ -158,11 +158,12 @@ public class ChassisLeg {
 		Vec3 mapTarget = chassis.legMap().legTarget(legIndex);
 		Vec3 tip = tipPos();
 		float mapDelta = (float) mapTarget.distanceTo(tip);
-		boolean inRange = mapDelta <= chassis.legMap().stepTolerance();
+		double horzMapDelta = mapTarget.multiply(1, 0, 1).distanceTo(tip.multiply(1, 0, 1));
+		boolean inRange = horzMapDelta <= chassis.legMap().stepTolerance();
 
 
 		// check if we need to do a new step
-		if (!stepping() && !inRange && !chassis.neighborsStepping(legIndex)) {
+		if (!chassis.atRest() && !stepping() && !inRange && !chassis.neighborsStepping(legIndex)) {
 			if (prevStepTarget != finalStepTarget) {
 				prevStepTarget = tip;
 			}
@@ -212,7 +213,7 @@ public class ChassisLeg {
 		int checkHeight = 10;
 		var step = level.findSupportingBlock(entity,
 			new AABB(
-				ideal.add(1, checkHeight, 1), ideal.subtract(-1, checkHeight, -1)
+				ideal.add(1, checkHeight * 2, 1), ideal.subtract(-1, checkHeight * 3, -1)
 			)
 		);
 		return step.map(BlockPos::getCenter).orElse(ideal);

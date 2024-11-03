@@ -54,6 +54,7 @@ public class ChassisPart extends AbstractMechaPart {
 	protected boolean legsReady = false;
 	protected Vec3 prevPos = Vec3.ZERO;
 	private boolean firstTick = true;
+	private boolean atRest = true;
 
 	// todo notes: chassis schematic/skeleton needs to tell us
 	// - number of legs
@@ -142,6 +143,7 @@ public class ChassisPart extends AbstractMechaPart {
 
 		// update desired movement
 		if (pathingTarget != null && !pathingTarget.closerThan(new Vec3(absPos()).with(Direction.Axis.Y, pathingTarget.y), followTolerance)) {
+			atRest = false;
 			// if we're not facing the target, try to rotate towards it.
 			Vec3 targetHorizontalDir = pathingTarget.subtract(core.position()).with(Direction.Axis.Y, 0).normalize();
 			if (direction().dot(targetHorizontalDir) < 0.95) {
@@ -156,6 +158,7 @@ public class ChassisPart extends AbstractMechaPart {
 				legMap.setMapRotation(0);
 			}
 		} else {// don't need to go anywhere, give our legs a rest
+			atRest = true;
 			legMap.setMapOffset(Vec3.ZERO);
 			legMap.setMapRotation(0);
 		}
@@ -186,7 +189,7 @@ public class ChassisPart extends AbstractMechaPart {
 			// move to centroid
 			if (prevPos == Vec3.ZERO) prevPos = core.position();
 			var curPos = IKUtil.f2m(skeleton.getChain(0).getBone(0).getEndLocation());
-			float ticksPerBlock = 2;
+			float ticksPerBlock = 4;
 			var delta = desiredPos.subtract(curPos);
 			Vec3f tgt = IKUtil.m2f(curPos.add(delta.normalize().scale(1 / ticksPerBlock)));
 
@@ -212,7 +215,9 @@ public class ChassisPart extends AbstractMechaPart {
 			}
 
 			if (ArmisticeDebugValues.ikSolving) {
-				skeleton.solveForTarget(tgt);
+				if (!atRest) {
+					skeleton.solveForTarget(tgt);
+				}
 				legsReady = true;
 			}
 			core.entity().setPos(IKUtil.f2m(skeleton.getChain(0).getBone(0).getEndLocation()));
@@ -235,6 +240,10 @@ public class ChassisPart extends AbstractMechaPart {
 		movement = !core.entity().onGround() ?
 			movement.subtract(0, GRAVITY, 0) :
 			new Vec3(movement.x, 0, movement.z);
+	}
+
+	public boolean atRest() {
+		return atRest;
 	}
 
 	@Override
