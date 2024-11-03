@@ -44,11 +44,10 @@ public final class MechaHudRenderer {
 
 	private static final ResourceLocation SPEEDOMETER = Armistice.id("textures/hud/speedometer.png");
 
-	private static final ResourceLocation SMALL_ELEV_TICK = Armistice.id("textures/hud/small_elev_tick.png");
-	private static final ResourceLocation BIG_ELEV_TICK = Armistice.id("textures/hud/big_elev_tick.png");
-
 	private static final ResourceLocation CROSSHAIR = Armistice.id("textures/hud/crosshair.png");
 	private static final ResourceLocation PATHTARGET = Armistice.id("textures/hud/pathtarget.png");
+
+	private static final ResourceLocation CAM_OVERLAY = Armistice.id("textures/hud/cam_overlay.png");
 
 	@SubscribeEvent
 	private static void registerGuiLayers(RegisterGuiLayersEvent event) {
@@ -81,6 +80,7 @@ public final class MechaHudRenderer {
 			renderHeat(drawHelper, mecha);
 			renderElevation(drawHelper, mecha);
 			renderPathtarget(drawHelper, mecha);
+			renderOverlay(drawHelper, mecha);
 
 			RenderSystem.disableBlend();
 			RenderSystem.defaultBlendFunc();
@@ -150,6 +150,73 @@ public final class MechaHudRenderer {
 			),
 			lightbulbColor()
 		);
+
+		resetColor();
+	}
+
+	private static void renderOverlay(DrawHelper drawHelper, Entity mecha) {
+		int textureW = 600;
+		int textureH = 600;
+		int gw = drawHelper.guiGraphics().guiWidth();
+		int gh = drawHelper.guiGraphics().guiHeight();
+		float cx = gw / 2;
+		float cy = gh / 2;
+
+		// vertical should map to inner plus some change
+		int innerDiameter = 420;
+		int uOffset = (textureW - innerDiameter) / 2;
+		int vOffset = (textureH - innerDiameter) / 2;
+
+		float maxsize = Math.min(gh, gw);
+
+//		drawHelper.renderFlicker(
+//			pos -> drawHelper.guiGraphics().blit(
+//				CAM_OVERLAY,
+//				, 0,
+//				gw, gh,
+//				textureH - innerDiameter * 2, 0,
+//				textureW, textureH,
+//				textureW, textureW
+//			),
+//			new Vec2(
+//				cx,
+//				cy
+//			),
+//			lightbulbColor()
+//		);
+
+		drawHelper.renderFlicker(
+			pos -> drawHelper.guiGraphics().blit(
+				CAM_OVERLAY,
+				(int) pos.x, (int) pos.y + 20,
+				100, 100,
+				0, 0,
+				100, 100,
+				100, 100
+			),
+			new Vec2(
+				(drawHelper.guiGraphics().guiWidth() - 15) / 2F,
+				(drawHelper.guiGraphics().guiHeight() - 15) / 2F
+			),
+			lightbulbColor()
+		);
+
+
+//		drawHelper.renderFlicker(
+//			pos -> drawHelper.guiGraphics().blit(
+//				CAM_OVERLAY,
+//				(int) pos.x, (int) pos.y,
+//				100, 100,
+//				0, 0,
+//				textureW, textureH,
+//				textureW, textureW
+//			),
+//			new Vec2(
+//				cx,
+//				cy
+//			),
+//			lightbulbColor()
+//		);
 
 		resetColor();
 	}
