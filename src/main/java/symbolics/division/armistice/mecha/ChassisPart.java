@@ -43,7 +43,7 @@ public class ChassisPart extends AbstractMechaPart {
 	public final List<Vec3> debugStepTargets = new ArrayList<>();
 	protected final DirectionState direction = new DirectionState(Math.PI);
 	protected final ChassisSchematic schematic;
-	protected final double followTolerance = 20; // temp: related to model diameter
+	protected final double followTolerance = 30; // temp: related to model diameter
 	protected final double moveSpeed;
 	protected List<ChassisLeg> legs;
 	protected Vec3 movement = Vec3.ZERO;
@@ -141,7 +141,7 @@ public class ChassisPart extends AbstractMechaPart {
 		super.serverTick();
 
 		// update desired movement
-		if (pathingTarget != null && !pathingTarget.closerThan(new Vec3(absPos()), followTolerance)) {
+		if (pathingTarget != null && !pathingTarget.closerThan(new Vec3(absPos()).with(Direction.Axis.Y, pathingTarget.y), followTolerance)) {
 			// if we're not facing the target, try to rotate towards it.
 			Vec3 targetHorizontalDir = pathingTarget.subtract(core.position()).with(Direction.Axis.Y, 0).normalize();
 			if (direction().dot(targetHorizontalDir) < 0.95) {

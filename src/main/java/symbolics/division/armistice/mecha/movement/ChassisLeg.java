@@ -2,12 +2,17 @@ package symbolics.division.armistice.mecha.movement;
 
 import au.edu.federation.caliko.*;
 import au.edu.federation.utils.Vec3f;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
 import symbolics.division.armistice.math.GeometryUtil;
 import symbolics.division.armistice.mecha.ChassisPart;
+import symbolics.division.armistice.mecha.MechaCore;
+import symbolics.division.armistice.mecha.MechaEntity;
 import symbolics.division.armistice.model.MechaModelData;
 
 import java.util.ArrayList;
@@ -201,13 +206,17 @@ public class ChassisLeg {
 		}
 	}
 
-//	public void getLocalRotations() {
-//		for (FabrikBone3D : )
-//	}
-
 	protected Vec3 nearestValidStepPosition(Vec3 ideal) {
-		//  temp
-		return ideal;
+		MechaEntity entity = ((MechaCore) chassis.parent()).entity();
+		Level level = entity.level();
+		int checkHeight = 10;
+		var step = level.findSupportingBlock(entity,
+			new AABB(
+				ideal.add(1, checkHeight, 1), ideal.subtract(-1, checkHeight, -1)
+			)
+		);
+		return step.map(BlockPos::getCenter).orElse(ideal);
+
 	}
 
 	public Vec3 tipPos() {
