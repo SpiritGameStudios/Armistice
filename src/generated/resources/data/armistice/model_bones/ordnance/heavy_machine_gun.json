@@ -1,0 +1,63 @@
+[
+  {
+    "autouv": 0,
+    "children": [
+      "b00a163e-13fa-61b7-3331-c81d224efaef",
+      "c0e49293-082b-ec05-faf9-8ac2d4b9a4cb",
+      {
+        "autouv": 0,
+        "children": [
+          "56aae694-cd13-c504-ee14-8925a109efd8",
+          "6b6eddc5-3008-acbf-83c8-b5782fcd2113",
+          "3cacfd51-46ef-ab55-b334-b84b66ba8556",
+          "4112a52f-d76b-bfba-ec44-57c3a7654f91",
+          "f2b4601b-85b2-4af2-a5d7-552fc88fe823",
+          "1aab8907-41ab-e852-7d96-e4481cfa8474",
+          "cb5bbc7a-8b2d-dcfe-f227-5c8e4b989761",
+          "ccca3b64-7e2a-f3b5-0309-8d8bcdb0193d",
+          "d64e850c-f681-09aa-fffc-2f62ab189f89",
+          "4512d89e-8499-7f27-3048-b88413db732b",
+          "76550c82-c63a-6548-be90-fc8316384a91",
+          "f383f742-4c3b-d983-d7c8-c3a4a4f3b6a2",
+          "92d2b518-209c-9a01-ca26-29cf07ba70bd",
+          "86c60fd9-5b8c-0ca1-57e8-f9f4f43d89d9",
+          "f9312d6e-2aa4-9b0b-61f7-5afb0f60084a",
+          "efa415c0-7a9d-fb7b-56b8-0dc33999e36c"
+        ],
+        "export": true,
+        "mirror_uv": false,
+        "name": "body",
+        "origin": [
+          0.0,
+          29.0,
+          0.0
+        ],
+        "uuid": "42ad6570-7edc-da2e-c7b5-31d52709a433",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "export": true,
+        "mirror_uv": false,
+        "name": "marker1",
+        "origin": [
+          0.0,
+          29.0,
+          71.0
+        ],
+        "uuid": "d582e50d-da66-7e9a-c1a7-555426826b81",
+        "visibility": true
+      }
+    ],
+    "export": true,
+    "mirror_uv": false,
+    "name": "root",
+    "origin": [
+      0.0,
+      9.0,
+      0.0
+    ],
+    "uuid": "361c8398-f18a-c6df-5ac1-b8e7e0c09779",
+    "visibility": true
+  }
+]

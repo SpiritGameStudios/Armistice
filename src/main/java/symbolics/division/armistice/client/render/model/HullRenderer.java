@@ -27,7 +27,8 @@ public class HullRenderer {
 		quads = ModelBaker.bake(tree).toArray(ModelBaker.Quad[]::new);
 		texture = ResourceLocation.fromNamespaceAndPath(
 			id.getNamespace(),
-			"textures/hull/" + id.getPath() + ".png"
+			"textures/hull/standard.png"
+//			"textures/hull/" + id.getPath() + ".png"
 		);
 	}
 

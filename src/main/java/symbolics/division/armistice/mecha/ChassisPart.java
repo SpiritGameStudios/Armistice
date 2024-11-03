@@ -26,6 +26,7 @@ import symbolics.division.armistice.mecha.movement.IKUtil;
 import symbolics.division.armistice.mecha.movement.LegMap;
 import symbolics.division.armistice.mecha.schematic.ChassisSchematic;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +48,7 @@ public class ChassisPart extends AbstractMechaPart {
 	protected final double moveSpeed;
 	protected List<ChassisLeg> legs;
 	protected Vec3 movement = Vec3.ZERO;
+	@Nullable
 	protected Vec3 pathingTarget = Vec3.ZERO;
 	protected LegMap legMap;
 	protected FabrikStructure3D skeleton;
@@ -161,6 +163,7 @@ public class ChassisPart extends AbstractMechaPart {
 			atRest = true;
 			legMap.setMapOffset(Vec3.ZERO);
 			legMap.setMapRotation(0);
+			pathingTarget = null;
 		}
 
 		List<ChassisLeg> lowp = new ArrayList<>();
@@ -306,6 +309,7 @@ public class ChassisPart extends AbstractMechaPart {
 		return legMap;
 	}
 
+	@Nullable
 	public Vec3 getPathingTarget() {
 		return this.pathingTarget;
 	}
@@ -442,12 +446,14 @@ public class ChassisPart extends AbstractMechaPart {
 			drawLoc(legs.get(i).getTickTarget().toVector3f(), 1, 1, 0, poseStack, bufferSource);
 		}
 
-		// target, based on core pos
-		VertexConsumer targetLine = bufferSource.getBuffer(RenderType.debugLineStrip(4.0));
-		targetLine.addVertex(poseStack.last(), core.position().add(0, 1, 0).add(core.direction()).toVector3f())
-			.setColor(0.0f, 1.0f, 0.0f, 1.0f);
-		targetLine.addVertex(poseStack.last(), pathingTarget.toVector3f())
-			.setColor(0.0f, 1.0f, 0.0f, 1.0f);
+		if (pathingTarget != null) {
+			// target, based on core pos
+			VertexConsumer targetLine = bufferSource.getBuffer(RenderType.debugLineStrip(4.0));
+			targetLine.addVertex(poseStack.last(), core.position().add(0, 1, 0).add(core.direction()).toVector3f())
+				.setColor(0.0f, 1.0f, 0.0f, 1.0f);
+			targetLine.addVertex(poseStack.last(), pathingTarget.toVector3f())
+				.setColor(0.0f, 1.0f, 0.0f, 1.0f);
+		}
 
 		core.hull.renderDebug(bufferSource, poseStack);
 	}

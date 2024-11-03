@@ -125,9 +125,11 @@ public class ChassisRenderer {
 				legRenderers[index - 1] = new LegRenderer(child, index - 1);
 			}
 		}
+		// temp: hardcode texture
 		texture = ResourceLocation.fromNamespaceAndPath(
 			id.getNamespace(),
-			"textures/chassis/" + id.getPath() + ".png"
+			"textures/chassis/standard.png"
+//			"textures/chassis/" + id.getPath() + ".png"
 		);
 	}
 

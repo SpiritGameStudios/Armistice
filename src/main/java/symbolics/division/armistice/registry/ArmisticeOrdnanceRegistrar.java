@@ -10,6 +10,8 @@ import symbolics.division.armistice.util.registrar.OrdnanceRegistrar;
 
 @SuppressWarnings("unused")
 public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
+	public static float BASE_GUN_ATTENUATION = 30;
+
 	public static final OrdnanceSchematic CROSSBOW = new OrdnanceSchematic(
 		1,
 		() -> new SimpleGunOrdnance(
@@ -54,7 +56,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 					pos.x(), pos.y(), pos.z(),
 					ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$MINIGUN,
 					SoundSource.HOSTILE,
-					1,
+					BASE_GUN_ATTENUATION,
 					1.3f
 				);
 			}
@@ -64,7 +66,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 	public static final OrdnanceSchematic LIGHT_MACHINE_GUN = new OrdnanceSchematic(
 		1,
 		() -> new HitscanGunOrdnance(
-			10,
+			3,
 			30,
 			2,
 			(core, pos) -> {
@@ -72,7 +74,28 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 					null,
 					pos.x(), pos.y(), pos.z(),
 					ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$LOW_CAL,
-					SoundSource.HOSTILE
+					SoundSource.HOSTILE,
+					BASE_GUN_ATTENUATION,
+					1
+				);
+			}
+		)
+	);
+
+	public static final OrdnanceSchematic HEAVY_MACHINE_GUN = new OrdnanceSchematic(
+		1,
+		() -> new HitscanGunOrdnance(
+			10,
+			60,
+			5,
+			(core, pos) -> {
+				core.level().playSound(
+					null,
+					pos.x(), pos.y(), pos.z(),
+					ArmisticeSoundEventRegistrar.ENTITY$MECHA$WEAPON$LOW_CAL,
+					SoundSource.HOSTILE,
+					BASE_GUN_ATTENUATION,
+					0.6f
 				);
 			}
 		)
