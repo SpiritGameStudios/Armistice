@@ -3,6 +3,7 @@ package symbolics.division.armistice.registry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import symbolics.division.armistice.mecha.ordnance.HitscanGunOrdnance;
@@ -45,13 +46,26 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 	public static final OrdnanceSchematic MISSILE_LAUNCHER = new OrdnanceSchematic(
 		2,
 		() -> new SimpleGunOrdnance(
-			4,
+			10,
 			40,
 			500,
-			2,
-			(core, posInfo) -> {
-				Missile missile = new Missile(ArmisticeEntityTypeRegistrar.MISSILE, core.level());
-				missile.setPos(posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z());
+			0,
+			(core, info) -> {
+				Missile missile;
+
+				if (info.target() instanceof EntityHitResult entityHitResult) {
+					missile = Missile.aimedMissile(
+						new Vec3(info.pos().x(), info.pos().y(), info.pos().z()),
+						core.entity(),
+						entityHitResult.getEntity(),
+						0.5F
+					);
+				} else {
+					missile = new Missile(ArmisticeEntityTypeRegistrar.MISSILE, core.level());
+				}
+
+
+				missile.setPos(info.pos().x(), info.pos().y(), info.pos().z());
 				return missile;
 			},
 			(core, posInfo) -> core.level().playSound(

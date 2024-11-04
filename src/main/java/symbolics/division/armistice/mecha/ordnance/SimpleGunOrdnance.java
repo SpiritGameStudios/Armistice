@@ -8,7 +8,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
-import symbolics.division.armistice.math.PositionInfo;
+import symbolics.division.armistice.math.OrdnanceFireInfo;
 import symbolics.division.armistice.mecha.MechaCore;
 import symbolics.division.armistice.mecha.OrdnancePart;
 import symbolics.division.armistice.model.MechaModelData;
@@ -20,15 +20,15 @@ public class SimpleGunOrdnance extends OrdnancePart {
 	protected final int cooldown;
 	protected final double maxDistance;
 	protected final double projectileVelocity;
-	protected final BiFunction<MechaCore, PositionInfo, Entity> projectileCreator;
-	protected final BiConsumer<MechaCore, PositionInfo> onShoot;
+	protected final BiFunction<MechaCore, OrdnanceFireInfo, Entity> projectileCreator;
+	protected final BiConsumer<MechaCore, OrdnanceFireInfo> onShoot;
 
 	protected int cooldownTicks;
 	protected MechaModelData.MarkerInfo barrelMarker;
 	protected final int heatPerShot;
 	protected int heatThisTick = 0;
 
-	public SimpleGunOrdnance(int heatPerShot, int cooldown, double maxDistance, double projectileVelocity, BiFunction<MechaCore, PositionInfo, Entity> projectileCreator, BiConsumer<MechaCore, PositionInfo> onShoot) {
+	public SimpleGunOrdnance(int heatPerShot, int cooldown, double maxDistance, double projectileVelocity, BiFunction<MechaCore, OrdnanceFireInfo, Entity> projectileCreator, BiConsumer<MechaCore, OrdnanceFireInfo> onShoot) {
 		super(1);
 
 		this.heatPerShot = heatPerShot;
@@ -91,10 +91,11 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		Vec3 idealBarrelTipPos = absBody.add(idealBarrelDir);
 		Entity projectile = projectileCreator.apply(
 			core,
-			new PositionInfo(
+			new OrdnanceFireInfo(
 				idealBarrelTipPos.toVector3f(),
 				idealBarrelDir.toVector3f(),
-				new Quaternionf()
+				new Quaternionf(),
+				target
 			)
 		);
 
@@ -119,24 +120,27 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		Vec3 currentDirection = rotationManager.currentDirection();
 		if (currentDirection.dot(desiredDir) < 0.95 || cooldownTicks > 0) return;
 
-		Vec3 velocity = desiredDir
-			.scale(projectileVelocity);
+		if (projectileVelocity > 0) {
+			Vec3 velocity = desiredDir
+				.scale(projectileVelocity);
 
-		projectile.setDeltaMovement(velocity);
-		projectile.hasImpulse = true;
+			projectile.setDeltaMovement(velocity);
+			projectile.hasImpulse = true;
 
-		projectile.setYRot((float) (Mth.atan2(velocity.x, velocity.z) * Mth.RAD_TO_DEG));
-		projectile.setXRot((float) (Mth.atan2(velocity.y, horizontalDist) * Mth.RAD_TO_DEG));
-		projectile.yRotO = projectile.getYRot();
-		projectile.xRotO = projectile.getXRot();
-
+			projectile.setYRot((float) (Mth.atan2(velocity.x, velocity.z) * Mth.RAD_TO_DEG));
+			projectile.setXRot((float) (Mth.atan2(velocity.y, horizontalDist) * Mth.RAD_TO_DEG));
+			projectile.yRotO = projectile.getYRot();
+			projectile.xRotO = projectile.getXRot();
+		}
+		
 		core.level().addFreshEntity(projectile);
 		onShoot.accept(
 			core,
-			new PositionInfo(
+			new OrdnanceFireInfo(
 				idealBarrelTipPos.toVector3f(),
 				idealBarrelDir.toVector3f(),
-				new Quaternionf()
+				new Quaternionf(),
+				target
 			)
 		);
 

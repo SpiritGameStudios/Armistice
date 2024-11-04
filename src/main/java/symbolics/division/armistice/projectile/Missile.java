@@ -7,13 +7,11 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.*;
 import symbolics.division.armistice.registry.ArmisticeEntityTypeRegistrar;
 
 import javax.annotation.Nullable;
-
 import java.util.Optional;
 import java.util.UUID;
 
@@ -105,6 +103,13 @@ public class Missile extends AbstractOrdnanceProjectile {
 		}
 
 		getState().tick(this);
+
+		if (random.nextFloat() < 0.25F)
+			level().addParticle(
+				ParticleTypes.FLASH,
+				getX(), getY(), getZ(),
+				0, 0, 0
+			);
 	}
 
 	@Override
@@ -114,7 +119,7 @@ public class Missile extends AbstractOrdnanceProjectile {
 		LOGGER.debug("Missile hit! At {}", result.getLocation());
 
 		Vec3 hitLocation = result.getLocation();
-		level().broadcastEntityEvent(this, (byte)3);
+		level().broadcastEntityEvent(this, (byte) 3);
 		DamageSource damagesource = damageSources().explosion(this, getOwner());
 		level().explode(this, damagesource, null, hitLocation.x(), hitLocation.y(), hitLocation.z(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
 	}
@@ -133,14 +138,18 @@ public class Missile extends AbstractOrdnanceProjectile {
 
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
-		builder.define(MISSILE_STATE, (byte)0);
+		builder.define(MISSILE_STATE, (byte) 0);
 		builder.define(TARGET_UUID, Optional.empty());
 	}
 
 	public abstract static class MissileState {
-		public void enter(Missile missile) {}
+		public void enter(Missile missile) {
+		}
+
 		public abstract void tick(Missile missile);
+
 		public abstract byte getID();
+
 		public static MissileState MISSING_TARGET = new MissileState() {
 			@Override
 			public void tick(Missile missile) {

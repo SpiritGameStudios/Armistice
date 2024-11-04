@@ -14,7 +14,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
-import symbolics.division.armistice.math.PositionInfo;
+import symbolics.division.armistice.math.OrdnanceFireInfo;
 import symbolics.division.armistice.mecha.MechaCore;
 import symbolics.division.armistice.mecha.OrdnancePart;
 import symbolics.division.armistice.model.MechaModelData;
@@ -25,14 +25,14 @@ public class HitscanGunOrdnance extends OrdnancePart {
 	protected final int cooldown;
 	protected final double maxDistance;
 	protected final double damage;
-	protected final BiConsumer<MechaCore, PositionInfo> onShoot;
+	protected final BiConsumer<MechaCore, OrdnanceFireInfo> onShoot;
 
 	protected int cooldownTicks;
 	protected MechaModelData.MarkerInfo barrelMarker;
 	protected final int heatPerShot;
 	protected int heatThisTick = 0;
 
-	public HitscanGunOrdnance(int heatPerShot, int cooldown, double maxDistance, double damage, BiConsumer<MechaCore, PositionInfo> onShoot) {
+	public HitscanGunOrdnance(int heatPerShot, int cooldown, double maxDistance, double damage, BiConsumer<MechaCore, OrdnanceFireInfo> onShoot) {
 		super(1);
 
 		this.heatPerShot = heatPerShot;
@@ -124,10 +124,11 @@ public class HitscanGunOrdnance extends OrdnancePart {
 
 		this.onShoot.accept(
 			core,
-			new PositionInfo(
+			new OrdnanceFireInfo(
 				idealBarrelTipPos.toVector3f(),
 				idealBarrelDir.toVector3f(),
-				new Quaternionf()
+				new Quaternionf(),
+				target
 			)
 		);
 		hitResult.getEntity().hurt(core.entity().damageSources().magic(), (float) damage);
