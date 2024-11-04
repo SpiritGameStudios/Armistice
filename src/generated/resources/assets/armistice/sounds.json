@@ -1,4 +1,16 @@
 {
+  "ambient.explosion1": {
+    "sounds": [
+      "armistice:ambient/explosion1"
+    ],
+    "subtitle": "sound.armistice.ambient.explosion1"
+  },
+  "ambient.explosion2": {
+    "sounds": [
+      "armistice:ambient/explosion2"
+    ],
+    "subtitle": "sound.armistice.ambient.explosion2"
+  },
   "ambient.geiger": {
     "sounds": [
       "armistice:ambient/geiger"
@@ -65,6 +77,12 @@
       "armistice:entity/mecha/boot"
     ],
     "subtitle": "sound.armistice.entity.mecha.boot"
+  },
+  "entity.mecha.cockpit": {
+    "sounds": [
+      "armistice:entity/mecha/cockpit"
+    ],
+    "subtitle": "sound.armistice.entity.mecha.cockpit"
   },
   "entity.mecha.empty": {
     "sounds": [

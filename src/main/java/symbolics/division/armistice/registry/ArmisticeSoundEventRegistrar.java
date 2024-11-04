@@ -12,7 +12,11 @@ public final class ArmisticeSoundEventRegistrar implements SoundEventRegistrar {
 
 	public static final SoundEvent AMBIENT$GEIGER = SoundEvent.createVariableRangeEvent(Armistice.id("ambient.geiger"));
 
+	public static final SoundEvent ENV$EXPLOSION1 = SoundEvent.createVariableRangeEvent(Armistice.id("ambient.explosion1"));
+	public static final SoundEvent ENV$EXPLOSION2 = SoundEvent.createVariableRangeEvent(Armistice.id("ambient.explosion2"));
+
 	public static final SoundEvent ENTITY$MECHA$BOOT = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.boot"));
+	public static final SoundEvent ENTITY$MECHA$COCKPIT = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.cockpit"));
 
 	public static final SoundEvent ENTITY$MECHA$ALERT = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.alert"));
 	public static final SoundEvent ENTITY$MECHA$ALLGOOD = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.allgood"));

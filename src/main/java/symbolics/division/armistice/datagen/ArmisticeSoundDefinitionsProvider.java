@@ -27,9 +27,21 @@ public class ArmisticeSoundDefinitionsProvider extends SoundDefinitionsProvider 
 			.with(sound(Armistice.id("ambient/geiger")))
 			.subtitle("sound.armistice.ambient.geiger"));
 
+		add(ArmisticeSoundEventRegistrar.ENV$EXPLOSION1, SoundDefinition.definition()
+			.with(sound(Armistice.id("ambient/explosion1")))
+			.subtitle("sound.armistice.ambient.explosion1"));
+
+		add(ArmisticeSoundEventRegistrar.ENV$EXPLOSION2, SoundDefinition.definition()
+			.with(sound(Armistice.id("ambient/explosion2")))
+			.subtitle("sound.armistice.ambient.explosion2"));
+
 		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$BOOT, SoundDefinition.definition()
 			.with(sound(Armistice.id("entity/mecha/boot")))
 			.subtitle("sound.armistice.entity.mecha.boot"));
+
+		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$COCKPIT, SoundDefinition.definition()
+			.with(sound(Armistice.id("entity/mecha/cockpit")))
+			.subtitle("sound.armistice.entity.mecha.cockpit"));
 
 		add(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, SoundDefinition.definition()
 			.with(sound(Armistice.id("entity/mecha/alert")))
