@@ -93,15 +93,19 @@ public final class ArmisticeCreativeModeTabRegistrar implements CreativeModeTabR
 		.title(Component.translatable("itemGroup.armistice.decoration"))
 		.icon(() -> ArmisticeBlockRegistrar.CORRUGATED_ARMISTEEL.asItem().getDefaultInstance())
 		.displayItems((parameters, output) -> {
-			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_PLATING);
 			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_GRATE);
+			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_PLATING);
 			output.accept(ArmisticeBlockRegistrar.CORRUGATED_ARMISTEEL);
 			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_CHAIN);
-			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_BLOCK);
 			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_MESH);
-			output.accept(ArmisticeBlockRegistrar.RIGIDIZED_ARMISTEEL);
+			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_BLOCK);
 			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_PIPING);
 			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_VENT);
+			output.accept(ArmisticeBlockRegistrar.RIGIDIZED_ARMISTEEL);
+			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_BULB);
+			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_BARS);
+			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_DOOR);
+			output.accept(ArmisticeBlockRegistrar.ARMISTEEL_TRAPDOOR);
 		})
 		.build();
 }

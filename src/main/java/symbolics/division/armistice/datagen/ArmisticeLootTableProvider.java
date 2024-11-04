@@ -49,6 +49,8 @@ public class ArmisticeLootTableProvider extends LootTableProvider {
 			dropSelf(ArmisticeBlockRegistrar.RIGIDIZED_ARMISTEEL);
 			dropSelf(ArmisticeBlockRegistrar.ARMISTEEL_BULB);
 			dropSelf(ArmisticeBlockRegistrar.ARMISTEEL_BARS);
+			dropSelf(ArmisticeBlockRegistrar.ARMISTEEL_DOOR);
+			dropSelf(ArmisticeBlockRegistrar.ARMISTEEL_TRAPDOOR);
 		}
 	}
 }

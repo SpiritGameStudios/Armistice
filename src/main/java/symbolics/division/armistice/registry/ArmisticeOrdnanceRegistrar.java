@@ -48,7 +48,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		() -> new SimpleGunOrdnance(
 			10,
 			40,
-			500,
+			1000,
 			0,
 			(core, info) -> {
 				Missile missile;
@@ -269,7 +269,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		() -> new HitscanGunOrdnance(
 			3,
 			10,
-			60,
+			1000,
 			5,
 			(core, posInfo) -> {
 				core.level().playSound(

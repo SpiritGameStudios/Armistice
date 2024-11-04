@@ -2,6 +2,7 @@ package symbolics.division.armistice.registry;
 
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.BlockSetType;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.MapColor;
 import symbolics.division.armistice.block.ArmisteelChainBlock;
@@ -104,5 +105,23 @@ public final class ArmisticeBlockRegistrar implements BlockRegistrar {
 			.strength(5.0F, 6.0F)
 			.sound(SoundType.CHAIN)
 			.noOcclusion()
+	);
+
+	public static final TrapDoorBlock ARMISTEEL_TRAPDOOR = new TrapDoorBlock(
+		BlockSetType.IRON,
+		BlockBehaviour.Properties.of()
+			.strength(3.0F, 6.0F)
+			.sound(ArmisticeSoundEventRegistrar.Types.ARMISTEEL)
+			.mapColor(MapColor.METAL)
+			.requiresCorrectToolForDrops()
+	);
+
+	public static final DoorBlock ARMISTEEL_DOOR = new DoorBlock(
+		BlockSetType.IRON,
+		BlockBehaviour.Properties.of()
+			.strength(3.0F, 6.0F)
+			.sound(ArmisticeSoundEventRegistrar.Types.ARMISTEEL)
+			.mapColor(MapColor.METAL)
+			.requiresCorrectToolForDrops()
 	);
 }

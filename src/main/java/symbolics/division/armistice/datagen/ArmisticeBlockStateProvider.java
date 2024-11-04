@@ -160,6 +160,10 @@ public class ArmisticeBlockStateProvider extends BlockStateProvider {
 		itemModels().getBuilder(ArmisticeBlockRegistrar.ARMISTEEL_CHAIN.asItem().toString())
 			.parent(new ModelFile.UncheckedModelFile("item/generated"))
 			.texture("layer0", Armistice.id("block/armisteel_chain"));
+
+		trapdoorBlock(ArmisticeBlockRegistrar.ARMISTEEL_TRAPDOOR, Armistice.id("block/armisteel_trapdoor"), false);
+
+		doorBlock(ArmisticeBlockRegistrar.ARMISTEEL_DOOR, Armistice.id("block/armisteel_door_top"), Armistice.id("block/armisteel_door_bottom"));
 	}
 
 	public BlockModelBuilder cubeAll(String name, ResourceLocation texture) {
