@@ -79,30 +79,25 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 
 	public static final OrdnanceSchematic FLAMETHROWER = new OrdnanceSchematic(
 		2,
-		() -> new SimpleGunOrdnance(
+		() -> new HitscanGunOrdnance(
 			1,
 			1,
-			200,
-			1.5,
-			(core, posInfo) -> {
-				ArtilleryShell shell = new ArtilleryShell(ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL, core.level());
-				shell.setPos(posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z());
-				return shell;
-			},
-			(core, posInfo) -> {
+			100,
+			0.5,
+			(core, info) -> {
 				core.level().playSound(
 					null,
-					posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z(),
+					info.pos().x(), info.pos().y(), info.pos().z(),
 					SoundEvents.SNOWBALL_THROW,
 					SoundSource.HOSTILE
 				);
 
-				Vec3 normalDir = new Vec3(posInfo.direction().x(), posInfo.direction().y(), posInfo.direction().z()).normalize();
+				Vec3 normalDir = new Vec3(info.direction().x(), info.direction().y(), info.direction().z()).normalize();
 
 				PacketDistributor.sendToPlayersTrackingEntity(
 					core.entity(),
 					new ExtendedParticlePacket(
-						new Vec3(posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z()),
+						new Vec3(info.pos().x(), info.pos().y(), info.pos().z()),
 						Vec3.ZERO,
 						normalDir,
 						normalDir.scale(0.25),
@@ -110,6 +105,10 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 						ParticleTypes.FLAME
 					)
 				);
+
+				if (info.target() instanceof EntityHitResult entityHitResult) {
+					entityHitResult.getEntity().setRemainingFireTicks(5 * 20);
+				}
 			}
 		)
 	);
