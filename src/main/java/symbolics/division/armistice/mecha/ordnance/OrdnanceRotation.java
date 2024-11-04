@@ -11,7 +11,7 @@ import symbolics.division.armistice.mecha.MechaCore;
 import symbolics.division.armistice.mecha.OrdnancePart;
 import symbolics.division.armistice.mecha.movement.IKUtil;
 
-import java.util.ArrayList;
+import java.util.Map;
 
 import static symbolics.division.armistice.mecha.MechaEntity.BARREL_ROTATIONS;
 
@@ -82,23 +82,16 @@ public class OrdnanceRotation {
 
 		Vector2fc rotation = relYawPitchRad();
 
-		ArrayList<Vector2f> barrelRotations = new ArrayList<>(core.entity().getEntityData().get(BARREL_ROTATIONS));
+		Map<Integer, Vector2f> rotations = core.entity().getEntityData().get(BARREL_ROTATIONS);
 
-		int index = core.ordnanceIndex(ord);
-		if (barrelRotations.size() <= index) {
-			for (int i = barrelRotations.size() - 1; i <= index; i++) {
-				barrelRotations.add(new Vector2f());
-			}
-		}
-		
-		barrelRotations.add(
-			index,
+		rotations.put(
+			core.ordnanceIndex(ord),
 			new Vector2f(
 				Mth.wrapDegrees(Mth.approachDegrees(rotation.x(), yaw, yawSpeed)),
 				Mth.wrapDegrees(Mth.approachDegrees(rotation.y(), pitch, pitchSpeed))
 			)
 		);
 
-		core.entity().getEntityData().set(BARREL_ROTATIONS, barrelRotations);
+		core.entity().getEntityData().set(BARREL_ROTATIONS, rotations);
 	}
 }

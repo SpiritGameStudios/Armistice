@@ -1,6 +1,7 @@
 package symbolics.division.armistice.mecha;
 
 import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -28,6 +29,7 @@ import symbolics.division.armistice.registry.ArmisticeOrdnanceRegistrar;
 import symbolics.division.armistice.registry.ArmisticeRegistries;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class MechaEntity extends Entity {
@@ -46,9 +48,9 @@ public class MechaEntity extends Entity {
 		EntityDataSerializers.VECTOR3
 	);
 
-	public static final EntityDataAccessor<List<Vector2f>> BARREL_ROTATIONS = SynchedEntityData.defineId(
+	public static final EntityDataAccessor<Map<Integer, Vector2f>> BARREL_ROTATIONS = SynchedEntityData.defineId(
 		MechaEntity.class,
-		ArmisticeEntityDataSerializerRegistrar.VEC2_LIST
+		ArmisticeEntityDataSerializerRegistrar.INT_VEC2_MAP
 	);
 
 	protected static final EntityDataAccessor<Integer> HEAT = SynchedEntityData.defineId(
@@ -113,7 +115,7 @@ public class MechaEntity extends Entity {
 		builder.define(CLIENT_DIR, new Vector3f());
 		builder.define(HEAT, 0);
 		builder.define(CORE, new MechaCore(new MechaSchematic(hull, ordnance, chassis, armor), null));
-		builder.define(BARREL_ROTATIONS, List.of());
+		builder.define(BARREL_ROTATIONS, new Int2ObjectArrayMap<>());
 	}
 
 	@Override

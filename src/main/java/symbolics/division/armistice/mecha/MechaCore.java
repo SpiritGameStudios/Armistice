@@ -21,6 +21,7 @@ import symbolics.division.armistice.model.MechaModelData;
 import symbolics.division.armistice.registry.ArmisticeSoundEventRegistrar;
 
 import java.util.List;
+import java.util.Map;
 
 import static symbolics.division.armistice.mecha.MechaEntity.BARREL_ROTATIONS;
 
@@ -220,8 +221,8 @@ public class MechaCore implements Part {
 	}
 
 	public Vector2fc ordnanceBarrelRotation(int index) {
-		List<Vector2f> barrelRotations = entity().getEntityData().get(BARREL_ROTATIONS);
-		if (index >= barrelRotations.size()) return new Vector2f();
+		Map<Integer, Vector2f> barrelRotations = entity().getEntityData().get(BARREL_ROTATIONS);
+		if (!barrelRotations.containsKey(index)) return new Vector2f();
 		return barrelRotations.get(index);
 	}
 

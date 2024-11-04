@@ -1,21 +1,28 @@
 package symbolics.division.armistice.mecha;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.VisibleForTesting;
+import org.joml.Vector2f;
 import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.ordnance.NullOrdnancePart;
 import symbolics.division.armistice.mecha.schematic.HeatData;
 import symbolics.division.armistice.mecha.schematic.HullSchematic;
 
+import java.util.Map;
+
+import static symbolics.division.armistice.mecha.MechaEntity.BARREL_ROTATIONS;
 import static symbolics.division.armistice.mecha.MechaEntity.HEAT;
 
 public class HullPart extends AbstractMechaPart {
 	protected final NonNullList<OrdnancePart> ordnance;
 	protected final HeatData heatData;
+
+	protected final Map<Integer, Vector2f> ordnanceRotationChanges = new Int2ObjectArrayMap<>();
 
 	protected int coolingDelay;
 
@@ -74,11 +81,17 @@ public class HullPart extends AbstractMechaPart {
 	@Override
 	public void serverTick() {
 		ordnance.forEach(Part::serverTick);
+		core.entity().getEntityData().set(BARREL_ROTATIONS, ordnanceRotationChanges);
+
 		super.serverTick();
 	}
 
 	protected OrdnancePart getOrdnance(int slot) {
 		return ordnance.get(slot);
+	}
+
+	public void changeRotation(OrdnancePart part, Vector2f rotation) {
+		ordnanceRotationChanges.put(core.ordnanceIndex(part), rotation);
 	}
 
 	protected void onOverheat() {
