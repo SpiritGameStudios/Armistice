@@ -45,6 +45,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 	public static final OrdnanceSchematic MISSILE_LAUNCHER = new OrdnanceSchematic(
 		2,
 		() -> new SimpleGunOrdnance(
+			4,
 			40,
 			500,
 			2,

@@ -1,0 +1,57 @@
+[
+  {
+    "autouv": 0,
+    "children": [
+      "b00a163e-13fa-61b7-3331-c81d224efaef",
+      "c0e49293-082b-ec05-faf9-8ac2d4b9a4cb",
+      {
+        "autouv": 0,
+        "children": [
+          "fb851eab-bee8-0a06-d703-c77355a94809",
+          "239e330e-f36f-65f3-3a5d-1bc37f4ced7b",
+          "5e08e44d-21d2-f9cc-c4fe-c64fa3719677",
+          "617f75ec-3499-f7da-0c92-a0c37771486b",
+          "a94d2320-d505-f50a-b7e9-314f8588beb8",
+          "568f4685-71ee-9bfb-842e-7bac8fdb561f",
+          "2057cbd2-2bf6-7c39-3786-74aecffce0c2",
+          "f397dd49-7edc-40a7-e6c3-5f572b6e816f",
+          "1b7efb56-c430-00c6-79b0-39f3e4970f16",
+          "195c16dc-ab5c-a486-5b1b-83a4045ca73a"
+        ],
+        "export": true,
+        "mirror_uv": false,
+        "name": "body",
+        "origin": [
+          0.0,
+          29.0,
+          0.0
+        ],
+        "uuid": "e4e759e3-cefb-5597-3a68-ab49ede470f8",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "export": true,
+        "mirror_uv": false,
+        "name": "bone",
+        "origin": [
+          0.0,
+          29.0,
+          32.0
+        ],
+        "uuid": "342dcfea-5d36-acfd-7f29-0ee72baa8c17",
+        "visibility": true
+      }
+    ],
+    "export": true,
+    "mirror_uv": false,
+    "name": "root",
+    "origin": [
+      0.0,
+      9.0,
+      0.0
+    ],
+    "uuid": "361c8398-f18a-c6df-5ac1-b8e7e0c09779",
+    "visibility": true
+  }
+]

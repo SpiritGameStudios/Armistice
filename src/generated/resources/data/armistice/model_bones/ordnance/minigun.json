@@ -7,31 +7,11 @@
       {
         "autouv": 0,
         "children": [
-          {
-            "autouv": 0,
-            "children": [
-              "c96189e2-41f7-bb39-579d-f91e7784dff3",
-              "3676c3fe-8666-e3ca-8236-a22ce8ec6f9d",
-              "4d6a1c47-1cf5-6b5f-0c52-d61414d91257",
-              "29b5b1b8-cdb2-922e-3778-10a12d6e99d5",
-              "4092214b-342c-4186-330b-1f55c64629fa"
-            ],
-            "export": true,
-            "mirror_uv": false,
-            "name": "spinny",
-            "origin": [
-              0.0,
-              30.0,
-              9.900000000000002
-            ],
-            "rotation": [
-              0.0,
-              0.0,
-              -45.0
-            ],
-            "uuid": "91f4c70b-39e2-8424-330c-695faded0919",
-            "visibility": true
-          },
+          "4092214b-342c-4186-330b-1f55c64629fa",
+          "29b5b1b8-cdb2-922e-3778-10a12d6e99d5",
+          "4d6a1c47-1cf5-6b5f-0c52-d61414d91257",
+          "3676c3fe-8666-e3ca-8236-a22ce8ec6f9d",
+          "c96189e2-41f7-bb39-579d-f91e7784dff3",
           "56aae694-cd13-c504-ee14-8925a109efd8",
           "76550c82-c63a-6548-be90-fc8316384a91",
           "f383f742-4c3b-d983-d7c8-c3a4a4f3b6a2",
@@ -56,7 +36,7 @@
         "name": "marker1",
         "origin": [
           0.0,
-          30.0,
+          29.0,
           48.0
         ],
         "uuid": "27f59a03-4547-75c4-baf4-b788a66d4c67",

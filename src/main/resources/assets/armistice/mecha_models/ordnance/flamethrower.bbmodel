@@ -1035,7 +1035,7 @@
 					"name": "marker1",
 					"origin": [
 						0,
-						30.5,
+						29,
 						66
 					],
 					"color": 0,
@@ -1053,7 +1053,7 @@
 	],
 	"textures": [
 		{
-			"path": "ownloads\\flameon.png",
+			"path": "",
 			"name": "flameon.png",
 			"folder": "block",
 			"namespace": "",
