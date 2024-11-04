@@ -1,0 +1,61 @@
+[
+  {
+    "autouv": 0,
+    "children": [
+      "b00a163e-13fa-61b7-3331-c81d224efaef",
+      "c0e49293-082b-ec05-faf9-8ac2d4b9a4cb",
+      {
+        "autouv": 0,
+        "children": [
+          "56aae694-cd13-c504-ee14-8925a109efd8",
+          "f383f742-4c3b-d983-d7c8-c3a4a4f3b6a2",
+          "e6f581a2-9cf7-3834-4b65-2e51c0de647f",
+          "c3e49a73-6cac-3105-7604-fc98315831b4",
+          "ea9687aa-e2f4-2a72-9236-af1e7ee6fd41",
+          "d6898869-7a27-a4b2-d7e6-b76cda4dd580",
+          "010ee863-4562-38e6-46b0-7463b3c01623",
+          "252874b9-9c06-f9e3-27c9-a796cf8659ae",
+          "bafdaf7e-ffb7-a71d-a913-29166075011f",
+          "18450628-3fe7-77ef-b9ec-cd4dd875f9a6",
+          "5e2b901c-74cb-e083-b37a-7c85f0721a78",
+          "5153e97a-1aa3-8117-fbe7-aef6f1ccd66e",
+          "5b8670d2-d478-2002-e546-e2d54f3176e2",
+          "8fa99e77-9f17-e1f9-5536-00f9e622da49"
+        ],
+        "export": true,
+        "mirror_uv": false,
+        "name": "body",
+        "origin": [
+          0.0,
+          29.0,
+          0.0
+        ],
+        "uuid": "42ad6570-7edc-da2e-c7b5-31d52709a433",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "export": true,
+        "mirror_uv": false,
+        "name": "marker1",
+        "origin": [
+          0.0,
+          29.0,
+          141.0
+        ],
+        "uuid": "56da3f0e-61ae-0686-7ab6-c56a0f556420",
+        "visibility": true
+      }
+    ],
+    "export": true,
+    "mirror_uv": false,
+    "name": "root",
+    "origin": [
+      0.0,
+      9.0,
+      0.0
+    ],
+    "uuid": "361c8398-f18a-c6df-5ac1-b8e7e0c09779",
+    "visibility": true
+  }
+]

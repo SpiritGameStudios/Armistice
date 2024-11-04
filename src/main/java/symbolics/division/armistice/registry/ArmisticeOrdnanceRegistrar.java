@@ -113,6 +113,117 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		)
 	);
 
+	public static final OrdnanceSchematic ARTILLERY = new OrdnanceSchematic(
+		2,
+		() -> new SimpleGunOrdnance(
+			40,
+			20 * 20,
+			200,
+			1.5,
+			(core, posInfo) -> {
+				ArtilleryShell shell = new ArtilleryShell(ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL, core.level());
+				shell.setPos(posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z());
+				return shell;
+			},
+			(core, posInfo) -> {
+				core.level().playSound(
+					null,
+					posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z(),
+					ArmisticeSoundEventRegistrar.WEAPON$HIGH_CAL,
+					SoundSource.HOSTILE
+				);
+
+				Vec3 normalDir = new Vec3(posInfo.direction().x(), posInfo.direction().y(), posInfo.direction().z()).normalize();
+
+				PacketDistributor.sendToPlayersTrackingEntity(
+					core.entity(),
+					new ExtendedParticlePacket(
+						new Vec3(posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z()),
+						Vec3.ZERO,
+						normalDir,
+						normalDir.scale(0.25),
+						50,
+						ParticleTypes.FLAME
+					)
+				);
+			}
+		)
+	);
+
+	public static final OrdnanceSchematic AUTOCANNON = new OrdnanceSchematic(
+		2,
+		() -> new SimpleGunOrdnance(
+			40,
+			20 * 20,
+			200,
+			1.5,
+			(core, posInfo) -> {
+				ArtilleryShell shell = new ArtilleryShell(ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL, core.level());
+				shell.setPos(posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z());
+				return shell;
+			},
+			(core, posInfo) -> {
+				core.level().playSound(
+					null,
+					posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z(),
+					ArmisticeSoundEventRegistrar.WEAPON$HIGH_CAL,
+					SoundSource.HOSTILE
+				);
+
+				Vec3 normalDir = new Vec3(posInfo.direction().x(), posInfo.direction().y(), posInfo.direction().z()).normalize();
+
+				PacketDistributor.sendToPlayersTrackingEntity(
+					core.entity(),
+					new ExtendedParticlePacket(
+						new Vec3(posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z()),
+						Vec3.ZERO,
+						normalDir,
+						normalDir.scale(0.25),
+						50,
+						ParticleTypes.FLAME
+					)
+				);
+			}
+		)
+	);
+
+	public static final OrdnanceSchematic RAILGUN = new OrdnanceSchematic(
+		2,
+		() -> new SimpleGunOrdnance(
+			40,
+			20 * 20,
+			200,
+			1.5,
+			(core, posInfo) -> {
+				ArtilleryShell shell = new ArtilleryShell(ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL, core.level());
+				shell.setPos(posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z());
+				return shell;
+			},
+			(core, posInfo) -> {
+				core.level().playSound(
+					null,
+					posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z(),
+					ArmisticeSoundEventRegistrar.WEAPON$HIGH_CAL,
+					SoundSource.HOSTILE
+				);
+
+				Vec3 normalDir = new Vec3(posInfo.direction().x(), posInfo.direction().y(), posInfo.direction().z()).normalize();
+
+				PacketDistributor.sendToPlayersTrackingEntity(
+					core.entity(),
+					new ExtendedParticlePacket(
+						new Vec3(posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z()),
+						Vec3.ZERO,
+						normalDir,
+						normalDir.scale(0.25),
+						50,
+						ParticleTypes.FLAME
+					)
+				);
+			}
+		)
+	);
+
 	public static final OrdnanceSchematic MINIGUN = new OrdnanceSchematic(
 		1,
 		() -> new HitscanGunOrdnance(
@@ -188,6 +299,26 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 					SoundSource.HOSTILE,
 					BASE_GUN_ATTENUATION,
 					AudioUtil.randomizedPitch(core.level().getRandom(), 0.8f, 0.05f)
+				);
+			}
+		)
+	);
+
+	public static final OrdnanceSchematic LASER = new OrdnanceSchematic(
+		1,
+		() -> new HitscanGunOrdnance(
+			1,
+			1,
+			200,
+			1,
+			(core, posInfo) -> {
+				core.level().playSound(
+					null,
+					posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z(),
+					ArmisticeSoundEventRegistrar.WEAPON$LASER,
+					SoundSource.HOSTILE,
+					BASE_GUN_ATTENUATION,
+					AudioUtil.randomizedPitch(core.level().getRandom(), 1, 0.05f)
 				);
 			}
 		)
