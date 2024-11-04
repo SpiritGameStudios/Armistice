@@ -82,7 +82,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		() -> new HitscanGunOrdnance(
 			1,
 			1,
-			100,
+			1000,
 			0.5,
 			(core, info) -> {
 				core.level().playSound(
@@ -118,7 +118,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		() -> new SimpleGunOrdnance(
 			40,
 			20 * 20,
-			200,
+			2000,
 			1.5,
 			(core, posInfo) -> {
 				ArtilleryShell shell = new ArtilleryShell(ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL, core.level());
@@ -155,7 +155,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		() -> new SimpleGunOrdnance(
 			40,
 			20 * 20,
-			200,
+			2000,
 			1.5,
 			(core, posInfo) -> {
 				ArtilleryShell shell = new ArtilleryShell(ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL, core.level());
@@ -192,7 +192,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		() -> new SimpleGunOrdnance(
 			40,
 			20 * 20,
-			200,
+			2000,
 			1.5,
 			(core, posInfo) -> {
 				ArtilleryShell shell = new ArtilleryShell(ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL, core.level());
@@ -229,7 +229,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		() -> new HitscanGunOrdnance(
 			1,
 			1,
-			50,
+			5000,
 			1,
 			(core, posInfo) -> {
 				core.level().playSound(
@@ -249,7 +249,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		() -> new HitscanGunOrdnance(
 			1,
 			3,
-			30,
+			3000,
 			2,
 			(core, posInfo) -> {
 				core.level().playSound(
@@ -289,7 +289,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		() -> new HitscanGunOrdnance(
 			20,
 			15 * 20,
-			200,
+			2000,
 			19,
 			(core, posInfo) -> {
 				core.level().playSound(
@@ -309,7 +309,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		() -> new HitscanGunOrdnance(
 			1,
 			1,
-			200,
+			2000,
 			1,
 			(core, posInfo) -> {
 				core.level().playSound(
@@ -329,7 +329,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		() -> new HitscanGunOrdnance(
 			1,
 			80,
-			200,
+			2000,
 			19,
 			(core, posInfo) -> {
 				core.level().playSound(

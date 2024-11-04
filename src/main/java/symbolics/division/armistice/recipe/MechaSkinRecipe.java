@@ -6,6 +6,7 @@ import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import symbolics.division.armistice.component.MechaSchematicComponent;
+import symbolics.division.armistice.component.SkinComponent;
 import symbolics.division.armistice.mecha.MechaSkin;
 import symbolics.division.armistice.registry.ArmisticeDataComponentTypeRegistrar;
 
@@ -29,7 +30,7 @@ public class MechaSkinRecipe extends CustomRecipe {
 
 		List<MechaSkin> skins = input.items().stream()
 			.map(stack -> stack.get(ArmisticeDataComponentTypeRegistrar.SKIN))
-			.filter(Objects::nonNull).toList();
+			.filter(Objects::nonNull).map(SkinComponent::skin).toList();
 
 		return skins.size() == 1;
 	}
@@ -42,10 +43,10 @@ public class MechaSkinRecipe extends CustomRecipe {
 
 		MechaSkin skin = input.items().stream()
 			.map(stack -> stack.get(ArmisticeDataComponentTypeRegistrar.SKIN))
-			.filter(Objects::nonNull).toList().getFirst();
+			.filter(Objects::nonNull).map(SkinComponent::skin).toList().getFirst();
 
 		ItemStack result = schematic.copy();
-		result.set(ArmisticeDataComponentTypeRegistrar.SKIN, skin);
+		result.set(ArmisticeDataComponentTypeRegistrar.SKIN, new SkinComponent(skin));
 		return result;
 
 	}

@@ -2,7 +2,6 @@ package symbolics.division.armistice.registry;
 
 import net.minecraft.core.component.DataComponentType;
 import symbolics.division.armistice.component.*;
-import symbolics.division.armistice.mecha.MechaSkin;
 import symbolics.division.armistice.util.registrar.DataComponentTypeRegistrar;
 
 @SuppressWarnings("unused")
@@ -32,8 +31,8 @@ public final class ArmisticeDataComponentTypeRegistrar implements DataComponentT
 		.networkSynchronized(MechaSchematicComponent.STREAM_CODEC)
 		.build();
 
-	public static final DataComponentType<MechaSkin> SKIN = DataComponentType.<MechaSkin>builder()
-		.persistent(MechaSkin.CODEC)
-		.networkSynchronized(MechaSkin.STREAM_CODEC)
+	public static final DataComponentType<SkinComponent> SKIN = DataComponentType.<SkinComponent>builder()
+		.persistent(SkinComponent.CODEC)
+		.networkSynchronized(SkinComponent.STREAM_CODEC)
 		.build();
 }

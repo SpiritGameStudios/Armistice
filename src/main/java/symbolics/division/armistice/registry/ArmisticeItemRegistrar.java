@@ -32,9 +32,9 @@ public final class ArmisticeItemRegistrar implements ItemRegistrar {
 		.stacksTo(1)
 		.rarity(Rarity.RARE));
 
-	public static final Item MECHA_SKIN = new Item(new Item.Properties()
+	public static final Item MECHA_SKIN = new ComponentTooltipItem(new Item.Properties()
 		.stacksTo(1)
-		.rarity(Rarity.RARE));
+		.rarity(Rarity.RARE), ArmisticeDataComponentTypeRegistrar.SKIN);
 
 	public static final Item MUSIC_FILE_RECALLED = new Item(new Item.Properties()
 		.stacksTo(1)

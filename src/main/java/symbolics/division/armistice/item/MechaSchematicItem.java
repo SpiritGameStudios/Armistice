@@ -21,7 +21,7 @@ public class MechaSchematicItem extends ComponentTooltipItem {
 	public InteractionResult useOn(@NotNull UseOnContext context) {
 		MechaSchematic schematic = Optional.ofNullable(context.getItemInHand().get(ArmisticeDataComponentTypeRegistrar.MECHA_SCHEMATIC)).orElseThrow().schematic();
 
-		MechaSkin skin = context.getItemInHand().get(ArmisticeDataComponentTypeRegistrar.SKIN);
+		MechaSkin skin = context.getItemInHand().get(ArmisticeDataComponentTypeRegistrar.SKIN).skin();
 
 		MechaEntity entity = new MechaEntity(ArmisticeEntityTypeRegistrar.MECHA, context.getLevel(), schematic, skin);
 		entity.setPos(context.getClickLocation().add(0, 20, 0));

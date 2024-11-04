@@ -8,10 +8,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import symbolics.division.armistice.Armistice;
-import symbolics.division.armistice.component.ArmorSchematicComponent;
-import symbolics.division.armistice.component.ChassisSchematicComponent;
-import symbolics.division.armistice.component.HullSchematicComponent;
-import symbolics.division.armistice.component.OrdnanceSchematicComponent;
+import symbolics.division.armistice.component.*;
 import symbolics.division.armistice.mecha.MechaSkin;
 import symbolics.division.armistice.mecha.schematic.ArmorSchematic;
 import symbolics.division.armistice.mecha.schematic.ChassisSchematic;
@@ -82,7 +79,7 @@ public final class ArmisticeCreativeModeTabRegistrar implements CreativeModeTabR
 					Holder.direct(ArmisticeItemRegistrar.MECHA_SKIN),
 					1,
 					DataComponentPatch.builder()
-						.set(ArmisticeDataComponentTypeRegistrar.SKIN, skin)
+						.set(ArmisticeDataComponentTypeRegistrar.SKIN, new SkinComponent(skin))
 						.build()
 				)
 			));
