@@ -4,11 +4,8 @@ import au.edu.federation.caliko.FabrikBone3D;
 import au.edu.federation.caliko.FabrikChain3D;
 import au.edu.federation.caliko.FabrikStructure3D;
 import au.edu.federation.utils.Vec3f;
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
@@ -17,6 +14,8 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import org.joml.Vector4f;
+import symbolics.division.armistice.client.render.MechaEntityRenderer;
 import symbolics.division.armistice.client.render.hud.DrawHelper;
 import symbolics.division.armistice.client.render.hud.MechaHudRenderer;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
@@ -372,37 +371,28 @@ public class ChassisPart extends AbstractMechaPart {
 		super.renderDebug(bufferSource, poseStack);
 
 		for (int i = 0; i < skeleton.getNumChains(); i++) {
-			var effectorLoc = skeleton.getChain(i).getEffectorLocation();
-			poseStack.pushPose();
-			{
-				poseStack.translate(effectorLoc.x, effectorLoc.y, effectorLoc.z);
-				poseStack.mulPose(Minecraft.getInstance().gameRenderer.getMainCamera().rotation());
-				poseStack.scale(0.03f, -0.03f, 0.03f);
-				Minecraft.getInstance().font.drawInBatch(String.valueOf(i), 0.0F, 0.0F, -1, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
-			}
-			poseStack.popPose();
-
-			RenderSystem.setShaderColor(0.5f, 0.2125f, 0.1625f, 1);
-
-			RenderSystem.enableBlend();
-			RenderSystem.blendFuncSeparate(
-				GlStateManager.SourceFactor.SRC_ALPHA,
-				GlStateManager.DestFactor.ONE,
-				GlStateManager.SourceFactor.SRC_ALPHA,
-				GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA
-			);
+//			var effectorLoc = skeleton.getChain(i).getEffectorLocation();
+//			poseStack.pushPose();
+//			{
+//				poseStack.translate(effectorLoc.x, effectorLoc.y, effectorLoc.z);
+//				poseStack.mulPose(Minecraft.getInstance().gameRenderer.getMainCamera().rotation());
+//				poseStack.scale(0.03f, -0.03f, 0.03f);
+//				Minecraft.getInstance().font.drawInBatch(String.valueOf(i), 0.0F, 0.0F, -1, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+//			}
+//			poseStack.popPose();
 
 			skeleton.getChain(i).getChain().forEach(
 				bone -> {
 					DrawHelper.renderHologramFlicker(
-						pos -> drawSeg(
+						(pos, color) -> drawSeg(
 							new Vector3f(bone.getStartLocationAsArray()).add(pos.toVector3f()),
 							new Vector3f(bone.getEndLocationAsArray()).add(pos.toVector3f()),
 							1,
 							1,
 							1,
 							poseStack,
-							bufferSource
+							bufferSource,
+							color
 						),
 						Vec3.ZERO,
 						MechaHudRenderer.lightbulbColor()
@@ -410,53 +400,48 @@ public class ChassisPart extends AbstractMechaPart {
 
 				}
 			);
-
-
-			RenderSystem.disableBlend();
-			RenderSystem.defaultBlendFunc();
-			RenderSystem.setShaderColor(1f, 1f, 1f, 1);
 		}
 
 		// centroid-informed map target direction
-		var td = legMap.targetDir(effectors());
-		drawSeg(core.position().toVector3f(), core.position().add(td).toVector3f(), 0, 0, 1, poseStack, bufferSource);
-
-		Vec3 desiredPos = legMap.targetCentroid(td, effectors());
-
-		drawLoc(desiredPos.toVector3f(), 0, 1, 0, poseStack, bufferSource);
-
-		for (int i = 0; i < legs.size(); i++) {
-			// leg map
-			VertexConsumer quad = bufferSource.getBuffer(RenderType.debugQuads());
-			Vec3 target = legMap().legTarget(i);
-			double tol = legMap().stepTolerance();
-			quad.addVertex(poseStack.last(), target.add(-tol, 0, -tol).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
-			quad.addVertex(poseStack.last(), target.add(tol, 0, -tol).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
-			quad.addVertex(poseStack.last(), target.add(tol, 0, tol).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
-			quad.addVertex(poseStack.last(), target.add(-tol, 0, tol).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
-			drawLoc(target.toVector3f(), 0, 0, 1, poseStack, bufferSource);
-			poseStack.pushPose();
-			{
-				poseStack.translate(target.x, target.y + 0.4, target.z);
-				poseStack.mulPose(Minecraft.getInstance().gameRenderer.getMainCamera().rotation());
-				poseStack.scale(0.03f, -0.03f, 0.03f);
-				Minecraft.getInstance().font.drawInBatch(String.valueOf(i + 1), 0.0F, 0.0F, -1, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
-			}
-			poseStack.popPose();
-
-			drawLoc(legs.get(i).getTickTarget().toVector3f(), 1, 1, 0, poseStack, bufferSource);
-		}
-
-		if (pathingTarget != null) {
-			// target, based on core pos
-			VertexConsumer targetLine = bufferSource.getBuffer(RenderType.debugLineStrip(4.0));
-			targetLine.addVertex(poseStack.last(), core.position().add(0, 1, 0).add(core.direction()).toVector3f())
-				.setColor(0.0f, 1.0f, 0.0f, 1.0f);
-			targetLine.addVertex(poseStack.last(), pathingTarget.toVector3f())
-				.setColor(0.0f, 1.0f, 0.0f, 1.0f);
-		}
-
-		core.hull.renderDebug(bufferSource, poseStack);
+//		var td = legMap.targetDir(effectors());
+////		drawSeg(core.position().toVector3f(), core.position().add(td).toVector3f(), 0, 0, 1, poseStack, bufferSource,);
+//
+//		Vec3 desiredPos = legMap.targetCentroid(td, effectors());
+//
+//		drawLoc(desiredPos.toVector3f(), 0, 1, 0, poseStack, bufferSource);
+//
+//		for (int i = 0; i < legs.size(); i++) {
+//			// leg map
+//			VertexConsumer quad = bufferSource.getBuffer(RenderType.debugQuads());
+//			Vec3 target = legMap().legTarget(i);
+//			double tol = legMap().stepTolerance();
+//			quad.addVertex(poseStack.last(), target.add(-tol, 0, -tol).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+//			quad.addVertex(poseStack.last(), target.add(tol, 0, -tol).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+//			quad.addVertex(poseStack.last(), target.add(tol, 0, tol).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+//			quad.addVertex(poseStack.last(), target.add(-tol, 0, tol).toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+//			drawLoc(target.toVector3f(), 0, 0, 1, poseStack, bufferSource);
+//			poseStack.pushPose();
+//			{
+//				poseStack.translate(target.x, target.y + 0.4, target.z);
+//				poseStack.mulPose(Minecraft.getInstance().gameRenderer.getMainCamera().rotation());
+//				poseStack.scale(0.03f, -0.03f, 0.03f);
+//				Minecraft.getInstance().font.drawInBatch(String.valueOf(i + 1), 0.0F, 0.0F, -1, false, poseStack.last().pose(), bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+//			}
+//			poseStack.popPose();
+//
+//			drawLoc(legs.get(i).getTickTarget().toVector3f(), 1, 1, 0, poseStack, bufferSource);
+//		}
+//
+//		if (pathingTarget != null) {
+//			// target, based on core pos
+//			VertexConsumer targetLine = bufferSource.getBuffer(RenderType.debugLineStrip(4.0));
+//			targetLine.addVertex(poseStack.last(), core.position().add(0, 1, 0).add(core.direction()).toVector3f())
+//				.setColor(0.0f, 1.0f, 0.0f, 1.0f);
+//			targetLine.addVertex(poseStack.last(), pathingTarget.toVector3f())
+//				.setColor(0.0f, 1.0f, 0.0f, 1.0f);
+//		}
+//
+////		core.hull.renderDebug(bufferSource, poseStack);
 	}
 
 	private static void drawLoc(Vector3f p, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
@@ -466,17 +451,17 @@ public class ChassisPart extends AbstractMechaPart {
 			.setColor(r, g, b, 1.0f);
 	}
 
-	private static void drawSeg(Vector3f p1, Vector3f p2, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
-//		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
+	private static void drawSeg(Vector3f p1, Vector3f p2, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf, Vector4f color) {
+		VertexConsumer bufferBuilder = bf.getBuffer(MechaEntityRenderer.LINE_STRIP);
 
-		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(
-			VertexFormat.Mode.DEBUG_LINE_STRIP,
-			DefaultVertexFormat.POSITION_COLOR
-		);
+//		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(
+//			VertexFormat.Mode.DEBUG_LINE_STRIP,
+//			DefaultVertexFormat.POSITION_COLOR
+//		);
 
-		bufferBuilder.addVertex(poseStack.last(), p1).setColor(r, g, b, 1.0f);
-		bufferBuilder.addVertex(poseStack.last(), p2).setColor(r, g, b, 1.0f);
+		bufferBuilder.addVertex(poseStack.last(), p1).setColor(color.x, color.y, color.z, color.w);
+		bufferBuilder.addVertex(poseStack.last(), p2).setColor(color.x, color.y, color.z, color.w);
 
-		BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+//		BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 	}
 }

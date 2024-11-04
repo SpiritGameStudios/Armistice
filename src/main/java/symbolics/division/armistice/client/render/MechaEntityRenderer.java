@@ -1,13 +1,16 @@
 package symbolics.division.armistice.client.render;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderStateShard;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
@@ -15,9 +18,26 @@ import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.client.render.model.PartRenderer;
 import symbolics.division.armistice.mecha.MechaEntity;
 
+import java.util.OptionalDouble;
+
 @OnlyIn(Dist.CLIENT)
 public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("armistice", "textures/block/mecha/skin_test.png");
+
+	public static final RenderType LINE_STRIP = RenderType.create(
+		"line_strip",
+		DefaultVertexFormat.POSITION_COLOR,
+		VertexFormat.Mode.LINE_STRIP,
+		1536,
+		RenderType.CompositeState.builder()
+			.setShaderState(RenderType.RENDERTYPE_LINES_SHADER)
+			.setLineState(new RenderStateShard.LineStateShard(OptionalDouble.of(4)))
+			.setTransparencyState(RenderType.ADDITIVE_TRANSPARENCY)
+			.setOutputState(RenderType.ITEM_ENTITY_TARGET)
+			.setDepthTestState(RenderType.NO_DEPTH_TEST)
+			.setCullState(RenderType.NO_CULL)
+			.createCompositeState(false)
+	);
 
 	public MechaEntityRenderer(EntityRendererProvider.Context context) {
 		super(context);
@@ -51,8 +71,6 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 			mecha.core().mapChassisRender(chassis -> {
 				poseStack.pushPose();
 
-				Vec3 offset = mecha.position().subtract(Minecraft.getInstance().getCameraEntity().getEyePosition(partialTick));
-				poseStack.translate(offset.x, offset.y, offset.z);
 				poseStack.translate(-mecha.position().x, -mecha.position().y, -mecha.position().z);
 				chassis.renderDebug(bufferSource, poseStack);
 
@@ -60,6 +78,5 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 
 			});
 		}
-
 	}
 }

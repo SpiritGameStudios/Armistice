@@ -14,6 +14,7 @@ import org.joml.Vector4f;
 import symbolics.division.armistice.Armistice;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
@@ -149,16 +150,13 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 		RenderSystem.setShaderColor(color.x, color.y, color.z, color.w);
 	}
 
-	public static void renderHologramFlicker(Consumer<Vec3> render, Vec3 pos, Vector4f color) {
+	public static void renderHologramFlicker(BiConsumer<Vec3, Vector4f> render, Vec3 pos, Vector4f color) {
 
 		float alpha = RANDOM.nextInt(10) == 0 ? Math.min(RANDOM.nextFloat(), 0.25F) : 1.0F;
 		alpha = (0.3F + (alpha * 0.7F)) * color.w;
 
-		RenderSystem.setShaderColor(color.x, color.y, color.z, alpha);
-		render.accept(pos.offsetRandom(RANDOM, 0.0025F));
-		render.accept(pos.offsetRandom(RANDOM, 0.075F));
-
-		RenderSystem.setShaderColor(color.x, color.y, color.z, 1);
+		render.accept(pos.offsetRandom(RANDOM, 0.0025F), new Vector4f(color.x, color.y, color.z, alpha));
+		render.accept(pos.offsetRandom(RANDOM, 0.075F), new Vector4f(color.x, color.y, color.z, alpha));
 	}
 	// endregion
 

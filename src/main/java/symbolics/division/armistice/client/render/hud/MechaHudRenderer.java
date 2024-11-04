@@ -62,16 +62,17 @@ public final class MechaHudRenderer {
 			}
 
 			ArmisticeClient.renderVanillaHUD = false;
+			DrawHelper drawHelper = new DrawHelper(guiGraphics);
 
 			RenderSystem.enableBlend();
+			renderOverlay(drawHelper, mecha);
+
 			RenderSystem.blendFuncSeparate(
 				GlStateManager.SourceFactor.SRC_ALPHA,
 				GlStateManager.DestFactor.ONE,
 				GlStateManager.SourceFactor.SRC_ALPHA,
 				GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA
 			);
-
-			DrawHelper drawHelper = new DrawHelper(guiGraphics);
 
 			renderAltitude(drawHelper, mecha);
 			renderHeading(drawHelper, mecha);
@@ -81,34 +82,10 @@ public final class MechaHudRenderer {
 			renderElevation(drawHelper, mecha);
 			renderPathtarget(drawHelper, mecha);
 
-			RenderSystem.disableBlend();
 			RenderSystem.defaultBlendFunc();
-		});
-
-		event.registerAbove(Armistice.id("mecha_hud"), Armistice.id("mecha_overlay"), (guiGraphics, deltaTracker) -> {
-			LocalPlayer player = Minecraft.getInstance().player;
-			if (player == null) return;
-
-			Entity vehicle = player.getVehicle();
-			if (!(vehicle instanceof MechaEntity mecha) || !mecha.core().ready()) {
-				ArmisticeClient.renderVanillaHUD = true;
-				return;
-			}
-
-			ArmisticeClient.renderVanillaHUD = false;
-
-			RenderSystem.enableBlend();
-			RenderSystem.blendFuncSeparate(
-				GlStateManager.SourceFactor.SRC_ALPHA,
-				GlStateManager.DestFactor.ONE,
-				GlStateManager.SourceFactor.SRC_ALPHA,
-				GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA
-			);
-
-			DrawHelper drawHelper = new DrawHelper(guiGraphics);
-			renderOverlay(drawHelper, mecha);
 			RenderSystem.disableBlend();
-			RenderSystem.defaultBlendFunc();
+
+
 		});
 	}
 
@@ -212,8 +189,8 @@ public final class MechaHudRenderer {
 
 		drawHelper.guiGraphics().blit(
 			CAM_OVERLAY,
-			(drawHelper.guiGraphics().guiWidth()), drawHelper.guiGraphics().guiHeight(),
-			(drawHelper.guiGraphics().guiWidth()), drawHelper.guiGraphics().guiHeight(),
+			0, drawHelper.guiGraphics().guiWidth() - (600 / drawHelper.guiGraphics().guiWidth()),
+			drawHelper.guiGraphics().guiWidth(), drawHelper.guiGraphics().guiWidth(),
 			0, 0,
 			600, 600,
 			600, 600
