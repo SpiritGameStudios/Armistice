@@ -9,6 +9,11 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.Creeper;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import symbolics.division.armistice.mecha.MechaEntity;
@@ -16,6 +21,7 @@ import symbolics.division.armistice.projectile.ArtilleryShell;
 import symbolics.division.armistice.projectile.Missile;
 import symbolics.division.armistice.registry.ArmisticeEntityTypeRegistrar;
 
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -90,6 +96,25 @@ public final class ArmisticeDebugValues {
 						missile.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 0.5F, 0);
 						player.level().addFreshEntity(missile);
 						return Command.SINGLE_SUCCESS;
+					})
+				)
+				.then(Commands.literal("missile_aimed")
+					.requires(src -> src.hasPermission(Commands.LEVEL_ADMINS))
+					.executes(ctx -> {
+						ServerPlayer player = ctx.getSource().getPlayer();
+						if (player == null) return 0;
+						Level level = player.level();
+						Optional<Entity> target = level.getEntities(
+							player,
+							new AABB(player.position().subtract(50, 50, 50), player.position().add(50, 50, 50)),
+							entity -> entity instanceof Monster
+						).stream().findFirst();
+
+						return target.map(entity -> {
+							Missile missile = Missile.aimedMissile(player.position(), player, entity, 0.5F);
+							level.addFreshEntity(missile);
+							return Command.SINGLE_SUCCESS;
+						}).orElse(0);
 					})
 				)
 		);
