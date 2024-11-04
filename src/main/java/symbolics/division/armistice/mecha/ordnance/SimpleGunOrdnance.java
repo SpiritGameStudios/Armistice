@@ -25,10 +25,13 @@ public class SimpleGunOrdnance extends OrdnancePart {
 
 	protected int cooldownTicks;
 	protected MechaModelData.MarkerInfo barrelMarker;
+	protected final int heatPerShot;
+	protected int heatThisTick = 0;
 
-	public SimpleGunOrdnance(int cooldown, double maxDistance, double projectileVelocity, BiFunction<MechaCore, PositionInfo, Entity> projectileCreator, BiConsumer<MechaCore, PositionInfo> onShoot) {
+	public SimpleGunOrdnance(int heatPerShot, int cooldown, double maxDistance, double projectileVelocity, BiFunction<MechaCore, PositionInfo, Entity> projectileCreator, BiConsumer<MechaCore, PositionInfo> onShoot) {
 		super(1);
 
+		this.heatPerShot = heatPerShot;
 		this.cooldown = cooldown;
 		this.maxDistance = maxDistance;
 		this.projectileVelocity = projectileVelocity;
@@ -138,5 +141,13 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		);
 
 		cooldownTicks = cooldown;
+		heatThisTick = heatPerShot;
+	}
+
+	@Override
+	public int heat() {
+		int out = heatThisTick;
+		heatThisTick = 0;
+		return heatThisTick;
 	}
 }

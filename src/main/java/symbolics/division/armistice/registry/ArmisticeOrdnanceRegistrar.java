@@ -20,6 +20,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 	public static final OrdnanceSchematic CROSSBOW = new OrdnanceSchematic(
 		1,
 		() -> new SimpleGunOrdnance(
+			2,
 			10,
 			9999999,
 			1.5,
@@ -28,18 +29,22 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 				shell.setPos(posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z());
 				return shell;
 			},
-			(core, posInfo) -> core.level().playSound(
-				null,
-				posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z(),
-				ArmisticeSoundEventRegistrar.WEAPON$HIGH_CAL,
-				SoundSource.HOSTILE
-			)
+			(core, posInfo) -> {
+				core.level().playSound(
+					null,
+					posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z(),
+					ArmisticeSoundEventRegistrar.WEAPON$HIGH_CAL,
+					SoundSource.HOSTILE
+				);
+
+			}
 		)
 	);
 
 	public static final OrdnanceSchematic FLAMETHROWER = new OrdnanceSchematic(
 		2,
 		() -> new SimpleGunOrdnance(
+			1,
 			1,
 			200,
 			1.5,
@@ -77,6 +82,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		1,
 		() -> new HitscanGunOrdnance(
 			1,
+			1,
 			50,
 			1,
 			(core, posInfo) -> {
@@ -95,6 +101,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 	public static final OrdnanceSchematic LIGHT_MACHINE_GUN = new OrdnanceSchematic(
 		1,
 		() -> new HitscanGunOrdnance(
+			1,
 			3,
 			30,
 			2,
@@ -114,6 +121,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 	public static final OrdnanceSchematic HEAVY_MACHINE_GUN = new OrdnanceSchematic(
 		1,
 		() -> new HitscanGunOrdnance(
+			3,
 			10,
 			60,
 			5,
@@ -133,7 +141,8 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 	public static final OrdnanceSchematic SNIPER = new OrdnanceSchematic(
 		1,
 		() -> new HitscanGunOrdnance(
-			30,
+			20,
+			15 * 20,
 			200,
 			19,
 			(core, posInfo) -> {
@@ -152,7 +161,8 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 	public static final OrdnanceSchematic AUTODISPENSER = new OrdnanceSchematic(
 		1,
 		() -> new HitscanGunOrdnance(
-			30,
+			1,
+			80,
 			200,
 			19,
 			(core, posInfo) -> {

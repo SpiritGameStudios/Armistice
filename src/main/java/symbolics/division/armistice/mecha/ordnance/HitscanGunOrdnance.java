@@ -29,10 +29,13 @@ public class HitscanGunOrdnance extends OrdnancePart {
 
 	protected int cooldownTicks;
 	protected MechaModelData.MarkerInfo barrelMarker;
+	protected final int heatPerShot;
+	protected int heatThisTick = 0;
 
-	public HitscanGunOrdnance(int cooldown, double maxDistance, double damage, BiConsumer<MechaCore, PositionInfo> onShoot) {
+	public HitscanGunOrdnance(int heatPerShot, int cooldown, double maxDistance, double damage, BiConsumer<MechaCore, PositionInfo> onShoot) {
 		super(1);
 
+		this.heatPerShot = heatPerShot;
 		this.cooldown = cooldown;
 		this.maxDistance = maxDistance;
 		this.damage = damage;
@@ -130,6 +133,7 @@ public class HitscanGunOrdnance extends OrdnancePart {
 		hitResult.getEntity().hurt(core.entity().damageSources().magic(), (float) damage);
 
 		cooldownTicks = cooldown;
+		heatThisTick = heatPerShot;
 	}
 
 	@Override
@@ -189,5 +193,12 @@ public class HitscanGunOrdnance extends OrdnancePart {
 //		RenderSystem.disableBlend();
 //		RenderSystem.defaultBlendFunc();
 //		RenderSystem.setShaderColor(1, 1, 1, 1);
+	}
+
+	@Override
+	public int heat() {
+		int out = heatThisTick;
+		heatThisTick = 0;
+		return out;
 	}
 }
