@@ -247,4 +247,10 @@ public class MechaCore implements Part {
 	public void mapChassisRender(Consumer<ChassisPart> consumer) {
 		consumer.accept(chassis);
 	}
+
+	public void clearAllOrdnanceTargets() {
+		for (var ord : ordnance()) {
+			ord.clearTargets();
+		}
+	}
 }

@@ -84,6 +84,10 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 		return true;
 	}
 
+	public void clearTargets() {
+		targets.clear();
+	}
+
 	public void setId(ResourceLocation id) {
 		if (this.id != null) throw new IllegalStateException();
 		this.id = id;

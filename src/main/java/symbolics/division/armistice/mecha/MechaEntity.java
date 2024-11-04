@@ -9,6 +9,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,10 +29,13 @@ import symbolics.division.armistice.mecha.schematic.*;
 import symbolics.division.armistice.registry.ArmisticeEntityDataSerializerRegistrar;
 import symbolics.division.armistice.registry.ArmisticeOrdnanceRegistrar;
 import symbolics.division.armistice.registry.ArmisticeRegistries;
+import symbolics.division.armistice.registry.ArmisticeSoundEventRegistrar;
+import symbolics.division.armistice.util.AudioUtil;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 public class MechaEntity extends Entity {
 	public static final EntityDataAccessor<List<Vector3f>> LEG_TICK_TARGETS = SynchedEntityData.defineId(
@@ -134,12 +139,17 @@ public class MechaEntity extends Entity {
 
 			getEntityData().set(CORE, core);
 		}
+
+		if (compound.contains("morality")) {
+			morality = compound.getBoolean("morality");
+		}
 	}
 
 	@Override
 	protected void addAdditionalSaveData(@NotNull CompoundTag compound) {
 		compound.put("skin", MechaSkin.CODEC.encodeStart(NbtOps.INSTANCE, core().skin()).getOrThrow());
 		compound.put("core", MechaSchematic.CODEC.encodeStart(NbtOps.INSTANCE, core().schematic).getOrThrow());
+		compound.putBoolean("morality", morality);
 	}
 
 	@Override
@@ -172,13 +182,75 @@ public class MechaEntity extends Entity {
 	}
 
 	protected CrueltyMode crueltyMode = CrueltyMode.ROAM;
-	protected Vec3 prevRoamPos = Vec3.ZERO;
+	protected int modeTicks = 10000;
+	//	protected TargetingConditions TARGET_CONDITIONS = TargetingConditions.forCombat().range(200);
+	protected UUID fixation = null;
+	protected int ticksSincePlayerSeen = 0;
+
+	protected static int SPY_TICKS = 20 * 6;
+	protected int KILL_TICKS = 20 * 60;
 
 	protected void crueltyEngineTick() {
+		if (level().isClientSide) return;
+		var serverLevel = (ServerLevel) level();
+		modeTicks++;
 		switch (crueltyMode) {
+			case ROAM -> {
+				if (modeTicks > 20 * 120) {
+					modeTicks = 0;
+					core().setPathingTarget(new Vector3f((float) getRandomX(1000), (float) getY() + 50, (float) getRandomZ(1000)));
+				}
+//				level().getNearbyPlayers(TARGET_CONDITIONS, this, new AABB(this.getX()-200, this.getY()-50, this.getZ()-200, this.getX()+200, this.getY()+50,this.getZ()+200)))
+				for (var player : serverLevel.getPlayers(p -> validCrueltyTarget(p) && p.distanceTo(this) < 200 && p.hasLineOfSight(this), 1)) {
+					crueltyMode = CrueltyMode.SPY;
+					fixation = player.getUUID();
+					modeTicks = 0;
+					core().setPathingTarget(position().toVector3f());
+					playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 5, AudioUtil.randomizedPitch(random, 1, 0.2f));
+				}
+			}
+			case SPY -> {
+				if (modeTicks < SPY_TICKS) return;
+				if (fixation != null && level().getPlayerByUUID(fixation).hasLineOfSight(this) && validCrueltyTarget(level().getPlayerByUUID(fixation))) {
+					playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 5, AudioUtil.randomizedPitch(random, 1, 0.2f));
+					crueltyMode = CrueltyMode.KILL;
+					modeTicks = 0;
+					ticksSincePlayerSeen = 0;
+				} else {
+					crueltyMode = CrueltyMode.ROAM;
+					modeTicks = 10000;
+				}
+			}
+			case KILL -> {
+				var targetPlayer = level().getPlayerByUUID(fixation);
+				if (targetPlayer != null && validCrueltyTarget(targetPlayer)) {
+					if (!targetPlayer.hasLineOfSight(this)) {
+						ticksSincePlayerSeen++;
+						if (ticksSincePlayerSeen > KILL_TICKS) {
+							crueltyMode = CrueltyMode.ROAM;
+							modeTicks = 10000;
+						}
+						core().clearAllOrdnanceTargets();
+						return;
+					}
+					ticksSincePlayerSeen = 0;
+					if (tickCount % 2 == 0) {
+						core().setPathingTarget(targetPlayer.position().toVector3f());
+						for (var ord : core().ordnance()) {
+							ord.startTargeting(new EntityHitResult(targetPlayer));
+						}
+					}
 
+				} else {
+					crueltyMode = CrueltyMode.ROAM;
+					modeTicks = 10000;
+				}
+			}
 		}
 	}
 
+	public static boolean validCrueltyTarget(Player player) {
+		return !player.isDeadOrDying() && !player.isCreative() && !player.isSpectator();
+	}
 
 }
