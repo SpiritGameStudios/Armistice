@@ -2,6 +2,7 @@ package symbolics.division.armistice.component;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -32,27 +33,27 @@ public record MechaSchematicComponent(
 		ChassisSchematic chassis = schematic.chassis();
 		List<OrdnanceSchematic> ordnance = schematic.ordnance();
 
-		tooltipAdder.accept(Component.literal("Hull:"));
-		tooltipAdder.accept(Component.translatable(hull.id().toLanguageKey()));
-		tooltipAdder.accept(Component.literal("Tier: " + hull.tier()));
-		tooltipAdder.accept(Component.literal("Slots: " + String.join(", ", hull.slots().stream().map(Object::toString).toList())));
+		tooltipAdder.accept(Component.literal("Hull:").withStyle(ChatFormatting.DARK_GRAY));
+		tooltipAdder.accept(Component.translatable(hull.id().toLanguageKey()).withStyle(ChatFormatting.BLUE));
+		tooltipAdder.accept(Component.literal("Tier: " + hull.tier()).withStyle(ChatFormatting.DARK_PURPLE));
+		tooltipAdder.accept(Component.literal("Slots: " + String.join(", ", hull.slots().stream().map(Object::toString).toList())).withStyle(ChatFormatting.DARK_PURPLE));
 
-		tooltipAdder.accept(Component.literal("Armor:"));
-		tooltipAdder.accept(Component.translatable(armor.id().toLanguageKey()));
-		tooltipAdder.accept(Component.literal("Size: " + armor.size()));
+		tooltipAdder.accept(Component.literal("Armor:").withStyle(ChatFormatting.DARK_GRAY));
+		tooltipAdder.accept(Component.translatable(armor.id().toLanguageKey()).withStyle(ChatFormatting.BLUE));
+		tooltipAdder.accept(Component.literal("Size: " + armor.size()).withStyle(ChatFormatting.DARK_PURPLE));
 
-		tooltipAdder.accept(Component.literal("Chassis:"));
-		tooltipAdder.accept(Component.translatable(chassis.id().toLanguageKey()));
-		tooltipAdder.accept(Component.literal("Tier: " + chassis.tier()));
-		tooltipAdder.accept(Component.literal("Armor min: " + chassis.minArmorLevel()));
-		tooltipAdder.accept(Component.literal("Armor max: " + chassis.maxArmorLevel()));
+		tooltipAdder.accept(Component.literal("Chassis:").withStyle(ChatFormatting.DARK_GRAY));
+		tooltipAdder.accept(Component.translatable(chassis.id().toLanguageKey()).withStyle(ChatFormatting.BLUE));
+		tooltipAdder.accept(Component.literal("Tier: " + chassis.tier()).withStyle(ChatFormatting.DARK_PURPLE));
+		tooltipAdder.accept(Component.literal("Armor min: " + chassis.minArmorLevel()).withStyle(ChatFormatting.DARK_PURPLE));
+		tooltipAdder.accept(Component.literal("Armor max: " + chassis.maxArmorLevel()).withStyle(ChatFormatting.DARK_PURPLE));
 
 		for (int i = 0; i < ordnance.size(); i++) {
 			OrdnanceSchematic ordnanceSchematic = ordnance.get(i);
 
-			tooltipAdder.accept(Component.literal("Ordnance " + i + ":"));
-			tooltipAdder.accept(Component.translatable(ordnanceSchematic.id().toLanguageKey()));
-			tooltipAdder.accept(Component.literal("Size: " + ordnanceSchematic.size()));
+			tooltipAdder.accept(Component.literal("Ordnance " + i + ":").withStyle(ChatFormatting.DARK_GRAY));
+			tooltipAdder.accept(Component.translatable(ordnanceSchematic.id().toLanguageKey()).withStyle(ChatFormatting.BLUE));
+			tooltipAdder.accept(Component.literal("Size: " + ordnanceSchematic.size()).withStyle(ChatFormatting.DARK_PURPLE));
 		}
 	}
 }

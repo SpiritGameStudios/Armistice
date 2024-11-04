@@ -2,6 +2,7 @@ package symbolics.division.armistice.component;
 
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -26,9 +27,9 @@ public record ChassisSchematicComponent(
 		@NotNull Consumer<Component> tooltipAdder,
 		@NotNull TooltipFlag tooltipFlag
 	) {
-		tooltipAdder.accept(Component.translatable(schematic.id().toLanguageKey()));
-		tooltipAdder.accept(Component.literal("Tier: " + schematic.tier()));
-		tooltipAdder.accept(Component.literal("Armor min: " + schematic.minArmorLevel()));
-		tooltipAdder.accept(Component.literal("Armor max: " + schematic.maxArmorLevel()));
+		tooltipAdder.accept(Component.translatable(schematic.id().toLanguageKey()).withStyle(ChatFormatting.BLUE));
+		tooltipAdder.accept(Component.literal("Tier: " + schematic.tier()).withStyle(ChatFormatting.DARK_PURPLE));
+		tooltipAdder.accept(Component.literal("Armor min: " + schematic.minArmorLevel()).withStyle(ChatFormatting.DARK_PURPLE));
+		tooltipAdder.accept(Component.literal("Armor max: " + schematic.maxArmorLevel()).withStyle(ChatFormatting.DARK_PURPLE));
 	}
 }
