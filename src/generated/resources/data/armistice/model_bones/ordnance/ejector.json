@@ -1,0 +1,49 @@
+[
+  {
+    "autouv": 0,
+    "children": [
+      "b00a163e-13fa-61b7-3331-c81d224efaef",
+      "c0e49293-082b-ec05-faf9-8ac2d4b9a4cb",
+      {
+        "autouv": 0,
+        "children": [
+          "56aae694-cd13-c504-ee14-8925a109efd8",
+          "83018a42-37d7-2626-37e8-af269b71f0f6"
+        ],
+        "export": true,
+        "mirror_uv": false,
+        "name": "body",
+        "origin": [
+          0.0,
+          29.0,
+          0.0
+        ],
+        "uuid": "42ad6570-7edc-da2e-c7b5-31d52709a433",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "export": true,
+        "mirror_uv": false,
+        "name": "marker1",
+        "origin": [
+          0.0,
+          29.0,
+          25.0
+        ],
+        "uuid": "46faf6b9-ad8d-44c6-b739-790e38ccd54e",
+        "visibility": true
+      }
+    ],
+    "export": true,
+    "mirror_uv": false,
+    "name": "root",
+    "origin": [
+      0.0,
+      9.0,
+      0.0
+    ],
+    "uuid": "361c8398-f18a-c6df-5ac1-b8e7e0c09779",
+    "visibility": true
+  }
+]

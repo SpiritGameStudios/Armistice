@@ -88,7 +88,7 @@ public class ChassisRenderer {
 						matrices.translate(-seg.x, -seg.y, -seg.z);
 						PartRenderer.renderQuads(
 							quadArrays.get(i),
-							ResourceLocation.fromNamespaceAndPath(skin.id().getNamespace(), "textures/chassis/" + skin.id().getPath() + ".png"),
+							ResourceLocation.fromNamespaceAndPath(skin.id().getNamespace(), "textures/mecha/skin/" + skin.id().getPath() + ".png"),
 							matrices.last(),
 							bufferSource,
 							color,
@@ -155,7 +155,7 @@ public class ChassisRenderer {
 	public void render(PoseStack.Pose pose, MechaSkin skin, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
 		PartRenderer.renderQuads(
 			quads,
-			ResourceLocation.fromNamespaceAndPath(skin.id().getNamespace(), "textures/chassis/" + skin.id().getPath() + ".png"),
+			ResourceLocation.fromNamespaceAndPath(skin.id().getNamespace(), "textures/mecha/skin/" + skin.id().getPath() + ".png"),
 			pose,
 			bufferSource,
 			color,

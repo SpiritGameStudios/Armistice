@@ -2,7 +2,6 @@ package symbolics.division.armistice.client.render.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -43,7 +42,7 @@ public class HullRenderer {
 		if (!ArmisticeClientDebugValues.showHull) return;
 		PartRenderer.renderQuads(
 			quads,
-			ResourceLocation.fromNamespaceAndPath(skin.id().getNamespace(), "textures/hull/" + skin.id().getPath() + ".png"),
+			ResourceLocation.fromNamespaceAndPath(skin.id().getNamespace(), "textures/mecha/skin/" + skin.id().getPath() + ".png"),
 			pose,
 			bufferSource,
 			color,

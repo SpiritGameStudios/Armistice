@@ -85,8 +85,16 @@ public class OrdnanceRotation {
 
 		List<Vector2f> barrelRotations = new ArrayList<>(core.entity().getEntityData().get(BARREL_ROTATIONS));
 
-		barrelRotations.add(
-			core.ordnanceIndex(ord),
+		// temp: was causing crashes.
+		int index = core.ordnanceIndex(ord);
+		if (barrelRotations.size() <= index) {
+			for (int i = barrelRotations.size() - 1; i <= index; i++) {
+				barrelRotations.add(new Vector2f());
+			}
+		}
+
+		barrelRotations.set(
+			index,
 			new Vector2f(
 				Mth.wrapDegrees(Mth.approachDegrees(rotation.x(), yaw, yawSpeed)),
 				Mth.wrapDegrees(Mth.approachDegrees(rotation.y(), pitch, pitchSpeed))

@@ -1,0 +1,85 @@
+[
+  {
+    "autouv": 0,
+    "children": [
+      "88540813-75f5-9031-8e5e-3c00adde9fcf",
+      "c18efdd0-7c2c-d588-3675-b974ce76a83e",
+      "7dfbe996-5d11-f998-0005-9de69dd97b15",
+      "aa755c7a-2a21-c410-e911-4fc12f5d2cec",
+      "9da84bde-376d-e4e1-34d6-cad60cc3de8f",
+      "ae291261-bc9a-e4bc-f29a-9c7646afd7a8",
+      "03e9d9c1-af4d-3aa9-69af-8af02cb64912",
+      "63a71ef1-45f3-f236-c98e-937ec06ef7e3",
+      "e588e194-51d4-d761-fd70-d96ae4d57320",
+      "c607ee14-8464-f5f6-2481-873ef8a7697c",
+      "6f9d9392-f47d-01bb-9601-aa441e3b291e",
+      "e764f44d-99b0-7f15-26bd-8d8e516da45f",
+      "dfa822de-d1ec-f9fd-8de7-d1ddf694245a",
+      "bd9da1cb-62b2-5ffc-5d77-66f1b8ce71e0",
+      "9df953da-0fc0-43a8-7cc0-1ce4f2879d3f",
+      "ab58f045-0537-0a2e-a879-b8ce989c0a87",
+      "e73ec546-d003-87a6-4a9c-c2bd851f774f",
+      {
+        "autouv": 0,
+        "export": true,
+        "mirror_uv": false,
+        "name": "ordnance1",
+        "origin": [
+          0.0,
+          41.0,
+          -22.0
+        ],
+        "uuid": "045a875f-65a0-d37e-651f-ebd1cc54b12b",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "export": true,
+        "mirror_uv": false,
+        "name": "ordnance2",
+        "origin": [
+          19.0,
+          32.0,
+          -22.0
+        ],
+        "rotation": [
+          0.0,
+          89.99999647980108,
+          -22.500000000000085
+        ],
+        "uuid": "e2422de5-d26a-1760-f7a4-1fe893cb1e9f",
+        "visibility": true
+      },
+      {
+        "autouv": 0,
+        "export": true,
+        "mirror_uv": false,
+        "name": "ordnance3",
+        "origin": [
+          -19.0,
+          32.0,
+          -22.0
+        ],
+        "rotation": [
+          0.0,
+          89.99999627848696,
+          22.499999999999826
+        ],
+        "uuid": "62e99b13-f17e-4749-39a4-0d552c12a76e",
+        "visibility": true
+      },
+      "251ed7e4-2d2f-21b5-97ef-243ae0286acb",
+      "fb1713cd-59bd-0335-e028-a1d2a85448d1"
+    ],
+    "export": true,
+    "mirror_uv": false,
+    "name": "root",
+    "origin": [
+      0.0,
+      11.0,
+      0.0
+    ],
+    "uuid": "b9b05ff0-47ee-87bf-8e04-e83d5046d880",
+    "visibility": true
+  }
+]

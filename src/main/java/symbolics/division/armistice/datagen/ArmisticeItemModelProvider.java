@@ -18,6 +18,8 @@ public class ArmisticeItemModelProvider extends ItemModelProvider {
 		basicItem(ArmisticeItemRegistrar.HULL_SCHEMATIC);
 		basicItem(ArmisticeItemRegistrar.ORDNANCE_SCHEMATIC);
 		basicItem(ArmisticeItemRegistrar.MECHA_SCHEMATIC);
+		basicItem(ArmisticeItemRegistrar.ARMOR_SCHEMATIC);
+		basicItem(ArmisticeItemRegistrar.MECHA_SKIN);
 		basicItem(ArmisticeItemRegistrar.MUSIC_FILE_PEACE_ENGINES);
 		basicItem(ArmisticeItemRegistrar.MUSIC_FILE_RECALLED);
 	}

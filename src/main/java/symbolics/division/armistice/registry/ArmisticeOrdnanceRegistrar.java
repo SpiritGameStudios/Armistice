@@ -129,4 +129,23 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 			}
 		)
 	);
+
+	public static final OrdnanceSchematic SNIPER = new OrdnanceSchematic(
+		1,
+		() -> new HitscanGunOrdnance(
+			30,
+			200,
+			19,
+			(core, posInfo) -> {
+				core.level().playSound(
+					null,
+					posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z(),
+					ArmisticeSoundEventRegistrar.WEAPON$HIGH_CAL,
+					SoundSource.HOSTILE,
+					BASE_GUN_ATTENUATION,
+					AudioUtil.randomizedPitch(core.level().getRandom(), 0.8f, 0.05f)
+				);
+			}
+		)
+	);
 }

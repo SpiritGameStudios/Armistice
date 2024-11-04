@@ -18,7 +18,7 @@ public class HullPart extends AbstractMechaPart {
 	protected int coolingDelay;
 
 	public HullPart(HullSchematic schematic) {
-		ordnance = NonNullList.withSize(schematic.slots().size() - 1, new NullOrdnancePart());
+		ordnance = NonNullList.withSize(schematic.slots().size(), new NullOrdnancePart());
 		this.heatData = schematic.heat();
 	}
 
