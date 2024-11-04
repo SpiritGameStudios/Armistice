@@ -24,9 +24,9 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public final class ArmisticeDebugValues {
-	public static boolean simpleGun = false;
+	public static boolean simpleGun = true;
 	public static boolean chassisGravity = false;
-	public static boolean ikSolving = false;
+	public static boolean ikSolving = true;
 
 	@SubscribeEvent
 	private static void registerCommands(RegisterCommandsEvent event) {

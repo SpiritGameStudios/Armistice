@@ -13,6 +13,10 @@ public final class ArmisticeEntityTypeRegistrar implements EntityTypeRegistrar {
 		MechaEntity::temp, MobCategory.MISC
 	).sized(5, 5).updateInterval(1).noSummon().build("mecha");
 
+	public static final EntityType<MechaEntity> CRUELTY_ENGINE = EntityType.Builder.of(
+		MechaEntity::temp, MobCategory.MONSTER
+	).sized(5, 5).updateInterval(1).noSummon().build("cruelty_engine");
+
 	public static final EntityType<ArtilleryShell> ARTILLERY_SHELL = EntityType.Builder.of(
 			ArtilleryShell::new, MobCategory.MISC
 		)

@@ -63,6 +63,8 @@ public class MechaEntity extends Entity {
 		ArmisticeEntityDataSerializerRegistrar.CORE
 	);
 
+	protected boolean morality = true;
+
 	protected MechaEntity(EntityType<? extends Entity> entityType, Level level, MechaCore core) {
 		super(entityType, level);
 		getEntityData().set(CORE, core);
@@ -89,6 +91,10 @@ public class MechaEntity extends Entity {
 	public void tick() {
 		super.tick();
 		if (core().entity() == null) core().initCore(this);
+
+		if (!morality) {
+			crueltyEngineTick();
+		}
 
 		if (this.level().isClientSide())
 			core().clientTick(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true));
@@ -153,11 +159,26 @@ public class MechaEntity extends Entity {
 	public InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
 		InteractionResult result = super.interact(player, hand);
 		if (result.consumesAction()) return result;
-		if (player.isSecondaryUseActive() || this.isVehicle()) return InteractionResult.PASS;
+		if (player.isSecondaryUseActive() || this.isVehicle() || !morality) return InteractionResult.PASS;
 
 		if (this.level().isClientSide)
 			return InteractionResult.SUCCESS;
 
 		return player.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
 	}
+
+	protected enum CrueltyMode {
+		ROAM, SPY, KILL
+	}
+
+	protected CrueltyMode crueltyMode = CrueltyMode.ROAM;
+	protected Vec3 prevRoamPos = Vec3.ZERO;
+
+	protected void crueltyEngineTick() {
+		switch (crueltyMode) {
+
+		}
+	}
+
+
 }

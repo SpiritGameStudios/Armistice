@@ -16,7 +16,7 @@ public final class ArmisticeClientDebugValues {
 	public static double max = Math.PI / 4;
 	public static double min = -Math.PI / 4;
 
-	public static boolean debugRenderer = true;
+	public static boolean debugRenderer = false;
 
 	public static boolean showHull = true;
 	public static boolean showOrdnance = true;

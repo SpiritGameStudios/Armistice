@@ -22,6 +22,7 @@ import symbolics.division.armistice.registry.ArmisticeSoundEventRegistrar;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static symbolics.division.armistice.mecha.MechaEntity.BARREL_ROTATIONS;
 
@@ -204,8 +205,6 @@ public class MechaCore implements Part {
 		VertexConsumer lineStrip10 = bufferSource.getBuffer(RenderType.debugLineStrip(10));
 		lineStrip10.addVertex(poseStack.last(), new Vector3f(0, 0, 0)).setColor(1.0f, 0.0f, 0.0f, 1.0f);
 		lineStrip10.addVertex(poseStack.last(), direction().toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
-
-		chassis.renderDebug(bufferSource, poseStack);
 	}
 
 	public Euclidean hullEuclidean() {
@@ -243,5 +242,9 @@ public class MechaCore implements Part {
 	@Nullable
 	public Vec3 getPathingTarget() {
 		return chassis.pathingTarget;
+	}
+
+	public void mapChassisRender(Consumer<ChassisPart> consumer) {
+		consumer.accept(chassis);
 	}
 }

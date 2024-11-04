@@ -7,6 +7,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
@@ -44,7 +45,21 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 			return;
 		}
 		if (Minecraft.getInstance().player == null) return;
-		if (!mecha.core().entity().hasPassenger(Minecraft.getInstance().player))
+		if (!mecha.core().entity().hasPassenger(Minecraft.getInstance().player)) {
 			PartRenderer.renderParts(mecha, partialTick, poseStack, bufferSource, color, packedLight, OverlayTexture.NO_OVERLAY);
+		} else {
+			mecha.core().mapChassisRender(chassis -> {
+				poseStack.pushPose();
+
+				Vec3 offset = mecha.position().subtract(Minecraft.getInstance().getCameraEntity().getEyePosition(partialTick));
+				poseStack.translate(offset.x, offset.y, offset.z);
+				poseStack.translate(-mecha.position().x, -mecha.position().y, -mecha.position().z);
+				chassis.renderDebug(bufferSource, poseStack);
+
+				poseStack.popPose();
+
+			});
+		}
+
 	}
 }

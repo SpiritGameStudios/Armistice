@@ -10,8 +10,6 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
-import static symbolics.division.armistice.Armistice.LOGGER;
-
 public class ArtilleryShell extends AbstractOrdnanceProjectile {
 
 	public ArtilleryShell(EntityType<? extends ArtilleryShell> entityType, Level level) {
@@ -42,7 +40,7 @@ public class ArtilleryShell extends AbstractOrdnanceProjectile {
 	protected void onHit(HitResult result) {
 		super.onHit(result);
 		if (level().isClientSide) return;
-		LOGGER.debug("Shell hit! At {}", result.getLocation());
+//		LOGGER.debug("Shell hit! At {}", result.getLocation());
 
 		Vec3 hitLocation = result.getLocation();
 		level().broadcastEntityEvent(this, (byte) 3);
@@ -53,14 +51,14 @@ public class ArtilleryShell extends AbstractOrdnanceProjectile {
 	@Override
 	protected void onHitEntity(EntityHitResult result) {
 		super.onHitEntity(result);
-		LOGGER.debug("Shell entity hit!");
+//		LOGGER.debug("Shell entity hit!");
 	}
 
 	@Override
 	protected void onHitBlock(BlockHitResult result) {
 		super.onHitBlock(result);
 //		level().setBlock(result.getBlockPos(), Blocks.MAGMA_BLOCK.defaultBlockState(), 11);
-		LOGGER.debug("Shell block hit!");
+//		LOGGER.debug("Shell block hit!");
 	}
 
 	@Override
