@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 public record ChassisSchematicComponent(
 	ChassisSchematic schematic
 ) implements TooltipProvider {
-	public static final Codec<ChassisSchematicComponent> CODEC = ChassisSchematic.REGISTRY_CODEC.xmap(ChassisSchematicComponent::new, ChassisSchematicComponent::schematic);
+	public static final Codec<ChassisSchematicComponent> CODEC = ChassisSchematic.CODEC.xmap(ChassisSchematicComponent::new, ChassisSchematicComponent::schematic);
 
 	public static final StreamCodec<ByteBuf, ChassisSchematicComponent> STREAM_CODEC = ByteBufCodecs.fromCodec(ChassisSchematicComponent.CODEC);
 

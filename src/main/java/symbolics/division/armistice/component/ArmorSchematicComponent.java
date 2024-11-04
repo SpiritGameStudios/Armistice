@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 public record ArmorSchematicComponent(
 	ArmorSchematic schematic
 ) implements TooltipProvider {
-	public static final Codec<ArmorSchematicComponent> CODEC = ArmorSchematic.REGISTRY_CODEC.xmap(ArmorSchematicComponent::new, ArmorSchematicComponent::schematic);
+	public static final Codec<ArmorSchematicComponent> CODEC = ArmorSchematic.CODEC.xmap(ArmorSchematicComponent::new, ArmorSchematicComponent::schematic);
 
 	public static final StreamCodec<ByteBuf, ArmorSchematicComponent> STREAM_CODEC = ByteBufCodecs.fromCodec(ArmorSchematicComponent.CODEC);
 

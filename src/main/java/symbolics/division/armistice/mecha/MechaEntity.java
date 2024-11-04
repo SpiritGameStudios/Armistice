@@ -2,6 +2,7 @@ package symbolics.division.armistice.mecha;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -72,11 +73,14 @@ public class MechaEntity extends Entity {
 	}
 
 	public static MechaEntity temp(EntityType<? extends Entity> entityType, Level level) {
-		HullSchematic hull = ArmisticeRegistries.HULL.get(Armistice.id("test_hull"));
-		ChassisSchematic chassis = ArmisticeRegistries.CHASSIS.get(Armistice.id("test_chassis"));
+		RegistryAccess access = level.registryAccess();
+
+		HullSchematic hull = access.registryOrThrow(ArmisticeRegistries.HULL_KEY).get(Armistice.id("depth"));
+		ChassisSchematic chassis = access.registryOrThrow(ArmisticeRegistries.CHASSIS_KEY).get(Armistice.id("nimble"));
 		List<OrdnanceSchematic> ordnance = List.of(ArmisticeOrdnanceRegistrar.MINIGUN);
-		ArmorSchematic armor = ArmisticeRegistries.ARMOR.get(Armistice.id("test_armor"));
-		return new MechaEntity(entityType, level, new MechaSchematic(hull, ordnance, chassis, armor), null);
+		ArmorSchematic armor = access.registryOrThrow(ArmisticeRegistries.ARMOR_KEY).get(Armistice.id("armisteel"));
+
+		return new MechaEntity(entityType, level, new MechaCore(new MechaSchematic(hull, ordnance, chassis, armor), null));
 	}
 
 	@Override
@@ -97,10 +101,12 @@ public class MechaEntity extends Entity {
 
 	@Override
 	protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
-		HullSchematic hull = ArmisticeRegistries.HULL.get(Armistice.id("test_hull"));
-		ChassisSchematic chassis = ArmisticeRegistries.CHASSIS.get(Armistice.id("test_chassis"));
+		RegistryAccess access = level().registryAccess();
+
+		HullSchematic hull = access.registryOrThrow(ArmisticeRegistries.HULL_KEY).get(Armistice.id("depth"));
+		ChassisSchematic chassis = access.registryOrThrow(ArmisticeRegistries.CHASSIS_KEY).get(Armistice.id("nimble"));
 		List<OrdnanceSchematic> ordnance = List.of(ArmisticeOrdnanceRegistrar.MINIGUN);
-		ArmorSchematic armor = ArmisticeRegistries.ARMOR.get(Armistice.id("test_armor"));
+		ArmorSchematic armor = access.registryOrThrow(ArmisticeRegistries.ARMOR_KEY).get(Armistice.id("armisteel"));
 
 		builder.define(LEG_TICK_TARGETS, List.of());
 		builder.define(CLIENT_POS, new Vector3f());
@@ -125,7 +131,7 @@ public class MechaEntity extends Entity {
 	@Override
 	protected void addAdditionalSaveData(@NotNull CompoundTag compound) {
 		compound.put("skin", MechaSkin.CODEC.encodeStart(NbtOps.INSTANCE, core().skin()).getOrThrow());
-		compound.put("core", core().schematic.codec().encodeStart(NbtOps.INSTANCE, core().schematic).getOrThrow());
+		compound.put("core", MechaSchematic.CODEC.encodeStart(NbtOps.INSTANCE, core().schematic).getOrThrow());
 	}
 
 	@Override

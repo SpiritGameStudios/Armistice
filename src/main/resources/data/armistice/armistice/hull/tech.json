@@ -1,0 +1,14 @@
+{
+	"tier": 1,
+	"slots": [
+		2,
+		1,
+		1
+	],
+	"heat": {
+		"max": 100,
+		"delay": 20,
+		"decay": 5
+	},
+	"id": "armistice:tech"
+}

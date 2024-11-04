@@ -35,18 +35,6 @@ public final class ArmisticeRegistries {
 	public static final Registry<OrdnanceSchematic> ORDNANCE = new RegistryBuilder<>(ORDNANCE_KEY)
 		.sync(true)
 		.create();
-
-	public static final Registry<HullSchematic> HULL = new RegistryBuilder<>(HULL_KEY)
-		.sync(true)
-		.create();
-
-	public static final Registry<ArmorSchematic> ARMOR = new RegistryBuilder<>(ARMOR_KEY)
-		.sync(true)
-		.create();
-
-	public static final Registry<ChassisSchematic> CHASSIS = new RegistryBuilder<>(CHASSIS_KEY)
-		.sync(true)
-		.create();
 	// endregion
 
 	private ArmisticeRegistries() {

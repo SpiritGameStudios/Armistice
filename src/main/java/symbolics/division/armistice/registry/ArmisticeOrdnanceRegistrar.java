@@ -10,6 +10,7 @@ import symbolics.division.armistice.mecha.ordnance.SimpleGunOrdnance;
 import symbolics.division.armistice.mecha.schematic.OrdnanceSchematic;
 import symbolics.division.armistice.network.ExtendedParticlePacket;
 import symbolics.division.armistice.projectile.ArtilleryShell;
+import symbolics.division.armistice.projectile.Missile;
 import symbolics.division.armistice.util.AudioUtil;
 import symbolics.division.armistice.util.registrar.OrdnanceRegistrar;
 
@@ -38,6 +39,26 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 				);
 
 			}
+		)
+	);
+
+	public static final OrdnanceSchematic MISSILE_LAUNCHER = new OrdnanceSchematic(
+		2,
+		() -> new SimpleGunOrdnance(
+			40,
+			500,
+			2,
+			(core, posInfo) -> {
+				Missile missile = new Missile(ArmisticeEntityTypeRegistrar.MISSILE, core.level());
+				missile.setPos(posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z());
+				return missile;
+			},
+			(core, posInfo) -> core.level().playSound(
+				null,
+				posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z(),
+				ArmisticeSoundEventRegistrar.WEAPON$HIGH_CAL,
+				SoundSource.HOSTILE
+			)
 		)
 	);
 

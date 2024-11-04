@@ -2,6 +2,10 @@ package symbolics.division.armistice.mecha.schematic;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import symbolics.division.armistice.mecha.MechaCore;
 import symbolics.division.armistice.mecha.MechaSkin;
 
@@ -20,11 +24,14 @@ public record MechaSchematic(
 	ArmorSchematic armor
 ) implements Schematic<MechaSchematic, MechaCore> {
 	public static final Codec<MechaSchematic> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-		HullSchematic.REGISTRY_CODEC.fieldOf("hull").forGetter(MechaSchematic::hull),
+		HullSchematic.CODEC.fieldOf("hull").forGetter(MechaSchematic::hull),
 		OrdnanceSchematic.REGISTRY_CODEC.listOf().fieldOf("ordnance").forGetter(MechaSchematic::ordnance),
-		ChassisSchematic.REGISTRY_CODEC.fieldOf("chassis").forGetter(MechaSchematic::chassis),
-		ArmorSchematic.REGISTRY_CODEC.fieldOf("armor").forGetter(MechaSchematic::armor)
+		ChassisSchematic.CODEC.fieldOf("chassis").forGetter(MechaSchematic::chassis),
+		ArmorSchematic.CODEC.fieldOf("armor").forGetter(MechaSchematic::armor)
 	).apply(instance, MechaSchematic::new));
+
+	// temp: make actual streamcodec
+	public static final StreamCodec<ByteBuf, MechaSchematic> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
 
 	@Override
 	public MechaCore make() {
@@ -42,8 +49,17 @@ public record MechaSchematic(
 	}
 
 	@Override
-	public Codec<MechaSchematic> codec() {
-		return CODEC;
+	public Codec<MechaSchematic> registryCodec(RegistryAccess access) {
+		return getCodec(access);
+	}
+
+	public static Codec<MechaSchematic> getCodec(RegistryAccess access) {
+		return RecordCodecBuilder.create(instance -> instance.group(
+			HullSchematic.getCodec(access).fieldOf("hull").forGetter(MechaSchematic::hull),
+			OrdnanceSchematic.REGISTRY_CODEC.listOf().fieldOf("ordnance").forGetter(MechaSchematic::ordnance),
+			ChassisSchematic.getCodec(access).fieldOf("chassis").forGetter(MechaSchematic::chassis),
+			ArmorSchematic.getCodec(access).fieldOf("armor").forGetter(MechaSchematic::armor)
+		).apply(instance, MechaSchematic::new));
 	}
 
 	public boolean verify() {

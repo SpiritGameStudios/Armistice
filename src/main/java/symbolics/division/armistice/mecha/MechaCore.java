@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -47,11 +46,11 @@ public class MechaCore implements Part {
 
 	public static final StreamCodec<ByteBuf, MechaCore> TO_CLIENT_STREAM_CODEC = StreamCodec.of(
 		(buffer, value) -> {
-			value.schematic.streamCodec().encode(buffer, value.schematic);
+			MechaSchematic.STREAM_CODEC.encode(buffer, value.schematic);
 			MechaSkin.STREAM_CODEC.encode(buffer, value.skin);
 		},
 		buffer -> new MechaCore(
-			ByteBufCodecs.fromCodec(MechaSchematic.CODEC).decode(buffer),
+			MechaSchematic.STREAM_CODEC.decode(buffer),
 			MechaSkin.STREAM_CODEC.decode(buffer)
 		)
 	);

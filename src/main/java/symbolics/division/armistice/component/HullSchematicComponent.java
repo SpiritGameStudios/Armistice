@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 public record HullSchematicComponent(
 	HullSchematic schematic
 ) implements TooltipProvider {
-	public static final Codec<HullSchematicComponent> CODEC = HullSchematic.REGISTRY_CODEC.xmap(HullSchematicComponent::new, HullSchematicComponent::schematic);
+	public static final Codec<HullSchematicComponent> CODEC = HullSchematic.CODEC.xmap(HullSchematicComponent::new, HullSchematicComponent::schematic);
 
 	public static final StreamCodec<ByteBuf, HullSchematicComponent> STREAM_CODEC = ByteBufCodecs.fromCodec(HullSchematicComponent.CODEC);
 

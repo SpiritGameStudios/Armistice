@@ -9,8 +9,6 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -57,7 +55,6 @@ public final class ArmisticeDebugValues {
 							if (entity == null) return 0;
 							Entity vehicle = entity.getVehicle();
 							if (!(vehicle instanceof MechaEntity mecha)) return 0;
-							if (heat > mecha.core().getMaxHeat()) return 0;
 							mecha.core().setHeat(heat);
 
 							return Command.SINGLE_SUCCESS;

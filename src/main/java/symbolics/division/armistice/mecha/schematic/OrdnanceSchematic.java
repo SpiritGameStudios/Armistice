@@ -1,6 +1,7 @@
 package symbolics.division.armistice.mecha.schematic;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import symbolics.division.armistice.mecha.OrdnancePart;
 import symbolics.division.armistice.registry.ArmisticeRegistries;
@@ -22,7 +23,7 @@ public record OrdnanceSchematic(
 	}
 
 	@Override
-	public Codec<OrdnanceSchematic> codec() {
+	public Codec<OrdnanceSchematic> registryCodec(RegistryAccess access) {
 		return ArmisticeRegistries.ORDNANCE.byNameCodec();
 	}
 

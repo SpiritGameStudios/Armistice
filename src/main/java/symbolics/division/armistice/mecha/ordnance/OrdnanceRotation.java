@@ -85,8 +85,12 @@ public class OrdnanceRotation {
 		ArrayList<Vector2f> barrelRotations = new ArrayList<>(core.entity().getEntityData().get(BARREL_ROTATIONS));
 
 		int index = core.ordnanceIndex(ord);
-		barrelRotations.ensureCapacity(index + 1);
-
+		if (barrelRotations.size() <= index) {
+			for (int i = barrelRotations.size() - 1; i <= index; i++) {
+				barrelRotations.add(new Vector2f());
+			}
+		}
+		
 		barrelRotations.add(
 			index,
 			new Vector2f(

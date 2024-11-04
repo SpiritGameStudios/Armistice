@@ -3,6 +3,8 @@ package symbolics.division.armistice.mecha;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.NonNullList;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.ordnance.NullOrdnancePart;
@@ -80,7 +82,18 @@ public class HullPart extends AbstractMechaPart {
 	}
 
 	protected void onOverheat() {
-
+		core.level()
+			.explode(
+				core.entity(),
+				Explosion.getDefaultDamageSource(core.level(), core.entity()),
+				null,
+				core.entity().getX(),
+				core.entity().getY(0.0625),
+				core.entity().getZ(),
+				4.0F,
+				false,
+				Level.ExplosionInteraction.TNT
+			);
 	}
 
 	@Override

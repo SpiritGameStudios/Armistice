@@ -2,6 +2,7 @@ package symbolics.division.armistice.registry;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -26,12 +27,13 @@ public final class ArmisticeCreativeModeTabRegistrar implements CreativeModeTabR
 		.title(Component.translatable("itemGroup.armistice.schematics"))
 		.icon(ArmisticeItemRegistrar.MECHA_SCHEMATIC::getDefaultInstance)
 		.displayItems((parameters, output) -> {
-			List<ArmorSchematic> armorSchematics = ArmisticeRegistries.ARMOR.stream().toList();
-			List<HullSchematic> hullSchematics = ArmisticeRegistries.HULL.stream().toList();
-			List<ChassisSchematic> chassisSchematics = ArmisticeRegistries.CHASSIS.stream().toList();
+			RegistryAccess access = Minecraft.getInstance().getConnection().registryAccess();
+
+			List<ArmorSchematic> armorSchematics = access.registryOrThrow(ArmisticeRegistries.ARMOR_KEY).stream().toList();
+			List<HullSchematic> hullSchematics = access.registryOrThrow(ArmisticeRegistries.HULL_KEY).stream().toList();
+			List<ChassisSchematic> chassisSchematics = access.registryOrThrow(ArmisticeRegistries.CHASSIS_KEY).stream().toList();
 			List<OrdnanceSchematic> ordnanceSchematics = ArmisticeRegistries.ORDNANCE.stream().toList();
-			List<MechaSkin> skins = Minecraft.getInstance().getConnection().registryAccess()
-				.registryOrThrow(ArmisticeRegistries.SKIN_KEY).stream()
+			List<MechaSkin> skins = access.registryOrThrow(ArmisticeRegistries.SKIN_KEY).stream()
 				.filter(skin -> !skin.id().equals(Armistice.id("default")))
 				.toList();
 

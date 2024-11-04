@@ -1,0 +1,7 @@
+{
+	"tier": 1,
+	"min_armor": 1,
+	"max_armor": 1,
+	"move_speed": 1,
+	"id": "armistice:nimble"
+}

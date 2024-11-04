@@ -1,6 +1,8 @@
 package symbolics.division.armistice.mecha.schematic;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Range;
 import symbolics.division.armistice.mecha.ArmorPart;
@@ -8,9 +10,14 @@ import symbolics.division.armistice.registry.ArmisticeRegistries;
 
 public record ArmorSchematic(
 	@Range(from = 1, to = 9) int size,
-	double plating
+	double plating,
+	ResourceLocation id
 ) implements Schematic<ArmorSchematic, ArmorPart> {
-	public static final Codec<ArmorSchematic> REGISTRY_CODEC = ArmisticeRegistries.ARMOR.byNameCodec();
+	public static final Codec<ArmorSchematic> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+		Codec.INT.fieldOf("size").forGetter(ArmorSchematic::size),
+		Codec.DOUBLE.fieldOf("plating").forGetter(ArmorSchematic::plating),
+		ResourceLocation.CODEC.fieldOf("id").forGetter(ArmorSchematic::id)
+	).apply(instance, ArmorSchematic::new));
 
 	@Override
 	public ArmorPart make() {
@@ -18,11 +25,11 @@ public record ArmorSchematic(
 	}
 
 	@Override
-	public Codec<ArmorSchematic> codec() {
-		return ArmisticeRegistries.ARMOR.byNameCodec();
+	public Codec<ArmorSchematic> registryCodec(RegistryAccess access) {
+		return access.registryOrThrow(ArmisticeRegistries.ARMOR_KEY).byNameCodec();
 	}
 
-	public ResourceLocation id() {
-		return ArmisticeRegistries.ARMOR.getKey(this);
+	public static Codec<ArmorSchematic> getCodec(RegistryAccess access) {
+		return access.registryOrThrow(ArmisticeRegistries.ARMOR_KEY).byNameCodec();
 	}
 }
