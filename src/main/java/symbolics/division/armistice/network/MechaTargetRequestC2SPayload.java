@@ -9,7 +9,6 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.mecha.MechaEntity;
-import symbolics.division.armistice.mecha.OrdnancePart;
 import symbolics.division.armistice.util.CodecHelper;
 import symbolics.division.armistice.util.PartialEntityHitResult;
 
@@ -35,9 +34,10 @@ public record MechaTargetRequestC2SPayload(HitResult target, int ordnance) imple
 		HitResult result = payload.target;
 		if (result instanceof PartialEntityHitResult partial) result = partial.finish(context.player().level());
 
-		OrdnancePart part = mecha.core().ordnance().get(payload.ordnance());
-		if (!part.startTargeting(result)) {
+//		OrdnancePart part = mecha.core().ordnance().get(payload.ordnance());
+//		part.startTargeting(result);
 
-		}
+		HitResult finalResult = result;
+		mecha.core().ordnance().forEach(part -> part.startTargeting(finalResult));
 	}
 }
