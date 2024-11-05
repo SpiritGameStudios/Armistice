@@ -20,10 +20,8 @@ import symbolics.division.armistice.mecha.schematic.ChassisSchematic;
 import symbolics.division.armistice.mecha.schematic.HullSchematic;
 import symbolics.division.armistice.model.ModelElementReloadListener;
 import symbolics.division.armistice.model.ModelOutlinerReloadListener;
-import symbolics.division.armistice.network.ExtendedParticlePacket;
 import symbolics.division.armistice.network.MechaMovementRequestC2SPayload;
 import symbolics.division.armistice.network.MechaTargetRequestC2SPayload;
-import symbolics.division.armistice.network.OutlinerSyncS2CPayload;
 import symbolics.division.armistice.recipe.MechaSchematicRecipe;
 import symbolics.division.armistice.recipe.MechaSkinRecipe;
 import symbolics.division.armistice.registry.*;
@@ -122,18 +120,6 @@ public final class RegistryEvents {
 		@SubscribeEvent
 		private static void onRegisterPayloadHandlers(RegisterPayloadHandlersEvent event) {
 			PayloadRegistrar registrar = event.registrar("1");
-
-			registrar.playToClient(
-				OutlinerSyncS2CPayload.TYPE,
-				OutlinerSyncS2CPayload.STREAM_CODEC,
-				OutlinerSyncS2CPayload::receive
-			);
-
-			registrar.playToClient(
-				ExtendedParticlePacket.TYPE,
-				ExtendedParticlePacket.STREAM_CODEC,
-				ExtendedParticlePacket::receive
-			);
 
 			registrar.playToServer(
 				MechaMovementRequestC2SPayload.TYPE,

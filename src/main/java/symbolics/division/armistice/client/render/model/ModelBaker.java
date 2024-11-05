@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.*;
 import symbolics.division.armistice.model.BBModelTree;
 import symbolics.division.armistice.model.Element;
@@ -13,6 +15,7 @@ import symbolics.division.armistice.model.OutlinerNode;
 import java.util.*;
 import java.util.function.Predicate;
 
+@OnlyIn(value = Dist.CLIENT)
 public class ModelBaker {
 	public static final int[][] VERTEX_INDICES = {
 		new int[]{1, 5, 4, 0},

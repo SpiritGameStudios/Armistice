@@ -5,6 +5,8 @@ import com.mojang.brigadier.arguments.DoubleArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 
@@ -12,6 +14,7 @@ import java.util.function.Consumer;
 
 import static symbolics.division.armistice.debug.ArmisticeDebugValues.setter;
 
+@OnlyIn(value = Dist.CLIENT)
 public final class ArmisticeClientDebugValues {
 	public static double max = Math.PI / 4;
 	public static double min = -Math.PI / 4;

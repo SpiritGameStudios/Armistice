@@ -7,6 +7,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Quaternionf;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.client.render.debug.ArmisticeClientDebugValues;
@@ -22,6 +24,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@OnlyIn(value = Dist.CLIENT)
 public class ChassisRenderer {
 	private static final ChassisRenderer MISSING = new ChassisRenderer();
 

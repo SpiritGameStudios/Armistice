@@ -11,6 +11,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import org.joml.Matrix4f;
@@ -25,6 +27,7 @@ import symbolics.division.armistice.mixin.GameRenderAccessor;
 import java.util.ArrayList;
 import java.util.List;
 
+@OnlyIn(value = Dist.CLIENT)
 public final class MechaHudRenderer {
 	/**
 	 * Meter: Pos(0, 0), Size(3, 61)

@@ -8,10 +8,6 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
-import symbolics.division.armistice.client.render.debug.ArmisticeClientDebugValues;
-import symbolics.division.armistice.client.render.debug.MechaDebugRenderer;
-import symbolics.division.armistice.client.render.hud.MechaHudRenderer;
-import symbolics.division.armistice.client.render.hud.MechaOverlayRenderer;
 import symbolics.division.armistice.datagen.ArmisticeDatagen;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
 import symbolics.division.armistice.event.RegistryEvents;
@@ -25,16 +21,12 @@ public class Armistice {
 	public Armistice(IEventBus modEventBus, ModContainer modContainer) {
 		RegistryEvents.init(modEventBus);
 		modEventBus.register(ArmisticeDatagen.class);
-		modEventBus.register(MechaHudRenderer.class);
-		modEventBus.register(MechaOverlayRenderer.class);
 
 		NeoForge.EVENT_BUS.register(OutlinerSyncS2CPayload.class);
 
 		if (FMLEnvironment.production) return;
 
-		NeoForge.EVENT_BUS.register(MechaDebugRenderer.class);
 		NeoForge.EVENT_BUS.register(ArmisticeDebugValues.class);
-		NeoForge.EVENT_BUS.register(ArmisticeClientDebugValues.class);
 	}
 
 	public static ResourceLocation id(String path) {

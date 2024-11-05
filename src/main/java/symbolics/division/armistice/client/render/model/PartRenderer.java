@@ -6,6 +6,8 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Vector3f;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.mecha.MechaEntity;
@@ -15,6 +17,7 @@ import symbolics.division.armistice.model.BBModelTree;
 
 import java.util.Map;
 
+@OnlyIn(value = Dist.CLIENT)
 public class PartRenderer {
 	protected static final Map<ResourceLocation, ChassisRenderer> chassis = new Object2ObjectLinkedOpenHashMap<>();
 	protected static final Map<ResourceLocation, HullRenderer> hull = new Object2ObjectLinkedOpenHashMap<>();

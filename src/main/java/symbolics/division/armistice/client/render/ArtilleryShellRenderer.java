@@ -10,9 +10,12 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import symbolics.division.armistice.projectile.AbstractOrdnanceProjectile;
 
 // TODO make actual renderer. For now it's just Spectral Arrow renderer
+@OnlyIn(value = Dist.CLIENT)
 public class ArtilleryShellRenderer extends EntityRenderer<AbstractOrdnanceProjectile> {
 
 	public static final ResourceLocation SPECTRAL_ARROW_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/projectiles/spectral_arrow.png");
@@ -41,7 +44,7 @@ public class ArtilleryShellRenderer extends EntityRenderer<AbstractOrdnanceProje
 		this.vertex(posestack$pose, vertexconsumer, -7, -2, 2, 0.15625F, 0.3125F, 1, 0, 0, packedLight);
 		this.vertex(posestack$pose, vertexconsumer, -7, -2, -2, 0.0F, 0.3125F, 1, 0, 0, packedLight);
 
-		for(int j = 0; j < 4; ++j) {
+		for (int j = 0; j < 4; ++j) {
 			poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
 			this.vertex(posestack$pose, vertexconsumer, -8, -2, 0, 0.0F, 0.0F, 0, 1, 0, packedLight);
 			this.vertex(posestack$pose, vertexconsumer, 8, -2, 0, 0.5F, 0.0F, 0, 1, 0, packedLight);
@@ -54,7 +57,7 @@ public class ArtilleryShellRenderer extends EntityRenderer<AbstractOrdnanceProje
 	}
 
 	public void vertex(PoseStack.Pose pose, VertexConsumer consumer, int x, int y, int z, float u, float v, int normalX, int normalY, int normalZ, int packedLight) {
-		consumer.addVertex(pose, (float)x, (float)y, (float)z).setColor(-1).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(pose, (float)normalX, (float)normalZ, (float)normalY);
+		consumer.addVertex(pose, (float) x, (float) y, (float) z).setColor(-1).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(packedLight).setNormal(pose, (float) normalX, (float) normalZ, (float) normalY);
 	}
 
 	@Override

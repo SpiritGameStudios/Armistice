@@ -6,6 +6,8 @@ import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Quaternionf;
 import org.joml.Vector2fc;
 import symbolics.division.armistice.client.render.debug.ArmisticeClientDebugValues;
@@ -13,6 +15,7 @@ import symbolics.division.armistice.mecha.MechaEntity;
 import symbolics.division.armistice.mecha.OrdnancePart;
 import symbolics.division.armistice.model.BBModelTree;
 
+@OnlyIn(value = Dist.CLIENT)
 public class OrdnanceRenderer {
 	private static final OrdnanceRenderer MISSING = new OrdnanceRenderer();
 

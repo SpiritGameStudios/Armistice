@@ -4,6 +4,8 @@ import com.google.gson.JsonSyntaxException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.PostChain;
 import net.minecraft.resources.ResourceLocation;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterShadersEvent;
 import symbolics.division.armistice.Armistice;
@@ -12,6 +14,7 @@ import symbolics.division.armistice.client.render.debug.ArmisticeClientDebugValu
 
 import java.io.IOException;
 
+@OnlyIn(value = Dist.CLIENT)
 public final class MechaOverlayRenderer {
 	private static final ResourceLocation MECHA_OVERLAY_LOCATION = Armistice.id("shaders/post/mecha_overlay.json");
 	private static PostChain mechaOverlay;

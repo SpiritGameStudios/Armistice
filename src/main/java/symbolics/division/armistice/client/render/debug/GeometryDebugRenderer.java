@@ -6,8 +6,11 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 
+@OnlyIn(value = Dist.CLIENT)
 public class GeometryDebugRenderer {
 	public static final Vec3 FORWARD = new Vec3(0, 0, 1);
 	public static Vec3 b1 = FORWARD;

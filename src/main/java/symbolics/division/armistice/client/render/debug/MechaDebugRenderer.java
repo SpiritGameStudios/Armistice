@@ -5,10 +5,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import symbolics.division.armistice.registry.ArmisticeEntityTypeRegistrar;
 
+@OnlyIn(value = Dist.CLIENT)
 public final class MechaDebugRenderer {
 	@SubscribeEvent
 	private static void onRenderLevelStage(RenderLevelStageEvent event) {

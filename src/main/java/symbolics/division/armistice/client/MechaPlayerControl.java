@@ -9,6 +9,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
@@ -18,7 +19,7 @@ import symbolics.division.armistice.network.MechaTargetRequestC2SPayload;
 import symbolics.division.armistice.registry.ArmisticeSoundEventRegistrar;
 import symbolics.division.armistice.util.AudioUtil;
 
-@EventBusSubscriber(bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(bus = EventBusSubscriber.Bus.GAME, value = Dist.CLIENT)
 public class MechaPlayerControl {
 
 	@SubscribeEvent

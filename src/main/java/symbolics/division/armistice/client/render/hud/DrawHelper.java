@@ -9,6 +9,8 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import symbolics.division.armistice.Armistice;
@@ -18,6 +20,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
+@OnlyIn(value = Dist.CLIENT)
 public record DrawHelper(GuiGraphics guiGraphics) {
 	private static final RandomSource RANDOM = RandomSource.create();
 
