@@ -10,6 +10,7 @@
 	"block.armistice.armisteel_bulb": "Armisteel Bulb",
 	"block.armistice.armisteel_block": "Block of Armisteel",
 	"block.armistice.rigidized_armisteel": "Rigidized Armisteel",
+	"block.armistice.armisteel_bars": "Armisteel Bars",
 	"block.armistice.armisteel_chain": "Armisteel Chain",
 	"itemGroup.armistice.schematics": "Armistice: Schematics",
 	"itemGroup.armistice.decoration": "Armistice: Decoration",
@@ -31,5 +32,7 @@
 	"armistice.minigun": "Minigun",
 	"armistice.light_machine_gun": "LMG",
 	"armistice.heavy_machine_gun": "HMG",
-	"armistice.sniper": "Sniper"
+	"armistice.sniper": "Sniper",
+	"item.armistice.music_file_recalled": "Music File",
+	"item.armistice.music_file_peace_engines": "Music File"
 }
