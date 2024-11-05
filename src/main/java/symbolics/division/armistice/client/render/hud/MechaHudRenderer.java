@@ -26,6 +26,7 @@ import symbolics.division.armistice.mixin.GameRenderAccessor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @OnlyIn(value = Dist.CLIENT)
 public final class MechaHudRenderer {
@@ -68,6 +69,7 @@ public final class MechaHudRenderer {
 			DrawHelper drawHelper = new DrawHelper(guiGraphics);
 
 			RenderSystem.enableBlend();
+
 			renderOverlay(drawHelper, mecha);
 
 			RenderSystem.blendFuncSeparate(
@@ -353,7 +355,7 @@ public final class MechaHudRenderer {
 
 		int degPerPixel = (drawHelper.guiGraphics().guiWidth() / Minecraft.getInstance().options.fov().get());
 
-		Vec3 dir = Minecraft.getInstance().player.getLookAngle();
+		Vec3 dir = Objects.requireNonNull(Minecraft.getInstance().player).getLookAngle();
 		double yaw = Mth.atan2(-dir.x, dir.z) * Mth.RAD_TO_DEG;
 
 		drawHelper.renderCenteredNumber(
@@ -419,7 +421,7 @@ public final class MechaHudRenderer {
 				Camera cam = gr.getMainCamera();
 
 				double fov = Math.max(
-					Minecraft.getInstance().options.fov().get().intValue(),
+					Minecraft.getInstance().options.fov().get(),
 					((GameRenderAccessor) gr).invokeGetFov(cam, cam.getPartialTickTime(), false)
 				);
 
@@ -427,7 +429,7 @@ public final class MechaHudRenderer {
 				Matrix4f mat = gr.getProjectionMatrix(fov);
 
 				// world to camera matrix
-				Vec3 camPos = cameraEntity.getEyePosition(cam.getPartialTickTime());
+				Vec3 camPos = Objects.requireNonNull(cameraEntity).getEyePosition(cam.getPartialTickTime());
 				mat.rotate(cam.rotation().conjugate(new Quaternionf()));
 				mat.translate((float) -camPos.x, (float) -camPos.y, (float) -camPos.z);
 

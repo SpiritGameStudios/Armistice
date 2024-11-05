@@ -5,8 +5,8 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.EventHooks;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class AbstractOrdnanceProjectile extends Projectile {
 	public AbstractOrdnanceProjectile(EntityType<? extends Projectile> entityType, Level level) {
@@ -25,7 +25,7 @@ public abstract class AbstractOrdnanceProjectile extends Projectile {
 	}
 
 	@Override
-	protected void onHit(HitResult result) {
+	protected void onHit(@NotNull HitResult result) {
 		super.onHit(result);
 		discard();
 	}

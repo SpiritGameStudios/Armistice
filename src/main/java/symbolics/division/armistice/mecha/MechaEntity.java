@@ -252,5 +252,4 @@ public class MechaEntity extends Entity {
 	public static boolean validCrueltyTarget(Player player) {
 		return !player.isDeadOrDying() && !player.isCreative() && !player.isSpectator();
 	}
-
 }

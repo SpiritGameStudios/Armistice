@@ -53,10 +53,12 @@ public class OrdnanceRenderer {
 
 	public static void dispatch(MechaEntity mecha, OrdnancePart ordnance, float tickDelta, PoseStack poseStack, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
 		poseStack.pushPose();
-		ordnance.transformAbsolute(poseStack);
+		{
+			ordnance.transformAbsolute(poseStack);
 
-		PartRenderer.ordnance.getOrDefault(ordnance.id(), MISSING)
-			.render(mecha, ordnance, tickDelta, poseStack, bufferSource, color, packedLight, packedOverlay);
+			PartRenderer.ordnance.getOrDefault(ordnance.id(), MISSING)
+				.render(mecha, ordnance, tickDelta, poseStack, bufferSource, color, packedLight, packedOverlay);
+		}
 		poseStack.popPose();
 	}
 

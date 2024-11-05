@@ -41,28 +41,32 @@ public class MechaSchematicRecipe extends CustomRecipe {
 
 		List<ArmorSchematicComponent> armorSchematics = items.stream()
 			.map(stack -> stack.get(ArmisticeDataComponentTypeRegistrar.ARMOR_SCHEMATIC))
-			.filter(Objects::nonNull).toList();
+			.filter(Objects::nonNull)
+			.toList();
 
 		if (armorSchematics.size() != 1) return null;
 		ArmorSchematicComponent armor = armorSchematics.getFirst();
 
 		List<HullSchematicComponent> hullSchematics = items.stream()
 			.map(stack -> stack.get(ArmisticeDataComponentTypeRegistrar.HULL_SCHEMATIC))
-			.filter(Objects::nonNull).toList();
+			.filter(Objects::nonNull)
+			.toList();
 
 		if (hullSchematics.size() != 1) return null;
 		HullSchematicComponent hull = hullSchematics.getFirst();
 
 		List<ChassisSchematicComponent> chassisSchematics = items.stream()
 			.map(stack -> stack.get(ArmisticeDataComponentTypeRegistrar.CHASSIS_SCHEMATIC))
-			.filter(Objects::nonNull).toList();
+			.filter(Objects::nonNull)
+			.toList();
 
 		if (chassisSchematics.size() != 1) return null;
 		ChassisSchematicComponent chassis = chassisSchematics.getFirst();
 
 		List<OrdnanceSchematicComponent> ordnance = items.stream()
 			.map(stack -> stack.get(ArmisticeDataComponentTypeRegistrar.ORDNANCE_SCHEMATIC))
-			.filter(Objects::nonNull).toList();
+			.filter(Objects::nonNull)
+			.toList();
 
 		return new MechaSchematic(
 			hull.schematic(),

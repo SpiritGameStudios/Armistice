@@ -25,7 +25,6 @@ public class Armistice {
 		NeoForge.EVENT_BUS.register(OutlinerSyncS2CPayload.class);
 
 		if (FMLEnvironment.production) return;
-
 		NeoForge.EVENT_BUS.register(ArmisticeDebugValues.class);
 	}
 

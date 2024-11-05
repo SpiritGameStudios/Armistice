@@ -38,8 +38,8 @@ public class IKUtil {
 	public static Vector2f globalYawPitch(Vec3f vec) {
 		double xz = Mth.length(vec.x, vec.z);
 		return new Vector2f(
-			(float) Math.atan2(vec.x, vec.z),
-			(float) Math.atan2(vec.y, xz)
+			(float) Mth.atan2(vec.x, vec.z),
+			(float) Mth.atan2(vec.y, xz)
 		);
 	}
 

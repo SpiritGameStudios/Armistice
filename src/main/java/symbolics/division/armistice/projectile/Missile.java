@@ -8,7 +8,10 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 import symbolics.division.armistice.registry.ArmisticeEntityTypeRegistrar;
 
 import javax.annotation.Nullable;
@@ -18,7 +21,6 @@ import java.util.UUID;
 import static symbolics.division.armistice.Armistice.LOGGER;
 
 public class Missile extends AbstractOrdnanceProjectile {
-
 	private static final EntityDataAccessor<Byte> MISSILE_STATE = SynchedEntityData.defineId(Missile.class, EntityDataSerializers.BYTE);
 	private static final EntityDataAccessor<Optional<UUID>> TARGET_UUID = SynchedEntityData.defineId(Missile.class, EntityDataSerializers.OPTIONAL_UUID);
 
@@ -113,27 +115,14 @@ public class Missile extends AbstractOrdnanceProjectile {
 	}
 
 	@Override
-	protected void onHit(HitResult result) {
+	protected void onHit(@NotNull HitResult result) {
 		super.onHit(result);
 		if (level().isClientSide) return;
-		LOGGER.debug("Missile hit! At {}", result.getLocation());
 
 		Vec3 hitLocation = result.getLocation();
 		level().broadcastEntityEvent(this, (byte) 3);
 		DamageSource damagesource = damageSources().explosion(this, getOwner());
 		level().explode(this, damagesource, null, hitLocation.x(), hitLocation.y(), hitLocation.z(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
-	}
-
-	@Override
-	protected void onHitEntity(EntityHitResult result) {
-		super.onHitEntity(result);
-		LOGGER.debug("Missile entity hit!");
-	}
-
-	@Override
-	protected void onHitBlock(BlockHitResult result) {
-		super.onHitBlock(result);
-		LOGGER.debug("Missile block hit!");
 	}
 
 	@Override
@@ -153,17 +142,11 @@ public class Missile extends AbstractOrdnanceProjectile {
 		public static MissileState MISSING_TARGET = new MissileState() {
 			@Override
 			public void tick(Missile missile) {
-				Vec3 vec3 = missile.getDeltaMovement();
-				double d0 = missile.getX() + vec3.x;
-				double d1 = missile.getY() + vec3.y;
-				double d2 = missile.getZ() + vec3.z;
-				missile.setPos(d0, d1, d2);
-				missile.fuel--;
+				move(missile);
 
-				Level level = missile.level();
-				if (level.isClientSide()) {
+				if (missile.level().isClientSide()) {
 					Vec3 particleVec = missile.getDeltaMovement().normalize().scale(-0.5);
-					level.addAlwaysVisibleParticle(
+					missile.level().addAlwaysVisibleParticle(
 						ParticleTypes.LAVA,
 						missile.getX(),
 						missile.getY(),
@@ -180,6 +163,7 @@ public class Missile extends AbstractOrdnanceProjectile {
 				return 0;
 			}
 		};
+
 		public static MissileState LOCKED = new MissileState() {
 			@Override
 			public void tick(Missile missile) {
@@ -191,21 +175,12 @@ public class Missile extends AbstractOrdnanceProjectile {
 				) {
 					missile.setTarget(null);
 					missile.switchState(MissileState.LOCKED);
-				} else {
-
 				}
 
-				Vec3 vec3 = missile.getDeltaMovement();
-				double d0 = missile.getX() + vec3.x;
-				double d1 = missile.getY() + vec3.y;
-				double d2 = missile.getZ() + vec3.z;
-				missile.setPos(d0, d1, d2);
-				missile.fuel--;
-
-				Level level = missile.level();
-				if (level.isClientSide()) {
+				move(missile);
+				if (missile.level().isClientSide()) {
 					Vec3 particleVec = missile.getDeltaMovement().normalize().scale(-0.5);
-					level.addAlwaysVisibleParticle(
+					missile.level().addAlwaysVisibleParticle(
 						ParticleTypes.SOUL_FIRE_FLAME,
 						missile.getX(),
 						missile.getY(),
@@ -222,6 +197,7 @@ public class Missile extends AbstractOrdnanceProjectile {
 				return 1;
 			}
 		};
+
 		public static MissileState OUT_OF_FUEL = new MissileState() {
 			@Override
 			public void tick(Missile missile) {
@@ -251,5 +227,14 @@ public class Missile extends AbstractOrdnanceProjectile {
 				return 2;
 			}
 		};
+	}
+
+	private static void move(Missile missile) {
+		Vec3 vec3 = missile.getDeltaMovement();
+		double d0 = missile.getX() + vec3.x;
+		double d1 = missile.getY() + vec3.y;
+		double d2 = missile.getZ() + vec3.z;
+		missile.setPos(d0, d1, d2);
+		missile.fuel--;
 	}
 }

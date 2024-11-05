@@ -24,13 +24,16 @@ public class MechaSkinRecipe extends CustomRecipe {
 	public boolean matches(@NotNull CraftingInput input, @NotNull Level level) {
 		List<MechaSchematicComponent> schematics = input.items().stream()
 			.map(stack -> stack.get(ArmisticeDataComponentTypeRegistrar.MECHA_SCHEMATIC))
-			.filter(Objects::nonNull).toList();
+			.filter(Objects::nonNull)
+			.toList();
 
 		if (schematics.size() != 1) return false;
 
 		List<MechaSkin> skins = input.items().stream()
 			.map(stack -> stack.get(ArmisticeDataComponentTypeRegistrar.SKIN))
-			.filter(Objects::nonNull).map(SkinComponent::skin).toList();
+			.filter(Objects::nonNull)
+			.map(SkinComponent::skin)
+			.toList();
 
 		return skins.size() == 1;
 	}
@@ -43,7 +46,10 @@ public class MechaSkinRecipe extends CustomRecipe {
 
 		MechaSkin skin = input.items().stream()
 			.map(stack -> stack.get(ArmisticeDataComponentTypeRegistrar.SKIN))
-			.filter(Objects::nonNull).map(SkinComponent::skin).toList().getFirst();
+			.filter(Objects::nonNull)
+			.map(SkinComponent::skin)
+			.toList()
+			.getFirst();
 
 		ItemStack result = schematic.copy();
 		result.set(ArmisticeDataComponentTypeRegistrar.SKIN, new SkinComponent(skin));

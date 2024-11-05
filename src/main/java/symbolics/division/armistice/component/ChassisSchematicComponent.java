@@ -27,7 +27,7 @@ public record ChassisSchematicComponent(
 		@NotNull Consumer<Component> tooltipAdder,
 		@NotNull TooltipFlag tooltipFlag
 	) {
-		tooltipAdder.accept(Component.translatable(schematic.id().toLanguageKey()).withStyle(ChatFormatting.BLUE));
+		tooltipAdder.accept(Component.translatable(schematic.id().getNamespace() + ".chassis." + schematic.id().getPath()).withStyle(ChatFormatting.BLUE));
 		tooltipAdder.accept(Component.literal("Tier: " + schematic.tier()).withStyle(ChatFormatting.DARK_PURPLE));
 		tooltipAdder.accept(Component.literal("Armor min: " + schematic.minArmorLevel()).withStyle(ChatFormatting.DARK_PURPLE));
 		tooltipAdder.accept(Component.literal("Armor max: " + schematic.maxArmorLevel()).withStyle(ChatFormatting.DARK_PURPLE));

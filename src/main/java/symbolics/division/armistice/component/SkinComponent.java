@@ -28,6 +28,6 @@ public record SkinComponent(
 		@NotNull Consumer<Component> tooltipAdder,
 		@NotNull TooltipFlag tooltipFlag
 	) {
-		tooltipAdder.accept(Component.translatable(skin.id().toLanguageKey()).withStyle(ChatFormatting.BLUE));
+		tooltipAdder.accept(Component.translatable(skin.id().getNamespace() + ".skin." + skin.id().getPath()).withStyle(ChatFormatting.BLUE));
 	}
 }

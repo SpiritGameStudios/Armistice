@@ -32,14 +32,9 @@ public record BBModelData(
 			.forEach(line -> {
 				if (line.isEmpty()) return;
 				Matcher match = NPV.matcher(line);
-				if (!match.find()) {
-					throw new IllegalArgumentException("invalid property format: " + line);
-				}
-				Map<String, Double> entry = result.get(match.group(1));
-				if (entry == null) {
-					entry = new Object2ReferenceLinkedOpenHashMap<>();
-					result.put(match.group(1), entry);
-				}
+				if (!match.find()) throw new IllegalArgumentException("invalid property format: " + line);
+
+				Map<String, Double> entry = result.computeIfAbsent(match.group(1), k -> new Object2ReferenceLinkedOpenHashMap<>());
 
 				entry.put(match.group(2), Double.valueOf(match.group(3)));
 			});

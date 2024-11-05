@@ -31,7 +31,7 @@ public class ChassisRenderer {
 	private final ModelBaker.Quad[] quads;
 	private final LegRenderer[] legRenderers;
 
-	private final class LegRenderer {
+	private static final class LegRenderer {
 		private final List<List<ModelBaker.Quad>> segmentQuads = new ArrayList<>();
 		private final List<ModelBaker.Quad[]> quadArrays;
 		private final List<OutlinerNode> segmentNodes = new ArrayList<>();
@@ -76,31 +76,32 @@ public class ChassisRenderer {
 
 			MechaSkin skin = mecha.core().skin();
 			for (int i = 0; i < quadArrays.size(); i++) {
-				if (quadArrays.get(i).length != 0) {
-					var bone = bones.get(i + 1);
-					float yaw = bone.getGlobalYawDegs() * Mth.DEG_TO_RAD;
-					Vec3f base = bone.getStartLocation();
-					matrices.pushPose();
-					{
-						matrices.translate(base.x, base.y, base.z);
-						yaw = Mth.PI - yaw;
-						float calcPitch = interpretPitch(bone, yaw, parentYaw);
+				if (quadArrays.get(i).length == 0) continue;
 
-						var seg = segmentNodes.get(i).origin();
-						matrices.mulPose(new Quaternionf().rotateZYX(0, yaw, calcPitch + Mth.PI));
-						matrices.translate(-seg.x, -seg.y, -seg.z);
-						PartRenderer.renderQuads(
-							quadArrays.get(i),
-							ResourceLocation.fromNamespaceAndPath(skin.id().getNamespace(), "textures/mecha/skin/" + skin.id().getPath() + ".png"),
-							matrices.last(),
-							bufferSource,
-							color,
-							packedLight,
-							packedOverlay
-						);
-					}
-					matrices.popPose();
+				FabrikBone3D bone = bones.get(i + 1);
+				float yaw = bone.getGlobalYawDegs() * Mth.DEG_TO_RAD;
+				Vec3f base = bone.getStartLocation();
+				matrices.pushPose();
+				{
+					matrices.translate(base.x, base.y, base.z);
+					yaw = Mth.PI - yaw;
+					float calcPitch = interpretPitch(bone, yaw, parentYaw);
+
+					Vec3 seg = segmentNodes.get(i).origin();
+					matrices.mulPose(new Quaternionf().rotateZYX(0, yaw, calcPitch + Mth.PI));
+					matrices.translate(-seg.x, -seg.y, -seg.z);
+
+					PartRenderer.renderQuads(
+						quadArrays.get(i),
+						ResourceLocation.fromNamespaceAndPath(skin.id().getNamespace(), "textures/mecha/skin/" + skin.id().getPath() + ".png"),
+						matrices.last(),
+						bufferSource,
+						color,
+						packedLight,
+						packedOverlay
+					);
 				}
+				matrices.popPose();
 			}
 		}
 
@@ -113,7 +114,7 @@ public class ChassisRenderer {
 			double z = end.z - start.z;
 			double r = Math.sqrt(x * x + z * z);
 			double sign = Math.abs(yawParentRad - yawRad) > Math.PI / 2 ? -1 : 1;
-			return (float) Math.atan2(y, r * sign);
+			return (float) Mth.atan2(y, r * sign);
 		}
 	}
 
@@ -141,7 +142,8 @@ public class ChassisRenderer {
 	public static void dispatch(MechaEntity mecha, PoseStack poseStack, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
 		// draw self, calls armor render
 		if (!ArmisticeClientDebugValues.showChassis) return;
-		var chassis = PartRenderer.chassis.getOrDefault(mecha.core().schematic().chassis().id(), MISSING);
+
+		ChassisRenderer chassis = PartRenderer.chassis.getOrDefault(mecha.core().schematic().chassis().id(), MISSING);
 		if (chassis != null) {
 			poseStack.pushPose();
 			mecha.core().chassisEuclidean().transformAbsolute(poseStack);

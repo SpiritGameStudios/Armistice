@@ -164,6 +164,8 @@ public class ArmisticeBlockStateProvider extends BlockStateProvider {
 		trapdoorBlock(ArmisticeBlockRegistrar.ARMISTEEL_TRAPDOOR, Armistice.id("block/armisteel_trapdoor"), false);
 
 		doorBlock(ArmisticeBlockRegistrar.ARMISTEEL_DOOR, Armistice.id("block/armisteel_door_top"), Armistice.id("block/armisteel_door_bottom"));
+
+		itemModels().basicItem(ArmisticeBlockRegistrar.ARMISTEEL_DOOR.asItem());
 	}
 
 	public BlockModelBuilder cubeAll(String name, ResourceLocation texture) {

@@ -34,16 +34,16 @@ public record MechaSchematicComponent(
 		List<OrdnanceSchematic> ordnance = schematic.ordnance();
 
 		tooltipAdder.accept(Component.literal("Hull:").withStyle(ChatFormatting.DARK_GRAY));
-		tooltipAdder.accept(Component.translatable(hull.id().toLanguageKey()).withStyle(ChatFormatting.BLUE));
+		tooltipAdder.accept(Component.translatable(hull.id().getNamespace() + ".armor." + hull.id().getPath()).withStyle(ChatFormatting.BLUE));
 		tooltipAdder.accept(Component.literal("Tier: " + hull.tier()).withStyle(ChatFormatting.DARK_PURPLE));
 		tooltipAdder.accept(Component.literal("Slots: " + String.join(", ", hull.slots().stream().map(Object::toString).toList())).withStyle(ChatFormatting.DARK_PURPLE));
 
 		tooltipAdder.accept(Component.literal("Armor:").withStyle(ChatFormatting.DARK_GRAY));
-		tooltipAdder.accept(Component.translatable(armor.id().toLanguageKey()).withStyle(ChatFormatting.BLUE));
+		tooltipAdder.accept(Component.translatable(armor.id().getNamespace() + ".armor." + armor.id().getPath()).withStyle(ChatFormatting.BLUE));
 		tooltipAdder.accept(Component.literal("Size: " + armor.size()).withStyle(ChatFormatting.DARK_PURPLE));
 
 		tooltipAdder.accept(Component.literal("Chassis:").withStyle(ChatFormatting.DARK_GRAY));
-		tooltipAdder.accept(Component.translatable(chassis.id().toLanguageKey()).withStyle(ChatFormatting.BLUE));
+		tooltipAdder.accept(Component.translatable(chassis.id().getNamespace() + ".chassis." + chassis.id().getPath()).withStyle(ChatFormatting.BLUE));
 		tooltipAdder.accept(Component.literal("Tier: " + chassis.tier()).withStyle(ChatFormatting.DARK_PURPLE));
 		tooltipAdder.accept(Component.literal("Armor min: " + chassis.minArmorLevel()).withStyle(ChatFormatting.DARK_PURPLE));
 		tooltipAdder.accept(Component.literal("Armor max: " + chassis.maxArmorLevel()).withStyle(ChatFormatting.DARK_PURPLE));
@@ -52,7 +52,7 @@ public record MechaSchematicComponent(
 			OrdnanceSchematic ordnanceSchematic = ordnance.get(i);
 
 			tooltipAdder.accept(Component.literal("Ordnance " + i + ":").withStyle(ChatFormatting.DARK_GRAY));
-			tooltipAdder.accept(Component.translatable(ordnanceSchematic.id().toLanguageKey()).withStyle(ChatFormatting.BLUE));
+			tooltipAdder.accept(Component.translatable(ordnanceSchematic.id().getNamespace() + ".ordnance." + ordnanceSchematic.id().getPath()).withStyle(ChatFormatting.BLUE));
 			tooltipAdder.accept(Component.literal("Size: " + ordnanceSchematic.size()).withStyle(ChatFormatting.DARK_PURPLE));
 		}
 	}

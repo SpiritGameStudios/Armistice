@@ -8,7 +8,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec2;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
@@ -16,7 +15,6 @@ import org.joml.Vector4f;
 import symbolics.division.armistice.Armistice;
 
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
@@ -62,20 +60,6 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 	}
 
 	// region Lines
-	public void line(Vec2 start, Vec2 end) {
-		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(
-			VertexFormat.Mode.DEBUG_LINE_STRIP,
-			DefaultVertexFormat.POSITION
-		);
-
-		Matrix4f matrix = guiGraphics.pose().last().pose();
-
-		bufferBuilder.addVertex(matrix, start.x, start.y, 0);
-		bufferBuilder.addVertex(matrix, end.x, end.y, 0);
-
-		BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
-	}
-
 	public void hLine(float minX, float maxX, float y, float thickness) {
 		if (minX > maxX) {
 			float prevMinX = minX;
@@ -152,22 +136,12 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 
 		RenderSystem.setShaderColor(color.x, color.y, color.z, color.w);
 	}
-
-	public static void renderHologramFlicker(BiConsumer<Vec3, Vector4f> render, Vec3 pos, Vector4f color) {
-
-		float alpha = RANDOM.nextInt(10) == 0 ? Math.min(RANDOM.nextFloat(), 0.25F) : 1.0F;
-		alpha = (0.3F + (alpha * 0.7F)) * color.w;
-
-		render.accept(pos.offsetRandom(RANDOM, 0.0025F), new Vector4f(color.x, color.y, color.z, alpha));
-		render.accept(pos.offsetRandom(RANDOM, 0.075F), new Vector4f(color.x, color.y, color.z, alpha));
-	}
 	// endregion
 
 	public void renderNumber(int number, float x, float y, float size, Vector4f color) {
 		IntStream digits = String.valueOf(number).chars()
 			.map(Character::getNumericValue)
 			.map(digit -> digit == -1 ? 10 : digit);
-
 
 		AtomicInteger i = new AtomicInteger();
 		digits.forEach(digit -> {

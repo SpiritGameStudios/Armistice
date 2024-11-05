@@ -27,7 +27,8 @@ public class PartRenderer {
 		chassis.clear();
 		hull.clear();
 		ordnance.clear();
-		for (var entry : models.entrySet()) {
+
+		for (Map.Entry<ResourceLocation, BBModelTree> entry : models.entrySet()) {
 			String[] path = entry.getKey().getPath().split("/", 2);
 			if (path.length < 2) {
 				Armistice.LOGGER.error("No part type give for mecha model path {}", entry.getKey());
@@ -48,13 +49,16 @@ public class PartRenderer {
 	public static void renderParts(MechaEntity mecha, float tickDelta, PoseStack pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
 		// render in absolute space to ensure we match internal representation
 		pose.pushPose();
-		pose.translate(-mecha.core().position().x(), -mecha.core().position().y(), -mecha.core().position().z());
-		ChassisRenderer.dispatch(mecha, pose, bufferSource, color, packedLight, packedOverlay);
-		HullRenderer.dispatch(mecha, pose, bufferSource, color, packedLight, packedOverlay);
-		for (int i = 0; i < mecha.core().ordnance().size(); i++) {
-			OrdnancePart part = mecha.core().ordnance().get(i);
-			if (part instanceof NullOrdnancePart) continue;
-			OrdnanceRenderer.dispatch(mecha, part, tickDelta, pose, bufferSource, color, packedLight, packedOverlay);
+		{
+			pose.translate(-mecha.core().position().x(), -mecha.core().position().y(), -mecha.core().position().z());
+
+			ChassisRenderer.dispatch(mecha, pose, bufferSource, color, packedLight, packedOverlay);
+			HullRenderer.dispatch(mecha, pose, bufferSource, color, packedLight, packedOverlay);
+			for (int i = 0; i < mecha.core().ordnance().size(); i++) {
+				OrdnancePart part = mecha.core().ordnance().get(i);
+				if (part instanceof NullOrdnancePart) continue;
+				OrdnanceRenderer.dispatch(mecha, part, tickDelta, pose, bufferSource, color, packedLight, packedOverlay);
+			}
 		}
 		pose.popPose();
 	}
@@ -63,6 +67,7 @@ public class PartRenderer {
 		VertexConsumer vc = bufferSource.getBuffer(RenderType.entityTranslucent(texture));
 		Vector3f norm = new Vector3f();
 		Vector3f pos = new Vector3f();
+
 		for (ModelBaker.Quad face : quads) {
 			pose.transformNormal(face.nx(), face.ny(), face.nz(), norm);
 			// todo: winding order compiled backwards, should be cw not ccw

@@ -1,5 +1,6 @@
 package symbolics.division.armistice.mecha;
 
+import au.edu.federation.caliko.FabrikStructure3D;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -62,6 +63,7 @@ public class MechaCore implements Part {
 		this.chassis = schematic.chassis().make();
 		this.hull = schematic.hull().make();
 		this.model = new MechaModelData(schematic);
+
 		this.skin = skin == null ? MechaSkin.DEFAULT : skin;
 	}
 
@@ -104,26 +106,11 @@ public class MechaCore implements Part {
 
 	@Override
 	public void tick() {
-		// region temp: debug pathing
-//		Player player = level().getNearestPlayer(entity(), 100);
-//		if (player != null) {
-//			Vec3 eye = player.getEyePosition();
-//			Vec3 limit = eye.add(player.getLookAngle().scale(30));
-//			BlockHitResult raycast = level().clip(new ClipContext(
-//				player.getEyePosition(),
-//				limit,
-//				ClipContext.Block.OUTLINE,
-//				ClipContext.Fluid.NONE,
-//				player
-//			));
-//			if (raycast.getType() == HitResult.Type.BLOCK) chassis.setPathingTarget(raycast.getLocation());
-//		}
-		// endregion
+
 	}
 
 	@Override
 	public Part parent() {
-		// todo: better than null for now. consider alternatives.
 		throw new RuntimeException("MechaCore has no parent part");
 	}
 
@@ -144,7 +131,7 @@ public class MechaCore implements Part {
 	}
 
 	public Vec3 acceleration() {
-		return chassis.movement();
+		return chassis.acceleration();
 	}
 
 	public List<OrdnancePart> ordnance() {
@@ -205,6 +192,8 @@ public class MechaCore implements Part {
 		VertexConsumer lineStrip10 = bufferSource.getBuffer(RenderType.debugLineStrip(10));
 		lineStrip10.addVertex(poseStack.last(), new Vector3f(0, 0, 0)).setColor(1.0f, 0.0f, 0.0f, 1.0f);
 		lineStrip10.addVertex(poseStack.last(), direction().toVector3f()).setColor(1.0f, 0.0f, 0.0f, 1.0f);
+
+		chassis.renderDebug(bufferSource, poseStack);
 	}
 
 	public Euclidean hullEuclidean() {
@@ -244,8 +233,8 @@ public class MechaCore implements Part {
 		return chassis.pathingTarget;
 	}
 
-	public void mapChassisRender(Consumer<ChassisPart> consumer) {
-		consumer.accept(chassis);
+	public void mapChassisRender(Consumer<FabrikStructure3D> consumer) {
+		consumer.accept(chassis.skeleton);
 	}
 
 	public void clearAllOrdnanceTargets() {

@@ -5,10 +5,9 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.NotNull;
 
 public class ArtilleryShell extends AbstractOrdnanceProjectile {
 
@@ -20,14 +19,15 @@ public class ArtilleryShell extends AbstractOrdnanceProjectile {
 	public void tick() {
 		super.tick();
 
-		// Movement code
+		// region Movement code
 		Vec3 vec3 = this.getDeltaMovement();
 		double d0 = this.getX() + vec3.x;
 		double d1 = this.getY() + vec3.y;
 		double d2 = this.getZ() + vec3.z;
 		this.applyGravity();
 		this.setPos(d0, d1, d2);
-
+		// endregion
+		
 		if (random.nextFloat() < 0.25F)
 			level().addParticle(
 				ParticleTypes.FLASH,
@@ -40,7 +40,6 @@ public class ArtilleryShell extends AbstractOrdnanceProjectile {
 	protected void onHit(HitResult result) {
 		super.onHit(result);
 		if (level().isClientSide) return;
-//		LOGGER.debug("Shell hit! At {}", result.getLocation());
 
 		Vec3 hitLocation = result.getLocation();
 		level().broadcastEntityEvent(this, (byte) 3);
@@ -49,20 +48,7 @@ public class ArtilleryShell extends AbstractOrdnanceProjectile {
 	}
 
 	@Override
-	protected void onHitEntity(EntityHitResult result) {
-		super.onHitEntity(result);
-//		LOGGER.debug("Shell entity hit!");
-	}
-
-	@Override
-	protected void onHitBlock(BlockHitResult result) {
-		super.onHitBlock(result);
-//		level().setBlock(result.getBlockPos(), Blocks.MAGMA_BLOCK.defaultBlockState(), 11);
-//		LOGGER.debug("Shell block hit!");
-	}
-
-	@Override
-	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+	protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
 
 	}
 }

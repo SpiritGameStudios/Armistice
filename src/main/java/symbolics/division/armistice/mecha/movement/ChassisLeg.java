@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChassisLeg {
-
 	protected final int legIndex;
 	protected ChassisPart chassis;
 	protected FabrikChain3D segChain = new FabrikChain3D();
