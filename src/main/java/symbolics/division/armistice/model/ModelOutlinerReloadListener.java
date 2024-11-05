@@ -28,7 +28,7 @@ import java.util.concurrent.Executor;
 public class ModelOutlinerReloadListener implements PreparableReloadListener {
 	public static final ModelOutlinerReloadListener INSTANCE = new ModelOutlinerReloadListener();
 	private static final Gson GSON = new Gson();
-	private static Map<ResourceLocation, List<OutlinerNode>> nodes;
+	private static Map<ResourceLocation, List<OutlinerNode>> nodes = Map.of();
 
 	public static Map<ResourceLocation, List<OutlinerNode>> getNodes() {
 		return nodes;

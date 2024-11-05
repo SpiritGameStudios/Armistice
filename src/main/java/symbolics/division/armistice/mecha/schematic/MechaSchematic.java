@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import symbolics.division.armistice.mecha.MechaCore;
@@ -11,6 +12,7 @@ import symbolics.division.armistice.mecha.MechaSkin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * The MechaSchematic is functionally an immutable blueprint for a
@@ -23,15 +25,32 @@ public record MechaSchematic(
 	ChassisSchematic chassis,
 	ArmorSchematic armor
 ) implements Schematic<MechaSchematic, MechaCore> {
-	public static final Codec<MechaSchematic> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+	public static final Codec<MechaSchematic> CODEC = com.mojang.serialization.codecs.RecordCodecBuilder.create(instance -> instance.group(
 		HullSchematic.CODEC.fieldOf("hull").forGetter(MechaSchematic::hull),
 		OrdnanceSchematic.REGISTRY_CODEC.listOf().fieldOf("ordnance").forGetter(MechaSchematic::ordnance),
 		ChassisSchematic.CODEC.fieldOf("chassis").forGetter(MechaSchematic::chassis),
 		ArmorSchematic.CODEC.fieldOf("armor").forGetter(MechaSchematic::armor)
 	).apply(instance, MechaSchematic::new));
 
-	// temp: make actual streamcodec
-	public static final StreamCodec<ByteBuf, MechaSchematic> STREAM_CODEC = ByteBufCodecs.fromCodec(CODEC);
+	public static final Function<RegistryAccess, Codec<MechaSchematic>> REGISTRY_CODEC = access ->
+		RecordCodecBuilder.create(instance -> instance.group(
+			HullSchematic.REGISTRY_CODEC.apply(access).fieldOf("hull").forGetter(MechaSchematic::hull),
+			OrdnanceSchematic.REGISTRY_CODEC.listOf().fieldOf("ordnance").forGetter(MechaSchematic::ordnance),
+			ChassisSchematic.REGISTRY_CODEC.apply(access).fieldOf("chassis").forGetter(MechaSchematic::chassis),
+			ArmorSchematic.REGISTRY_CODEC.apply(access).fieldOf("armor").forGetter(MechaSchematic::armor)
+		).apply(instance, MechaSchematic::new));
+
+	public static final StreamCodec<RegistryFriendlyByteBuf, MechaSchematic> STREAM_CODEC = StreamCodec.composite(
+		HullSchematic.STREAM_CODEC,
+		MechaSchematic::hull,
+		OrdnanceSchematic.REGISTRY_STREAM_CODEC.apply(ByteBufCodecs.list()),
+		MechaSchematic::ordnance,
+		ChassisSchematic.STREAM_CODEC,
+		MechaSchematic::chassis,
+		ArmorSchematic.STREAM_CODEC,
+		MechaSchematic::armor,
+		MechaSchematic::new
+	);
 
 	@Override
 	public MechaCore make() {
@@ -50,16 +69,12 @@ public record MechaSchematic(
 
 	@Override
 	public Codec<MechaSchematic> registryCodec(RegistryAccess access) {
-		return getCodec(access);
+		return REGISTRY_CODEC.apply(access);
 	}
 
-	public static Codec<MechaSchematic> getCodec(RegistryAccess access) {
-		return RecordCodecBuilder.create(instance -> instance.group(
-			HullSchematic.getCodec(access).fieldOf("hull").forGetter(MechaSchematic::hull),
-			OrdnanceSchematic.REGISTRY_CODEC.listOf().fieldOf("ordnance").forGetter(MechaSchematic::ordnance),
-			ChassisSchematic.getCodec(access).fieldOf("chassis").forGetter(MechaSchematic::chassis),
-			ArmorSchematic.getCodec(access).fieldOf("armor").forGetter(MechaSchematic::armor)
-		).apply(instance, MechaSchematic::new));
+	@Override
+	public StreamCodec<? extends ByteBuf, MechaSchematic> streamCodec() {
+		return STREAM_CODEC;
 	}
 
 	public boolean verify() {

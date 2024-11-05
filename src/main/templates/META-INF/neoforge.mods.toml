@@ -50,7 +50,7 @@ config="${mod_id}.mixins.json"
 
 [[dependencies.${mod_id}]]
 modId="fusion"
-mandatory=true
+type="required"
 versionRange="[1.0.0,)"
 ordering="NONE"
 side="CLIENT"

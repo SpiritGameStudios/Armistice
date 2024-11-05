@@ -9,14 +9,14 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.mecha.MechaEntity;
-import symbolics.division.armistice.util.CodecHelper;
-import symbolics.division.armistice.util.PartialEntityHitResult;
+import symbolics.division.armistice.serialization.ExtraStreamCodecs;
+import symbolics.division.armistice.serialization.PartialEntityHitResult;
 
 public record MechaTargetRequestC2SPayload(HitResult target, int ordnance) implements CustomPacketPayload {
 	public static final Type<MechaTargetRequestC2SPayload> TYPE = new Type<>(Armistice.id("mecha_target"));
 
 	public static final StreamCodec<FriendlyByteBuf, MechaTargetRequestC2SPayload> STREAM_CODEC = StreamCodec.composite(
-		CodecHelper.HIT_RESULT,
+		ExtraStreamCodecs.HIT_RESULT,
 		MechaTargetRequestC2SPayload::target,
 		ByteBufCodecs.INT,
 		MechaTargetRequestC2SPayload::ordnance,

@@ -3,7 +3,6 @@ package symbolics.division.armistice.mecha.schematic;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 /**
@@ -19,7 +18,5 @@ public interface Schematic<S extends Schematic<S, P>, P> {
 	 * Until ModFest is over, just let this use the default.
 	 * It's inefficient, but it's easy to refactor later.
 	 */
-	default StreamCodec<ByteBuf, S> streamCodec(RegistryAccess access) {
-		return ByteBufCodecs.fromCodec(registryCodec(access));
-	}
+	StreamCodec<? extends ByteBuf, S> streamCodec();
 }

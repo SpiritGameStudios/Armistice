@@ -8,7 +8,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import symbolics.division.armistice.mecha.MechaCore;
-import symbolics.division.armistice.util.CodecHelper;
+import symbolics.division.armistice.serialization.ExtraStreamCodecs;
 import symbolics.division.armistice.util.registrar.Registrar;
 
 import java.util.List;
@@ -17,16 +17,13 @@ import java.util.Map;
 public final class ArmisticeEntityDataSerializerRegistrar implements Registrar<EntityDataSerializer<?>> {
 	public static final EntityDataSerializer<List<Vector3f>> VEC3_LIST =
 		EntityDataSerializer.forValueType(ByteBufCodecs.VECTOR3F.apply(ByteBufCodecs.list()));
-
-	public static final EntityDataSerializer<List<Vector2f>> VEC2_LIST =
-		EntityDataSerializer.forValueType(CodecHelper.VECTOR2F.apply(ByteBufCodecs.list()));
-
+	
 	public static final EntityDataSerializer<Map<Integer, Vector2f>> INT_VEC2_MAP =
 		EntityDataSerializer.forValueType(
 			ByteBufCodecs.map(
 				Int2ObjectArrayMap::new,
 				ByteBufCodecs.INT,
-				CodecHelper.VECTOR2F
+				ExtraStreamCodecs.VECTOR2F
 			)
 		);
 

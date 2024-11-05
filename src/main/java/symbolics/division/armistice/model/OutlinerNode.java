@@ -9,7 +9,7 @@ import it.unimi.dsi.fastutil.objects.Object2ReferenceLinkedOpenHashMap;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
-import symbolics.division.armistice.util.CodecHelper;
+import symbolics.division.armistice.serialization.ExtraCodecs;
 
 import java.util.List;
 import java.util.Map;
@@ -35,7 +35,7 @@ public record OutlinerNode(
 			OutlinerNode.class.getSimpleName(),
 			outlineCodec -> RecordCodecBuilder.create(instance -> instance.group(
 				Codec.STRING.fieldOf("name").forGetter(OutlinerNode::name),
-				CodecHelper.UUID.fieldOf("uuid").forGetter(OutlinerNode::uuid),
+				ExtraCodecs.UUID.fieldOf("uuid").forGetter(OutlinerNode::uuid),
 				Vec3.CODEC.xmap(
 					vec3 -> vec3.scale(BASE_SCALE_FACTOR),
 					vec3 -> vec3.scale(1 / BASE_SCALE_FACTOR)

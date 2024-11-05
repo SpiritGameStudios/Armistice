@@ -7,8 +7,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -39,7 +37,6 @@ public record OutlinerSyncS2CPayload(Map<ResourceLocation, List<OutlinerNode>> n
 		return models;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public static void receive(OutlinerSyncS2CPayload payload, IPayloadContext context) {
 		ImmutableMap.Builder<ResourceLocation, BBModelTree> builder = ImmutableMap.builder();
 

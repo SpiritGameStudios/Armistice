@@ -25,7 +25,7 @@ public class ArmisticeClient {
 	public ArmisticeClient(IEventBus modEventBus, ModContainer modContainer) {
 		modEventBus.register(MechaHudRenderer.class);
 		modEventBus.register(MechaOverlayRenderer.class);
-		modEventBus.register(ClientRegistryEvents.class);
+
 		NeoForge.EVENT_BUS.register(ArmisticeClientDebugValues.class);
 		NeoForge.EVENT_BUS.register(MechaDebugRenderer.class);
 	}

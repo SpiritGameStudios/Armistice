@@ -1,4 +1,4 @@
-package symbolics.division.armistice.util;
+package symbolics.division.armistice.serialization;
 
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;

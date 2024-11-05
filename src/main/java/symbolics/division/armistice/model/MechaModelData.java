@@ -12,6 +12,7 @@ import symbolics.division.armistice.mecha.MechaCore;
 import symbolics.division.armistice.mecha.OrdnancePart;
 import symbolics.division.armistice.mecha.schematic.MechaSchematic;
 import symbolics.division.armistice.mecha.schematic.OrdnanceSchematic;
+import symbolics.division.armistice.network.OutlinerSyncS2CPayload;
 
 import java.lang.Math;
 import java.util.*;
@@ -29,27 +30,15 @@ public class MechaModelData {
 	private final Vec3 seatOffset;
 
 	public MechaModelData(MechaSchematic schematic) {
-		hull = Objects.requireNonNull(ModelOutlinerReloadListener.getNode(schematic.hull().id().withPrefix("hull/")))
-			.stream()
-			.filter(n -> n.name().equals("root"))
-			.findAny()
-			.orElseThrow();
+		hull = Objects.requireNonNull(OutlinerSyncS2CPayload.models().get(schematic.hull().id().withPrefix("hull/"))).node;
 
-		chassis = Objects.requireNonNull(ModelOutlinerReloadListener.getNode(schematic.chassis().id().withPrefix("chassis/")))
-			.stream()
-			.filter(n -> n.name().equals("root"))
-			.findAny()
-			.orElseThrow();
+		chassis = Objects.requireNonNull(OutlinerSyncS2CPayload.models().get(schematic.chassis().id().withPrefix("chassis/"))).node;
 
 		ImmutableList.Builder<OrdnanceInfo> ordnanceInfoBuilder = ImmutableList.builder();
 
 		for (int i = 1; i <= schematic.ordnance().size(); i++) {
 			OrdnanceSchematic ordnanceSchematic = schematic.ordnance().get(i - 1);
-			OutlinerNode ordnanceNode = Objects.requireNonNull(ModelOutlinerReloadListener.getNode(ordnanceSchematic.id().withPrefix("ordnance/")))
-				.stream()
-				.filter(n -> n.name().equals("root"))
-				.findAny()
-				.orElseThrow();
+			OutlinerNode ordnanceNode = Objects.requireNonNull(OutlinerSyncS2CPayload.models().get(ordnanceSchematic.id().withPrefix("ordnance/"))).node;
 
 			List<OutlinerNode> markerNodes = ordnanceNode.children().stream()
 				.filter(c -> c.left().isPresent())

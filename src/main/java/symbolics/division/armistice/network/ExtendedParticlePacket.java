@@ -11,7 +11,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 import symbolics.division.armistice.Armistice;
-import symbolics.division.armistice.util.CodecHelper;
+import symbolics.division.armistice.serialization.ExtraStreamCodecs;
 
 // Thank you Tomate0613
 public record ExtendedParticlePacket(
@@ -23,13 +23,13 @@ public record ExtendedParticlePacket(
 	ParticleOptions particleType
 ) implements CustomPacketPayload {
 	public static final StreamCodec<RegistryFriendlyByteBuf, ExtendedParticlePacket> STREAM_CODEC = StreamCodec.composite(
-		CodecHelper.VEC3,
+		ExtraStreamCodecs.VEC3,
 		ExtendedParticlePacket::origin,
-		CodecHelper.VEC3,
+		ExtraStreamCodecs.VEC3,
 		ExtendedParticlePacket::posVariation,
-		CodecHelper.VEC3,
+		ExtraStreamCodecs.VEC3,
 		ExtendedParticlePacket::velocity,
-		CodecHelper.VEC3,
+		ExtraStreamCodecs.VEC3,
 		ExtendedParticlePacket::velocityVariation,
 		ByteBufCodecs.INT,
 		ExtendedParticlePacket::count,

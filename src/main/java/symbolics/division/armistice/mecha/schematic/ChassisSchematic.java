@@ -2,11 +2,16 @@ package symbolics.division.armistice.mecha.schematic;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Range;
 import symbolics.division.armistice.mecha.ChassisPart;
 import symbolics.division.armistice.registry.ArmisticeRegistries;
+
+import java.util.function.Function;
 
 public record ChassisSchematic(
 	@Range(from = 1, to = 3) int tier,
@@ -23,6 +28,22 @@ public record ChassisSchematic(
 		ResourceLocation.CODEC.fieldOf("id").forGetter(ChassisSchematic::id)
 	).apply(instance, ChassisSchematic::new));
 
+	public static final Function<RegistryAccess, Codec<ChassisSchematic>> REGISTRY_CODEC = access -> access.registryOrThrow(ArmisticeRegistries.CHASSIS_KEY).byNameCodec();
+
+	public static final StreamCodec<ByteBuf, ChassisSchematic> STREAM_CODEC = StreamCodec.composite(
+		ByteBufCodecs.VAR_INT,
+		ChassisSchematic::tier,
+		ByteBufCodecs.VAR_INT,
+		ChassisSchematic::minArmorLevel,
+		ByteBufCodecs.VAR_INT,
+		ChassisSchematic::maxArmorLevel,
+		ByteBufCodecs.DOUBLE,
+		ChassisSchematic::moveSpeed,
+		ResourceLocation.STREAM_CODEC,
+		ChassisSchematic::id,
+		ChassisSchematic::new
+	);
+
 	@Override
 	public ChassisPart make() {
 		return new ChassisPart(this);
@@ -30,10 +51,11 @@ public record ChassisSchematic(
 
 	@Override
 	public Codec<ChassisSchematic> registryCodec(RegistryAccess access) {
-		return getCodec(access);
+		return REGISTRY_CODEC.apply(access);
 	}
 
-	public static Codec<ChassisSchematic> getCodec(RegistryAccess access) {
-		return access.registryOrThrow(ArmisticeRegistries.CHASSIS_KEY).byNameCodec();
+	@Override
+	public StreamCodec<? extends ByteBuf, ChassisSchematic> streamCodec() {
+		return STREAM_CODEC;
 	}
 }

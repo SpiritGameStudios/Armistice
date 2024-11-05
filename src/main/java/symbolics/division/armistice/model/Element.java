@@ -7,7 +7,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Vector4d;
-import symbolics.division.armistice.util.CodecHelper;
+import symbolics.division.armistice.serialization.ExtraCodecs;
 
 import java.util.Map;
 import java.util.Optional;
@@ -46,7 +46,7 @@ public record Element(
 		Vec3.CODEC.lenientOptionalFieldOf("rotation").forGetter(Element::rotation),
 		Vec3.CODEC.fieldOf("origin").forGetter(Element::origin),
 		Codec.unboundedMap(Direction.CODEC, Face.CODEC).fieldOf("faces").forGetter(Element::faces),
-		CodecHelper.UUID.fieldOf("uuid").forGetter(Element::uuid)
+		ExtraCodecs.UUID.fieldOf("uuid").forGetter(Element::uuid)
 	).apply(instance, Element::new));
 
 	public enum RenderOrder {
@@ -65,7 +65,7 @@ public record Element(
 		Optional<Direction> cullFace
 	) {
 		public static final Codec<Face> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-			CodecHelper.VECTOR4D.fieldOf("uv").forGetter(Face::uv),
+			ExtraCodecs.VECTOR4D.fieldOf("uv").forGetter(Face::uv),
 			Codec.INT.lenientOptionalFieldOf("texture").forGetter(Face::texture),
 			Codec.INT.lenientOptionalFieldOf("rotation").forGetter(Face::rotation),
 			Codec.INT.lenientOptionalFieldOf("tintindex").forGetter(Face::tintIndex),
