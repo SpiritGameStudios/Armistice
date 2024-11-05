@@ -13,6 +13,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.OnDatapackSyncEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.client.render.model.PartRenderer;
@@ -20,6 +21,7 @@ import symbolics.division.armistice.model.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 public record OutlinerSyncS2CPayload(Map<ResourceLocation, List<OutlinerNode>> nodes) implements CustomPacketPayload {
 	public static final Type<OutlinerSyncS2CPayload> TYPE = new Type<>(Armistice.id("outliner_sync"));
@@ -53,6 +55,20 @@ public record OutlinerSyncS2CPayload(Map<ResourceLocation, List<OutlinerNode>> n
 		models = builder.build();
 		PartRenderer.bakeModels(models());
 	}
+
+	private static BiConsumer<OutlinerSyncS2CPayload, IPayloadContext> clientOnlyHandler = (a, b) -> {
+		throw new NotImplementedException("this should never be called");
+	};
+
+	@OnlyIn(Dist.CLIENT)
+	public static void initHandler() {
+		OutlinerSyncS2CPayload.clientOnlyHandler = OutlinerSyncS2CPayload::receive;
+	}
+
+	public static void handle(OutlinerSyncS2CPayload payload, IPayloadContext context) {
+		clientOnlyHandler.accept(payload, context);
+	}
+
 
 	@SubscribeEvent
 	private static void onDatapackSync(OnDatapackSyncEvent event) {
