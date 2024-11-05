@@ -138,7 +138,7 @@ public final class RegistryEvents {
 			registrar.playToClient(
 				OutlinerSyncS2CPayload.TYPE,
 				OutlinerSyncS2CPayload.STREAM_CODEC,
-				OutlinerSyncS2CPayload::receive
+				OutlinerSyncS2CPayload::handle
 			);
 
 			registrar.playToClient(

@@ -17,6 +17,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import symbolics.division.armistice.Armistice;
+import symbolics.division.armistice.network.OutlinerSyncS2CPayload;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -28,7 +29,7 @@ import java.util.concurrent.Executor;
 public class ModelOutlinerReloadListener implements PreparableReloadListener {
 	public static final ModelOutlinerReloadListener INSTANCE = new ModelOutlinerReloadListener();
 	private static final Gson GSON = new Gson();
-	private static Map<ResourceLocation, List<OutlinerNode>> nodes = Map.of();
+	private static Map<ResourceLocation, List<OutlinerNode>> nodes;
 
 	public static Map<ResourceLocation, List<OutlinerNode>> getNodes() {
 		return nodes;
@@ -36,6 +37,7 @@ public class ModelOutlinerReloadListener implements PreparableReloadListener {
 
 	@Nullable
 	public static List<OutlinerNode> getNode(ResourceLocation id) {
+		if (nodes == null) return List.of(OutlinerSyncS2CPayload.models().get(id).node);
 		return nodes.get(id);
 	}
 
