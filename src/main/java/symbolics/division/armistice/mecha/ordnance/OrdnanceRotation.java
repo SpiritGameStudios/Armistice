@@ -92,6 +92,6 @@ public class OrdnanceRotation {
 			)
 		);
 
-		core.entity().getEntityData().set(BARREL_ROTATIONS, rotations);
+		core.entity().getEntityData().set(BARREL_ROTATIONS, rotations, true);
 	}
 }

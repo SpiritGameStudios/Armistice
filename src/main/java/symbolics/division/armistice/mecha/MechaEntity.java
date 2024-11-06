@@ -226,11 +226,11 @@ public class MechaEntity extends Entity {
 				if (targetPlayer != null && validCrueltyTarget(targetPlayer)) {
 					if (!targetPlayer.hasLineOfSight(this)) {
 						ticksSincePlayerSeen++;
+						core().clearAllOrdnanceTargets();
 						if (ticksSincePlayerSeen > KILL_TICKS) {
 							crueltyMode = CrueltyMode.ROAM;
 							modeTicks = 10000;
 						}
-						core().clearAllOrdnanceTargets();
 						return;
 					}
 					ticksSincePlayerSeen = 0;
@@ -244,6 +244,7 @@ public class MechaEntity extends Entity {
 				} else {
 					crueltyMode = CrueltyMode.ROAM;
 					modeTicks = 10000;
+					core().clearAllOrdnanceTargets();
 				}
 			}
 		}

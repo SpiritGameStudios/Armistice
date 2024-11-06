@@ -132,7 +132,7 @@ public class SimpleGunOrdnance extends OrdnancePart {
 			projectile.yRotO = projectile.getYRot();
 			projectile.xRotO = projectile.getXRot();
 		}
-		
+
 		core.level().addFreshEntity(projectile);
 		onShoot.accept(
 			core,

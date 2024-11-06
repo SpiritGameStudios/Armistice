@@ -74,26 +74,28 @@ public class OrdnanceRenderer {
 			if (bodyQuads.length > 0) {
 				Vector2fc rot = mecha.core().ordnanceBarrelRotation(mecha.core().ordnanceIndex(ordnance));
 				pose.translate(bodyPos.x, bodyPos.y, bodyPos.z);
-				float x = -rot.x() * Mth.DEG_TO_RAD;
-				float y = -rot.y() * Mth.DEG_TO_RAD;
+
+				/// yaw, pitch -> x is raw y is pitch
+				float yaw = rot.x() * Mth.DEG_TO_RAD;
+				float pitch = -rot.y() * Mth.DEG_TO_RAD;
 
 				// correct for backwards facing
-				float z = 0;
-				if (Mth.abs(rot.x()) >= 90) {
-					z = Mth.PI;
-					y = -y;
-				}
+//				float z = 0;
+//				if (Mth.abs(rot.x()) >= 90) {
+//					z = Mth.PI;
+//					y = -y;
+//				}
 
 				// at this point we should pass these into the renders so we don't need to
 				// play games with access
-				Quaternionf newRot = new Quaternionf().rotateYXZ(y, x, z);
-				Quaternionf lerpedRot = ordnance.lastRenderRotation.nlerp(newRot, tickDelta);
+				Quaternionf newRot = new Quaternionf().rotateYXZ(yaw, pitch, 0);
+//				Quaternionf lerpedRot = ordnance.lastRenderRotation.nlerp(newRot, tickDelta);
 
-				pose.mulPose(lerpedRot);
+				pose.mulPose(newRot);
 				pose.translate(-bodyPos.x, -bodyPos.y, -bodyPos.z);
 				PartRenderer.renderQuads(bodyQuads, texture, pose.last(), bufferSource, color, packedLight, packedOverlay);
 
-				ordnance.lastRenderRotation = lerpedRot;
+//				ordnance.lastRenderRotation = lerpedRot;
 			}
 		}
 		pose.popPose();
