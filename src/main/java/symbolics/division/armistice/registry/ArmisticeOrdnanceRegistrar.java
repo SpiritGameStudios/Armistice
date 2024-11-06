@@ -44,7 +44,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 	);
 
 	public static final OrdnanceSchematic MISSILE_LAUNCHER = new OrdnanceSchematic(
-		2,
+		1,
 		() -> new SimpleGunOrdnance(
 			10,
 			40,
@@ -78,7 +78,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 	);
 
 	public static final OrdnanceSchematic FLAMETHROWER = new OrdnanceSchematic(
-		2,
+		1,
 		() -> new HitscanGunOrdnance(
 			1,
 			1,
@@ -114,7 +114,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 	);
 
 	public static final OrdnanceSchematic ARTILLERY = new OrdnanceSchematic(
-		2,
+		1,
 		() -> new SimpleGunOrdnance(
 			40,
 			20 * 20,
@@ -151,7 +151,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 	);
 
 	public static final OrdnanceSchematic AUTOCANNON = new OrdnanceSchematic(
-		2,
+		1,
 		() -> new SimpleGunOrdnance(
 			40,
 			20 * 20,
@@ -188,7 +188,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 	);
 
 	public static final OrdnanceSchematic RAILGUN = new OrdnanceSchematic(
-		2,
+		1,
 		() -> new SimpleGunOrdnance(
 			40,
 			20 * 20,

@@ -26,8 +26,8 @@
         "name": "ordnance1",
         "origin": [
           0.0,
-          41.0,
-          -22.0
+          30.0,
+          -18.0
         ],
         "uuid": "045a875f-65a0-d37e-651f-ebd1cc54b12b",
         "visibility": true
@@ -38,14 +38,9 @@
         "mirror_uv": false,
         "name": "ordnance2",
         "origin": [
-          19.0,
-          32.0,
-          -22.0
-        ],
-        "rotation": [
-          0.0,
-          89.99999647980108,
-          -22.500000000000085
+          22.0,
+          20.0,
+          -18.0
         ],
         "uuid": "e2422de5-d26a-1760-f7a4-1fe893cb1e9f",
         "visibility": true
@@ -56,14 +51,9 @@
         "mirror_uv": false,
         "name": "ordnance3",
         "origin": [
-          -19.0,
-          32.0,
-          -22.0
-        ],
-        "rotation": [
-          0.0,
-          89.99999627848696,
-          22.499999999999826
+          -22.0,
+          20.0,
+          -18.0
         ],
         "uuid": "62e99b13-f17e-4749-39a4-0d552c12a76e",
         "visibility": true
@@ -76,8 +66,8 @@
     "name": "root",
     "origin": [
       0.0,
-      11.0,
-      0.0
+      1.0,
+      4.0
     ],
     "uuid": "b9b05ff0-47ee-87bf-8e04-e83d5046d880",
     "visibility": true

@@ -1,0 +1,14 @@
+{
+	"tier": 1,
+	"slots": [
+		1,
+		1,
+		1
+	],
+	"heat": {
+		"max": 200,
+		"delay": 10,
+		"decay": 3
+	},
+	"id": "armistice:skybreaker"
+}
