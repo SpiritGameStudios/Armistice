@@ -36,10 +36,6 @@ import static symbolics.division.armistice.mecha.MechaEntity.*;
  * It also has a separate health pool and hitbox that controls whether it is immobilized.
  */
 public class ChassisPart extends AbstractMechaPart {
-	// temp: Should be defined by sum of part sizes
-	private static final double GRAVITY = 0.1;
-
-	public final List<Vec3> debugStepTargets = new ArrayList<>();
 	protected final DirectionState direction = new DirectionState(Math.PI);
 	protected final ChassisSchematic schematic;
 	protected final double followTolerance = 30; // temp: related to model diameter
@@ -166,16 +162,16 @@ public class ChassisPart extends AbstractMechaPart {
 
 		List<ChassisLeg> lowp = new ArrayList<>();
 		for (ChassisLeg leg : legs) {
-			leg.tick();
-//			if (leg.priority) {
-//				leg.tick();
-//			} else {
-//				lowp.add(leg);
-//				leg.priority = true;
-//			}
+//			leg.tick();
+			if (leg.priority) {
+				leg.tick();
+			} else {
+				lowp.add(leg);
+				leg.priority = true;
+			}
 		}
 		for (ChassisLeg leg : lowp) {
-//			leg.tick();
+			leg.tick();
 		}
 
 		if (firstTick) {

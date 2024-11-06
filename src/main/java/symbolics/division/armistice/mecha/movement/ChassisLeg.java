@@ -198,18 +198,6 @@ public class ChassisLeg {
 		// set target for this tick
 		chain.updateEmbeddedTarget(new Vec3f((float) tickTarget.x, (float) tickTarget.y, (float) tickTarget.z));
 		segChain.updateEmbeddedTarget(new Vec3f((float) tickTarget.x, (float) tickTarget.y, (float) tickTarget.z));
-
-		// attempt initial solve. this will be repeated after the body updates based on this result.
-		trySolve(null);
-	}
-
-	public void trySolve(Vec3f tgt) {
-		if (chassis.legsReady()) {
-//			Vec3f prev = chain.getBone(0).getStartLocation();
-//			// you have to jiggle the bone a bit to motivate it to move
-//			chain.getBone(0).getStartLocation().set(prev.x, prev.y + 0.002f, prev.z);
-//			chain.solveForEmbeddedTarget();
-		}
 	}
 
 	protected Vec3 nearestValidStepPosition(Vec3 ideal) {
