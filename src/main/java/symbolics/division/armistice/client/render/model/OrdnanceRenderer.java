@@ -69,11 +69,13 @@ public class OrdnanceRenderer {
 			var baseRotation = mecha.core().model().ordnanceInfo(ordnance, mecha.core()).mountPoint().rotationInfo().bbRotation()
 				.scale(Mth.DEG_TO_RAD);
 
-			pose.mulPose(new Quaternionf().rotateZYX((float) baseRotation.z, (float) baseRotation.y, (float) baseRotation.x));
+			Quaternionf baseRot = new Quaternionf().rotateZYX((float) baseRotation.z, (float) baseRotation.y, (float) baseRotation.x);
+			pose.mulPose(baseRot);
 			PartRenderer.renderQuads(quads, texture, pose.last(), bufferSource, color, packedLight, packedOverlay);
 			if (bodyQuads.length > 0) {
 				Vector2fc rot = mecha.core().ordnanceBarrelRotation(mecha.core().ordnanceIndex(ordnance));
 				pose.translate(bodyPos.x, bodyPos.y, bodyPos.z);
+				pose.mulPose(baseRot.conjugate());
 
 				/// yaw, pitch -> x is raw y is pitch
 				float yaw = rot.x() * Mth.DEG_TO_RAD;
@@ -89,13 +91,9 @@ public class OrdnanceRenderer {
 				// at this point we should pass these into the renders so we don't need to
 				// play games with access
 				Quaternionf newRot = new Quaternionf().rotateYXZ(yaw, pitch, 0);
-//				Quaternionf lerpedRot = ordnance.lastRenderRotation.nlerp(newRot, tickDelta);
-
 				pose.mulPose(newRot);
 				pose.translate(-bodyPos.x, -bodyPos.y, -bodyPos.z);
 				PartRenderer.renderQuads(bodyQuads, texture, pose.last(), bufferSource, color, packedLight, packedOverlay);
-
-//				ordnance.lastRenderRotation = lerpedRot;
 			}
 		}
 		pose.popPose();

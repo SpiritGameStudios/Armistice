@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector2fc;
@@ -33,7 +34,7 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 		this.core = core;
 		this.rotationManager = new OrdnanceRotation(this,
 			1f, // this needs to be the length from the connection point to the pivot
-			180, 180, core, 180f / 20, 45f, 90f, 180f / 20);
+			180, 180, core, 180f / 40, 45f, 90f, 180f / 40);
 	}
 
 	public int heat() {
@@ -87,6 +88,10 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 	public void setId(ResourceLocation id) {
 		if (this.id != null) throw new IllegalStateException();
 		this.id = id;
+	}
+
+	public Vec3 currentDirection() {
+		return rotationManager.currentDirection();
 	}
 
 	@Nullable

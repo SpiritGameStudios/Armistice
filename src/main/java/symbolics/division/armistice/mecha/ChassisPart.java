@@ -122,6 +122,11 @@ public class ChassisPart extends AbstractMechaPart {
 		for (int i = 0; i < core.model().legInfo().size(); i++) {
 			legs.add(new ChassisLeg(core.model().legInfo().get(i), this, i, skeleton));
 		}
+
+		// initially move in some random direction to unfold the legs
+		this.setPathingTarget(core.entity().position().add(
+			new Vec3(0, 0, 50).yRot(this.core.entity().getRandom().nextFloat() * Mth.PI * 2)
+		));
 	}
 
 	public boolean legsReady() {
