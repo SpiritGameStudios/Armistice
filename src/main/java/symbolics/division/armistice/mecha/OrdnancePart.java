@@ -10,6 +10,7 @@ import org.joml.Quaternionf;
 import org.joml.Vector2fc;
 import org.joml.Vector3fc;
 import symbolics.division.armistice.mecha.ordnance.OrdnanceRotation;
+import symbolics.division.armistice.model.MechaModelData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,6 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 	private final List<HitResult> targets = new ArrayList<>();
 	protected MechaCore core;
 	private ResourceLocation id = null;
-
-	public Quaternionf lastRenderRotation = new Quaternionf();
 
 	protected OrdnanceRotation rotationManager;
 
@@ -32,9 +31,17 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 	public void init(MechaCore core) {
 		super.init(core);
 		this.core = core;
-		this.rotationManager = new OrdnanceRotation(this,
-			1f, // this needs to be the length from the connection point to the pivot
-			180, 180, core, 180f / 40, 45f, 90f, 180f / 40);
+		MechaModelData.RotationConstraints constraints = modelInfo().rotationConstraints();
+		this.rotationManager = new OrdnanceRotation(
+			this,
+			core,
+			(float) modelInfo().body().origin().length(), // this needs to be the length from the connection point to the pivot
+			constraints.minYaw(),
+			constraints.maxYaw(),
+			180f / 40,
+			constraints.minPitch(),
+			constraints.maxPitch(),
+			180f / 40);
 	}
 
 	public int heat() {
@@ -48,12 +55,12 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 
 	@Override
 	public Quaternionf relRot() {
-		return new Quaternionf(core.model().ordnanceInfo(this, core).mountPoint().rotationInfo().rotation());
+		return new Quaternionf(modelInfo().mountPoint().rotationInfo().rotation());
 	}
 
 	@Override
 	public Vector3fc relPos() {
-		return core.model().ordnanceInfo(this, core).mountPoint().origin().toVector3f();
+		return modelInfo().mountPoint().origin().toVector3f();
 	}
 
 	protected abstract boolean isValidTarget(HitResult hitResult);
@@ -66,7 +73,7 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 
 	public Quaternionf baseRotation() {
 		// default barrel rotation
-		return new Quaternionf(core.hull.absRot().mul(core.model().ordnanceInfo(this, core).mountPoint().rotationInfo().rotation()));
+		return new Quaternionf(core.hull.absRot().mul(modelInfo().mountPoint().rotationInfo().rotation()));
 	}
 
 	public Vector2fc barrelRotation() {
@@ -92,6 +99,10 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 
 	public Vec3 currentDirection() {
 		return rotationManager.currentDirection();
+	}
+
+	public MechaModelData.OrdnanceInfo modelInfo() {
+		return core.model().ordnanceInfo(this, core);
 	}
 
 	@Nullable

@@ -24,8 +24,10 @@ public class OrdnanceRotation {
 	protected final float pitchSpeed;
 
 	public OrdnanceRotation(OrdnancePart ord,
+							MechaCore core,
 							float yOffset,
-							float minYaw, float maxYaw, MechaCore core, float yawDegTickSpeed,
+							// (degrees)
+							float minYaw, float maxYaw, float yawDegTickSpeed,
 							float minPitch, float maxPitch, float pitchDegTickSpeed) {
 		this.core = core;
 		this.yawSpeed = yawDegTickSpeed;

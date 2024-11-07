@@ -75,7 +75,13 @@ public class MechaModelData {
 					RotationInfo.of(ordnanceNode.rotation()),
 					ImmutableMap.copyOf(markers),
 					new MarkerInfo(body.origin(), RotationInfo.of(body.rotation())),
-					new MountPoint(mountPoint.origin(), RotationInfo.of(mountPoint.rotation()))
+					new MountPoint(mountPoint.origin(), RotationInfo.of(mountPoint.rotation())),
+					new RotationConstraints(
+						mountPoint.parameters().getOrDefault("minYaw", 60.0).floatValue(),
+						mountPoint.parameters().getOrDefault("maxYaw", 60.0).floatValue(),
+						mountPoint.parameters().getOrDefault("minPitch", 45.0).floatValue(),
+						mountPoint.parameters().getOrDefault("maxPitch", 90.0).floatValue()
+					)
 				));
 		}
 
@@ -145,10 +151,13 @@ public class MechaModelData {
 	}
 
 	public record OrdnanceInfo(Vec3 origin, RotationInfo rotation, Map<Integer, MarkerInfo> markers,
-							   MarkerInfo body, MountPoint mountPoint) {
+							   MarkerInfo body, MountPoint mountPoint, RotationConstraints rotationConstraints) {
 	}
 
 	public record MarkerInfo(Vec3 origin, RotationInfo rotation) {
+	}
+
+	public record RotationConstraints(float minYaw, float maxYaw, float minPitch, float maxPitch) {
 	}
 
 	public record RotationInfo(Vec3 bbRotation, Vec3 direction, Quaternionfc rotation) {
