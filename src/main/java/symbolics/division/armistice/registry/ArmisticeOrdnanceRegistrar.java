@@ -309,7 +309,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		() -> new HitscanGunOrdnance(
 			1,
 			1,
-			2000,
+			20000,
 			1,
 			(core, posInfo) -> {
 				core.level().playSound(

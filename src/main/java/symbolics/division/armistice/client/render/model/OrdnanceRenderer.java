@@ -1,6 +1,7 @@
 package symbolics.division.armistice.client.render.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
@@ -15,8 +16,12 @@ import symbolics.division.armistice.mecha.MechaEntity;
 import symbolics.division.armistice.mecha.OrdnancePart;
 import symbolics.division.armistice.model.BBModelTree;
 
+import java.util.Map;
+import java.util.Optional;
+
 @OnlyIn(value = Dist.CLIENT)
 public class OrdnanceRenderer {
+	private static final Map<ResourceLocation, Renderer> RENDERERS = new Object2ObjectOpenHashMap<>();
 	private static final OrdnanceRenderer MISSING = new OrdnanceRenderer();
 
 	private final ResourceLocation texture;
@@ -44,6 +49,10 @@ public class OrdnanceRenderer {
 		);
 	}
 
+	public static void addRenderer(ResourceLocation id, Renderer renderer) {
+		RENDERERS.put(id, renderer);
+	}
+
 	private OrdnanceRenderer() {
 		this.quads = ModelBaker.DEBUG_QUADS.toArray(new ModelBaker.Quad[0]);
 		this.bodyQuads = new ModelBaker.Quad[0];
@@ -54,6 +63,9 @@ public class OrdnanceRenderer {
 	public static void dispatch(MechaEntity mecha, OrdnancePart ordnance, float tickDelta, PoseStack poseStack, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
 		poseStack.pushPose();
 		{
+			Optional.ofNullable(RENDERERS.get(ordnance.id()))
+				.ifPresent(renderer -> renderer.render(mecha, ordnance, tickDelta, poseStack, bufferSource, color, packedLight, packedOverlay));
+
 			ordnance.transformAbsolute(poseStack);
 
 			PartRenderer.ordnance.getOrDefault(ordnance.id(), MISSING)
@@ -97,5 +109,10 @@ public class OrdnanceRenderer {
 			}
 		}
 		pose.popPose();
+	}
+
+	@FunctionalInterface
+	public interface Renderer {
+		void render(MechaEntity mecha, OrdnancePart ordnance, float tickDelta, PoseStack pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay);
 	}
 }

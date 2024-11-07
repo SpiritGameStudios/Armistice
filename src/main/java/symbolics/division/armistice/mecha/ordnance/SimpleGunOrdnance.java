@@ -56,15 +56,7 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		super.serverTick();
 
 		if (!ArmisticeDebugValues.simpleGun) return;
-
-		// region temp: debug targeting
-//		Player player = core.level().getNearestPlayer(core.entity(), 100);
-//		if (player != null) {
-//			HitResult result = new EntityHitResult(player);
-//			startTargeting(result);
-//		}
-		// endregion
-
+		
 		cooldownTicks--;
 		if (targets().isEmpty())
 			return;

@@ -25,7 +25,7 @@ public class MechaPlayerControl {
 	@SubscribeEvent
 	public static void handleMouseInput(InputEvent.MouseButton.Pre event) {
 		LocalPlayer player = Minecraft.getInstance().player;
-		if (player != null && !Minecraft.getInstance().isPaused() && player.getVehicle() instanceof MechaEntity mecha) {
+		if (player != null && !Minecraft.getInstance().isPaused() && Minecraft.getInstance().screen == null && player.getVehicle() instanceof MechaEntity mecha) {
 			switch (event.getButton()) {
 				case 0 -> {
 					onLeftClick(player, mecha, event.getAction(), event.getModifiers());
@@ -83,11 +83,10 @@ public class MechaPlayerControl {
 
 		HitResult raycast = Minecraft.getInstance().getCameraEntity().pick(200, 0, false);
 		if (raycast.getType() == HitResult.Type.MISS) return;
+
 		player.connection.send(new MechaMovementRequestC2SPayload(raycast.getLocation().toVector3f()));
 		mecha.core().setPathingTarget(raycast.getLocation().toVector3f());
 		player.playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 0.3f, AudioUtil.randomizedPitch(player.getRandom(), 1, 0.4f));
-
-
 	}
 
 }

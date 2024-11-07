@@ -12,6 +12,7 @@ import symbolics.division.armistice.mecha.MechaEntity;
 
 public record MechaMovementRequestC2SPayload(Vector3f pos) implements CustomPacketPayload {
 	public static final CustomPacketPayload.Type<MechaMovementRequestC2SPayload> TYPE = new CustomPacketPayload.Type<>(Armistice.id("movement_request"));
+	
 	public static final StreamCodec<ByteBuf, MechaMovementRequestC2SPayload> STREAM_CODEC = StreamCodec.composite(
 		ByteBufCodecs.VECTOR3F,
 		payload -> payload.pos,

@@ -88,6 +88,10 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 		return true;
 	}
 
+	public boolean isTargeting() {
+		return !targets.isEmpty();
+	}
+
 	public void clearTargets() {
 		targets.clear();
 	}

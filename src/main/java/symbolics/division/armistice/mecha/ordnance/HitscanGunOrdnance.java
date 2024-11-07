@@ -6,7 +6,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
@@ -61,17 +60,12 @@ public class HitscanGunOrdnance extends OrdnancePart {
 
 		if (!ArmisticeDebugValues.simpleGun) return;
 
-		// region temp: debug targeting
-		Player player = core.level().getNearestPlayer(core.entity(), 100);
-		if (player != null) {
-			HitResult result = new EntityHitResult(player);
-			startTargeting(result);
-		}
-		// endregion
-
 		cooldownTicks--;
-		if (targets().isEmpty() || !(targets().getFirst() instanceof EntityHitResult target))
+		if (targets().isEmpty())
 			return;
+
+		HitResult target = targets().getFirst();
+		Vec3 targetPos = target instanceof EntityHitResult entity ? entity.getLocation().multiply(1, 1F / 3F, 1) : target.getLocation();
 
 		// temp: inappropriate use of rotationmanager. also, try to apply logic to ordnance in general.
 		MechaModelData.OrdnanceInfo info = core.model().ordnanceInfo(this, core);
@@ -88,7 +82,6 @@ public class HitscanGunOrdnance extends OrdnancePart {
 			).transform(evilBodyOffsetPleaseUpdateModelData.toVector3f())
 		));
 
-		Vec3 targetPos = target.getEntity().getEyePosition(0);//target.getEntity().position().add(0, target.getEntity().getBbHeight() / 2, 0);
 		Vec3 desiredDir = targetPos.subtract(absBody).normalize();
 		Vec3 idealBarrelDir = desiredDir.scale(barrelLength);
 		Vec3 idealBarrelTipPos = absBody.add(idealBarrelDir);
@@ -127,6 +120,8 @@ public class HitscanGunOrdnance extends OrdnancePart {
 		);
 
 		if (!(ray instanceof EntityHitResult hitResult)) return;
+		if (target instanceof EntityHitResult entityHitResult && hitResult.getEntity().getId() != entityHitResult.getEntity().getId())
+			return;
 
 		this.onShoot.accept(
 			core,
@@ -207,5 +202,13 @@ public class HitscanGunOrdnance extends OrdnancePart {
 		int out = heatThisTick;
 		heatThisTick = 0;
 		return out;
+	}
+
+	public double maxDistance() {
+		return maxDistance;
+	}
+
+	public MechaModelData.MarkerInfo barrelMarker() {
+		return barrelMarker;
 	}
 }
