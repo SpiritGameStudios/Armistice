@@ -160,19 +160,21 @@ public class ChassisPart extends AbstractMechaPart {
 			pathingTarget = null;
 		}
 
-		List<ChassisLeg> lowp = new ArrayList<>();
+//		List<ChassisLeg> lowp = new ArrayList<>();
+		// it looks smoother because it makes server bug tf out and desync with client
+		// bad
 		for (ChassisLeg leg : legs) {
-//			leg.tick();
-			if (leg.priority) {
-				leg.tick();
-			} else {
-				lowp.add(leg);
-				leg.priority = true;
-			}
-		}
-		for (ChassisLeg leg : lowp) {
 			leg.tick();
+//			if (leg.priority) {
+//				leg.tick();
+//			} else {
+//				lowp.add(leg);
+//				leg.priority = true;
+//			}
 		}
+//		for (ChassisLeg leg : lowp) {
+//			leg.tick();
+//		}
 
 		if (firstTick) {
 			firstTick = false;

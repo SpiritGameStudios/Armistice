@@ -29,7 +29,7 @@ import java.util.function.BiConsumer;
 
 @OnlyIn(Dist.CLIENT)
 public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
-	private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("armistice", "textures/block/mecha/skin_test.png");
+	public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("armistice", "textures/block/mecha/skin_test.png");
 
 	public static final RenderType LINE_STRIP = RenderType.create(
 		"line_strip",

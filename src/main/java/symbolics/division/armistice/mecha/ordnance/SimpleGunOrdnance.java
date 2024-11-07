@@ -109,7 +109,7 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		// temp: rotation manager example
 		Vec3 desiredDir = new Vec3(x, y, z).normalize();
 
-		rotationManager.setTarget(idealBarrelTipPos.add(idealBarrelDir));
+		rotationManager.setTarget(idealBarrelTipPos.add(idealBarrelDir), absBody);
 		rotationManager.tick();
 
 		// you can constrain it by angle, dot product, whatever

@@ -87,17 +87,12 @@ public class HitscanGunOrdnance extends OrdnancePart {
 			).transform(evilBodyOffsetPleaseUpdateModelData.toVector3f())
 		));
 
-		Vec3 idealBarrelDir = target.getEntity().position().subtract(absBody).normalize().scale(barrelLength);
+		Vec3 targetPos = target.getEntity().getEyePosition(0);//target.getEntity().position().add(0, target.getEntity().getBbHeight() / 2, 0);
+		Vec3 desiredDir = targetPos.subtract(absBody).normalize();
+		Vec3 idealBarrelDir = desiredDir.scale(barrelLength);
 		Vec3 idealBarrelTipPos = absBody.add(idealBarrelDir);
 
-		double x = target.getEntity().getX() - idealBarrelTipPos.x;
-		double z = target.getEntity().getZ() - idealBarrelTipPos.z;
-		double y = target.getEntity().getY(1.0 / 3.0) - idealBarrelTipPos.y;
-
-		// temp: rotation manager example
-		Vec3 desiredDir = new Vec3(x, y, z).normalize();
-
-		rotationManager.setTarget(idealBarrelTipPos.add(idealBarrelDir));
+		rotationManager.setTarget(idealBarrelTipPos.add(idealBarrelDir), absBody);
 		rotationManager.tick();
 
 		// you can constrain it by angle, dot product, whatever
@@ -106,7 +101,7 @@ public class HitscanGunOrdnance extends OrdnancePart {
 		// it should also check if it would hit itself with the gun (though rotations should normally
 		// prevent that, and self-spawned projectiles should phase through us)
 		Vec3 currentDirection = rotationManager.currentDirection();
-		if (currentDirection.dot(desiredDir) < 0.95 || cooldownTicks > 0) return;
+		if (currentDirection.dot(desiredDir) < 0.9 || cooldownTicks > 0) return;
 
 		Vec3 start = absBody.add(currentDirection.scale(barrelLength));
 		Vec3 end = absBody.add(currentDirection.scale(barrelLength + maxDistance));

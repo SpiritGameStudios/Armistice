@@ -51,14 +51,13 @@ public class OrdnanceRotation {
 		);
 	}
 
-	public void setTarget(Vec3 target) {
+	public void setTarget(Vec3 target, Vec3 origin) {
 		// transform to model space
 		Matrix4f w2m = new Matrix4f();
 		w2m.rotate(ord.baseRotation().conjugate());
-		var ab = ord.absPos();
-		var t = target.toVector3f().sub(ab);
+		var worldspaceRelativeDirection = target.subtract(origin);
 
-		Vector3f modelspaceTarget = w2m.transformPosition(t);
+		Vector3f modelspaceTarget = w2m.transformPosition(worldspaceRelativeDirection.toVector3f());
 		chain.solveForTarget(new Vec3f(modelspaceTarget.x, modelspaceTarget.y, modelspaceTarget.z));
 	}
 

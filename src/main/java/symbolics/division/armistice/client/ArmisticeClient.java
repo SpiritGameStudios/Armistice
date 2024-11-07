@@ -16,6 +16,7 @@ import symbolics.division.armistice.client.render.debug.ArmisticeClientDebugValu
 import symbolics.division.armistice.client.render.debug.MechaDebugRenderer;
 import symbolics.division.armistice.client.render.hud.MechaHudRenderer;
 import symbolics.division.armistice.client.render.hud.MechaOverlayRenderer;
+import symbolics.division.armistice.client.render.ordnance.HitscanBulletRenderer;
 import symbolics.division.armistice.network.OutlinerSyncS2CPayload;
 import symbolics.division.armistice.registry.ArmisticeEntityTypeRegistrar;
 
@@ -38,6 +39,7 @@ public class ArmisticeClient {
 		event.registerEntityRenderer(ArmisticeEntityTypeRegistrar.MECHA, MechaEntityRenderer::new);
 		event.registerEntityRenderer(ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL, NoopRenderer::new);
 		event.registerEntityRenderer(ArmisticeEntityTypeRegistrar.MISSILE, NoopRenderer::new);
+		event.registerEntityRenderer(ArmisticeEntityTypeRegistrar.HITSCAN_BULLET, HitscanBulletRenderer::new);
 	}
 
 	@SubscribeEvent
