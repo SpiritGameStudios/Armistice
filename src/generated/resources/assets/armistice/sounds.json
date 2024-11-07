@@ -114,6 +114,12 @@
     ],
     "subtitle": "sound.armistice.entity.mecha.step3"
   },
+  "entity.mecha.weapon.flame": {
+    "sounds": [
+      "armistice:entity/mecha/weapon/flame"
+    ],
+    "subtitle": "sound.armistice.entity.mecha.weapon.flame"
+  },
   "entity.mecha.weapon.high_cal": {
     "sounds": [
       "armistice:entity/mecha/weapon/high_cal"
