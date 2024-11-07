@@ -117,7 +117,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		1,
 		() -> new SimpleGunOrdnance(
 			40,
-			20 * 20,
+			20 * 5,
 			2000,
 			1.5,
 			(core, posInfo) -> {
@@ -268,7 +268,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		1,
 		() -> new HitscanGunOrdnance(
 			3,
-			10,
+			5,
 			1000,
 			5,
 			(core, posInfo) -> {
@@ -288,7 +288,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		1,
 		() -> new HitscanGunOrdnance(
 			20,
-			15 * 20,
+			7 * 20,
 			2000,
 			19,
 			(core, posInfo) -> {
