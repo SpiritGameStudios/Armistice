@@ -33,6 +33,7 @@ public final class ArmisticeSoundEventRegistrar implements SoundEventRegistrar {
 	public static final SoundEvent WEAPON$LASER_START = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.weapon.laser_start"));
 	public static final SoundEvent WEAPON$LASER = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.weapon.laser"));
 	public static final SoundEvent WEAPON$LASER_END = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.weapon.laser_end"));
+	public static final SoundEvent WEAPON$FLAME = SoundEvent.createVariableRangeEvent(Armistice.id("entity.mecha.weapon.flame"));
 
 	public static final SoundEvent BLOCK$ARMISTEEL$PLACE = SoundEvent.createVariableRangeEvent(Armistice.id("block.armisteel.place"));
 
