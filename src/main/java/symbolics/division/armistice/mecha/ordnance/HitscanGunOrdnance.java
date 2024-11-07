@@ -8,6 +8,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
+import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -105,6 +106,16 @@ public class HitscanGunOrdnance extends OrdnancePart {
 
 		Vec3 start = absBody.add(currentDirection.scale(barrelLength));
 		Vec3 end = absBody.add(currentDirection.scale(barrelLength + maxDistance));
+
+		HitResult blockRay = core.level().clip(new ClipContext(
+			start,
+			end,
+			ClipContext.Block.VISUAL, ClipContext.Fluid.NONE,
+			core.entity()
+		));
+
+		if (blockRay.getType() != HitResult.Type.MISS)
+			end = blockRay.getLocation();
 
 		HitResult ray = ProjectileUtil.getEntityHitResult(
 			core.level(),

@@ -1,4 +1,4 @@
-package symbolics.division.armistice.network;
+package symbolics.division.armistice.network.outliner;
 
 import com.google.common.collect.ImmutableMap;
 import io.netty.buffer.ByteBuf;
@@ -9,9 +9,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.OnDatapackSyncEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.apache.commons.lang3.NotImplementedException;
 import org.jetbrains.annotations.NotNull;
@@ -56,24 +53,21 @@ public record OutlinerSyncS2CPayload(Map<ResourceLocation, List<OutlinerNode>> n
 
 	@OnlyIn(Dist.CLIENT)
 	public static void receive(OutlinerSyncS2CPayload payload, IPayloadContext context) {
-		ImmutableMap.Builder<ResourceLocation, BBModelTree> builder = ImmutableMap.builder();
+		context.enqueueWork(() -> {
+			ImmutableMap.Builder<ResourceLocation, BBModelTree> builder = ImmutableMap.builder();
 
-		payload.nodes().forEach((id, outliner) -> {
-			List<Element> elements = ModelElementReloadListener.getModel(id);
-			if (elements == null) throw new IllegalArgumentException("Unknown model %s".formatted(id));
+			payload.nodes().forEach((id, outliner) -> {
+				List<Element> elements = ModelElementReloadListener.getModel(id);
+				if (elements == null) throw new IllegalArgumentException("Unknown model %s".formatted(id));
 
-			builder.put(id, new BBModelTree(new BBModelData(elements, outliner)));
+				builder.put(id, new BBModelTree(new BBModelData(elements, outliner)));
+			});
+
+			models = builder.build();
+			PartRenderer.bakeModels(models);
+		}).thenAccept(ignored -> {
+			context.reply(new OutlinerTaskFinishedC2SPayload());
 		});
-
-		models = builder.build();
-		PartRenderer.bakeModels(models());
-	}
-
-	@SubscribeEvent
-	private static void onDatapackSync(OnDatapackSyncEvent event) {
-		OutlinerSyncS2CPayload payload = new OutlinerSyncS2CPayload(ModelOutlinerReloadListener.getNodes());
-
-		event.getRelevantPlayers().forEach(player -> PacketDistributor.sendToPlayer(player, payload));
 	}
 
 	@Override

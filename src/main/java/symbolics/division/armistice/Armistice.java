@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import symbolics.division.armistice.datagen.ArmisticeDatagen;
 import symbolics.division.armistice.debug.ArmisticeDebugValues;
 import symbolics.division.armistice.event.RegistryEvents;
-import symbolics.division.armistice.network.OutlinerSyncS2CPayload;
 
 @Mod(Armistice.MODID)
 public class Armistice {
@@ -21,8 +20,6 @@ public class Armistice {
 	public Armistice(IEventBus modEventBus, ModContainer modContainer) {
 		RegistryEvents.init(modEventBus);
 		modEventBus.register(ArmisticeDatagen.class);
-
-		NeoForge.EVENT_BUS.register(OutlinerSyncS2CPayload.class);
 
 		if (FMLEnvironment.production) return;
 		NeoForge.EVENT_BUS.register(ArmisticeDebugValues.class);

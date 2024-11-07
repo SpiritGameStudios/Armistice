@@ -17,7 +17,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import symbolics.division.armistice.Armistice;
-import symbolics.division.armistice.network.OutlinerSyncS2CPayload;
+import symbolics.division.armistice.network.outliner.OutlinerSyncS2CPayload;
 
 import java.io.IOException;
 import java.io.Reader;

@@ -7,6 +7,7 @@ import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.network.event.RegisterConfigurationTasksEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import net.neoforged.neoforge.registries.DataPackRegistryEvent;
@@ -20,7 +21,13 @@ import symbolics.division.armistice.mecha.schematic.ChassisSchematic;
 import symbolics.division.armistice.mecha.schematic.HullSchematic;
 import symbolics.division.armistice.model.ModelElementReloadListener;
 import symbolics.division.armistice.model.ModelOutlinerReloadListener;
-import symbolics.division.armistice.network.*;
+import symbolics.division.armistice.network.ExtendedParticlePacket;
+import symbolics.division.armistice.network.MechaMovementRequestC2SPayload;
+import symbolics.division.armistice.network.MechaTargetRequestC2SPayload;
+import symbolics.division.armistice.network.OrdnanceHitscanS2CPayload;
+import symbolics.division.armistice.network.outliner.OutlinerSyncConfigurationTask;
+import symbolics.division.armistice.network.outliner.OutlinerSyncS2CPayload;
+import symbolics.division.armistice.network.outliner.OutlinerTaskFinishedC2SPayload;
 import symbolics.division.armistice.recipe.MechaSchematicRecipe;
 import symbolics.division.armistice.recipe.MechaSkinRecipe;
 import symbolics.division.armistice.registry.*;
@@ -112,6 +119,11 @@ public final class RegistryEvents {
 		}
 
 		@SubscribeEvent
+		private static void onRegisterConfigurationTasks(RegisterConfigurationTasksEvent event) {
+			event.register(new OutlinerSyncConfigurationTask());
+		}
+
+		@SubscribeEvent
 		private static void onRegisterClientReloadListeners(RegisterClientReloadListenersEvent event) {
 			event.registerReloadListener(ModelElementReloadListener.INSTANCE);
 		}
@@ -132,7 +144,13 @@ public final class RegistryEvents {
 				MechaTargetRequestC2SPayload::receive
 			);
 
-			registrar.playToClient(
+			registrar.configurationToServer(
+				OutlinerTaskFinishedC2SPayload.TYPE,
+				OutlinerTaskFinishedC2SPayload.STREAM_CODEC,
+				OutlinerTaskFinishedC2SPayload::receive
+			);
+
+			registrar.configurationToClient(
 				OutlinerSyncS2CPayload.TYPE,
 				OutlinerSyncS2CPayload.STREAM_CODEC,
 				OutlinerSyncS2CPayload::handle
