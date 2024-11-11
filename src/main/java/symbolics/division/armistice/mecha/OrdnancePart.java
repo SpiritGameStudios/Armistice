@@ -9,6 +9,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
 import org.joml.Vector2fc;
 import org.joml.Vector3fc;
+import symbolics.division.armistice.mecha.ordnance.NullOrdnancePart;
 import symbolics.division.armistice.mecha.ordnance.OrdnanceRotation;
 import symbolics.division.armistice.model.MechaModelData;
 
@@ -31,17 +32,21 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 	public void init(MechaCore core) {
 		super.init(core);
 		this.core = core;
-		MechaModelData.RotationConstraints constraints = modelInfo().rotationConstraints();
-		this.rotationManager = new OrdnanceRotation(
-			this,
-			core,
-			(float) modelInfo().body().origin().length(), // this needs to be the length from the connection point to the pivot
-			constraints.minYaw(),
-			constraints.maxYaw(),
-			180f / 40,
-			constraints.minPitch(),
-			constraints.maxPitch(),
-			180f / 40);
+		if (this instanceof NullOrdnancePart) {
+			this.rotationManager = new OrdnanceRotation(this, core, 1, 0, 0, 1, 0, 0, 1);
+		} else {
+			MechaModelData.RotationConstraints constraints = modelInfo().rotationConstraints();
+			this.rotationManager = new OrdnanceRotation(
+				this,
+				core,
+				(float) modelInfo().body().origin().length(), // this needs to be the length from the connection point to the pivot
+				constraints.minYaw(),
+				constraints.maxYaw(),
+				180f / 80,
+				constraints.minPitch(),
+				constraints.maxPitch(),
+				180f / 80);
+		}
 	}
 
 	public int heat() {
