@@ -17,7 +17,7 @@ import symbolics.division.armistice.util.registrar.OrdnanceRegistrar;
 
 @SuppressWarnings("unused")
 public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
-	public static float BASE_GUN_ATTENUATION = 3;
+	public static float BASE_GUN_ATTENUATION = 7;
 
 	public static final OrdnanceSchematic CROSSBOW = new OrdnanceSchematic(
 		1,

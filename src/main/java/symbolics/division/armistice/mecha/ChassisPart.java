@@ -432,7 +432,7 @@ public class ChassisPart extends AbstractMechaPart {
 		core.hull.renderDebug(bufferSource, poseStack);
 	}
 
-	private static void drawLoc(Vector3f p, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
+	public static void drawLoc(Vector3f p, float r, float g, float b, PoseStack poseStack, MultiBufferSource bf) {
 		VertexConsumer vc = bf.getBuffer(RenderType.debugLineStrip(4.0));
 		vc.addVertex(poseStack.last(), p).setColor(r, g, b, 1.0f);
 		vc.addVertex(poseStack.last(), p.add(0, 1, 0, new Vector3f()))

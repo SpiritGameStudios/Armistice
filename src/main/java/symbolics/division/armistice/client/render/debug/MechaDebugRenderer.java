@@ -9,6 +9,8 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
+import symbolics.division.armistice.client.MechaPlayerControl;
+import symbolics.division.armistice.mecha.ChassisPart;
 import symbolics.division.armistice.registry.ArmisticeEntityTypeRegistrar;
 
 @OnlyIn(value = Dist.CLIENT)
@@ -40,6 +42,16 @@ public final class MechaDebugRenderer {
 		});
 
 		GeometryDebugRenderer.render(event, player, bufferSource, camera, poseStack);
+
+		if (MechaPlayerControl.tpos != null) {
+			poseStack.pushPose();
+			{
+				poseStack.translate(-camera.x, -camera.y, -camera.z);
+				ChassisPart.drawLoc(MechaPlayerControl.tpos.toVector3f(), 1, 0, 0, poseStack, bufferSource);
+			}
+			poseStack.popPose();
+		}
+
 		poseStack.popPose();
 	}
 }

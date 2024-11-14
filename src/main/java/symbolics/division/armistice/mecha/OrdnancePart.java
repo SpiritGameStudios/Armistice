@@ -86,6 +86,11 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 	}
 
 	public boolean startTargeting(HitResult hitResult) {
+		// temp: use blockpos zero as signal to clear targets
+		if (hitResult.getLocation().equals(Vec3.ZERO)) {
+			targets.clear();
+			return false;
+		}
 		if (!isValidTarget(hitResult)) return false;
 		if (targets.size() >= maxTargets) targets.set(0, hitResult);
 		else targets.add(hitResult);

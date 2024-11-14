@@ -242,4 +242,8 @@ public class MechaCore implements Part {
 			ord.clearTargets();
 		}
 	}
+
+	public boolean overheatingDanger(int nextHeat) {
+		return (nextHeat + getHeat()) >= getMaxHeat() * 0.9;
+	}
 }

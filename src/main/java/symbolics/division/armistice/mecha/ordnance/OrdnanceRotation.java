@@ -19,6 +19,7 @@ public class OrdnanceRotation {
 	protected OrdnancePart ord;
 	protected final MechaCore core;
 	protected FabrikChain3D chain;
+	protected boolean tracking = false;
 
 	protected final float yawSpeed;
 	protected final float pitchSpeed;
@@ -51,6 +52,9 @@ public class OrdnanceRotation {
 			minPitch,
 			IKUtil.Z_AXIS
 		);
+		chain.setSolveDistanceThreshold(0.04f);
+		chain.setMinIterationChange(0.04f);
+		chain.setMaxIterationAttempts(60);
 	}
 
 	public void setTarget(Vec3 target, Vec3 origin) {
@@ -61,6 +65,16 @@ public class OrdnanceRotation {
 
 		Vector3f modelspaceTarget = w2m.transformPosition(worldspaceRelativeDirection.toVector3f());
 		chain.solveForTarget(new Vec3f(modelspaceTarget.x, modelspaceTarget.y, modelspaceTarget.z));
+		tracking = true;
+	}
+
+	public void clearTarget() {
+		setTarget(core.position().add(core.direction().scale(1000000)), core.position());
+		tracking = false;
+	}
+
+	public boolean tracking() {
+		return tracking;
 	}
 
 	public Vector2fc relYawPitchRad() {

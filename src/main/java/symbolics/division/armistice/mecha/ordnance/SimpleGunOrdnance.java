@@ -56,7 +56,7 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		super.serverTick();
 
 		if (!ArmisticeDebugValues.simpleGun) return;
-		
+
 		cooldownTicks--;
 		if (targets().isEmpty())
 			return;
@@ -103,6 +103,9 @@ public class SimpleGunOrdnance extends OrdnancePart {
 
 		rotationManager.setTarget(idealBarrelTipPos.add(idealBarrelDir), absBody);
 		rotationManager.tick();
+
+		// check heat here so we still track rotation
+		if (core.overheatingDanger(heatPerShot)) return;
 
 		// you can constrain it by angle, dot product, whatever
 		// one problem arises where it solves then tries to calc vector. I'm not sure

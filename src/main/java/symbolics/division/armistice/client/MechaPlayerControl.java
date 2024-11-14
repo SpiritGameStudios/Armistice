@@ -2,10 +2,13 @@ package symbolics.division.armistice.client;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -70,13 +73,23 @@ public class MechaPlayerControl {
 			));
 		}
 
-		if (raycast.getType() == HitResult.Type.MISS) return;
 
+		// temp: abort if miss and cancel not requested. should do a custom payload instead
+		if (modifiers == 2) {
+			// intentionally send a blockpos zero to signal cancel request
+			raycast = new BlockHitResult(Vec3.ZERO, Direction.getNearest(end.subtract(start)), BlockPos.ZERO, false);
+		} else if (raycast.getType() == HitResult.Type.MISS) {
+			return;
+		}
+
+		tpos = raycast.getLocation();
 		// temp: choose ordnance
 		player.connection.send(new MechaTargetRequestC2SPayload(raycast, 0));
 		player.playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 0.3f, AudioUtil.randomizedPitch(player.getRandom(), 1, 0.4f));
 
 	}
+
+	public static Vec3 tpos = null;
 
 	private static void onRightClick(LocalPlayer player, MechaEntity mecha, int action, int modifiers) {
 		if (action != 1) return;

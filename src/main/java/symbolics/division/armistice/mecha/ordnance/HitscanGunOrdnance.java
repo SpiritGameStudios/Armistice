@@ -61,11 +61,14 @@ public class HitscanGunOrdnance extends OrdnancePart {
 		if (!ArmisticeDebugValues.simpleGun) return;
 
 		cooldownTicks--;
-		if (targets().isEmpty())
+		if (targets().isEmpty()) {
+			rotationManager.clearTarget();
+			rotationManager.tick();
 			return;
+		}
 
 		HitResult target = targets().getFirst();
-		Vec3 targetPos = target instanceof EntityHitResult entity ? entity.getLocation().multiply(1, 1F / 3F, 1) : target.getLocation();
+		Vec3 targetPos = target instanceof EntityHitResult entity ? entity.getEntity().position().add(0, entity.getEntity().getBbHeight() / 2, 0) : target.getLocation();
 
 		// temp: inappropriate use of rotationmanager. also, try to apply logic to ordnance in general.
 		MechaModelData.OrdnanceInfo info = core.model().ordnanceInfo(this, core);
@@ -84,9 +87,10 @@ public class HitscanGunOrdnance extends OrdnancePart {
 
 		Vec3 desiredDir = targetPos.subtract(absBody).normalize();
 		Vec3 idealBarrelDir = desiredDir.scale(barrelLength);
-		Vec3 idealBarrelTipPos = absBody.add(idealBarrelDir);
+		// go to infinity to make solver try and be as precise as possible
+		Vec3 idealBarrelTipPos = absBody.add(idealBarrelDir.scale(100000));
 
-		rotationManager.setTarget(idealBarrelTipPos.add(idealBarrelDir), absBody);
+		rotationManager.setTarget(idealBarrelTipPos, absBody);
 		rotationManager.tick();
 
 		// you can constrain it by angle, dot product, whatever
@@ -123,10 +127,13 @@ public class HitscanGunOrdnance extends OrdnancePart {
 		if (target instanceof EntityHitResult entityHitResult && hitResult.getEntity().getId() != entityHitResult.getEntity().getId())
 			return;
 
+		// check heat here so we still track rotation
+		if (core.overheatingDanger(heatPerShot)) return;
+
 		this.onShoot.accept(
 			core,
 			new OrdnanceFireInfo(
-				idealBarrelTipPos.toVector3f(),
+				absBody.toVector3f(),
 				idealBarrelDir.toVector3f(),
 				new Quaternionf(),
 				target
@@ -161,9 +168,9 @@ public class HitscanGunOrdnance extends OrdnancePart {
 		consumer.addVertex(poseStack.last(), absBody.toVector3f()).setColor(0, 1f, 0, 1f);
 		consumer.addVertex(poseStack.last(), absBody.add(currentDirection.scale(barrelLength)).toVector3f()).setColor(0, 1f, 0, 1f);
 
-		consumer.addVertex(poseStack.last(), absBody.add(currentDirection.scale(barrelLength)).toVector3f()).setColor(0, 0f, 1f, 1f);
+		consumer.addVertex(poseStack.last(), absBody.add(currentDirection.scale(barrelLength)).toVector3f()).setColor(1, 1f, 1f, 1f);
 
-		consumer.addVertex(poseStack.last(), absBody.add(currentDirection.scale(barrelLength + maxDistance)).toVector3f()).setColor(0, 0f, 1f, 1f);
+		consumer.addVertex(poseStack.last(), absBody.add(currentDirection.scale(barrelLength + maxDistance)).toVector3f()).setColor(1, 1f, 1f, 1f);
 
 //		RenderSystem.enableBlend();
 //		RenderSystem.blendFuncSeparate(
