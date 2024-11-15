@@ -99,6 +99,7 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 	}
 
 	public boolean isTargeting() {
+		// problem: only works serverside
 		return !targets.isEmpty();
 	}
 

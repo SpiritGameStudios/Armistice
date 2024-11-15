@@ -4,6 +4,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import symbolics.division.armistice.mecha.ordnance.HitscanGunOrdnance;
@@ -47,7 +48,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		1,
 		() -> new SimpleGunOrdnance(
 			10,
-			40,
+			7,
 			1000,
 			0,
 			(core, info) -> {
@@ -58,9 +59,10 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 						new Vec3(info.pos().x(), info.pos().y(), info.pos().z()),
 						core.entity(),
 						entityHitResult.getEntity(),
-						0.5F
+						3F
 					);
 				} else {
+					// should never happen
 					missile = new Missile(ArmisticeEntityTypeRegistrar.MISSILE, core.level());
 				}
 
@@ -75,7 +77,8 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 				SoundSource.HOSTILE,
 				BASE_GUN_ATTENUATION,
 				AudioUtil.randomizedPitch(core.level().getRandom(), 1.5f, 0.1f)
-			)
+			),
+			hitResult -> hitResult.getType().equals(HitResult.Type.ENTITY)
 		)
 	);
 

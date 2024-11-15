@@ -6,12 +6,17 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Quaternionf;
 import org.joml.Vector2fc;
+import org.joml.Vector3f;
+import symbolics.division.armistice.client.render.MechaEntityRenderer;
 import symbolics.division.armistice.client.render.debug.ArmisticeClientDebugValues;
+import symbolics.division.armistice.client.render.hud.MechaHudRenderer;
+import symbolics.division.armistice.client.render.hud.MechaOverlayRenderer;
 import symbolics.division.armistice.mecha.MechaEntity;
 import symbolics.division.armistice.mecha.OrdnancePart;
 import symbolics.division.armistice.model.BBModelTree;
@@ -23,6 +28,12 @@ import java.util.Optional;
 public class OrdnanceRenderer {
 	private static final Map<ResourceLocation, Renderer> RENDERERS = new Object2ObjectOpenHashMap<>();
 	private static final OrdnanceRenderer MISSING = new OrdnanceRenderer();
+
+	private static final Vector3f[] holoTips = {
+		new Vector3f(-2f, -1.5f, 0).mul(0.2f),
+		new Vector3f(2f, -1.5f, 0).mul(0.2f),
+		new Vector3f(0f, 1.5f, 0).mul(0.2f),
+	};
 
 	private final ResourceLocation texture;
 	private final ModelBaker.Quad[] quads;
@@ -83,7 +94,9 @@ public class OrdnanceRenderer {
 
 			Quaternionf baseRot = new Quaternionf().rotateZYX((float) baseRotation.z, (float) baseRotation.y, (float) baseRotation.x);
 			pose.mulPose(baseRot);
-			PartRenderer.renderQuads(quads, texture, pose.last(), bufferSource, color, packedLight, packedOverlay);
+			if (!MechaOverlayRenderer.shouldProcessMechaOverlay()) {
+				PartRenderer.renderQuads(quads, texture, pose.last(), bufferSource, color, packedLight, packedOverlay);
+			}
 			if (bodyQuads.length > 0) {
 				Vector2fc rot = mecha.core().ordnanceBarrelRotation(mecha.core().ordnanceIndex(ordnance));
 				pose.translate(bodyPos.x, bodyPos.y, bodyPos.z);
@@ -104,8 +117,15 @@ public class OrdnanceRenderer {
 				// play games with access
 				Quaternionf newRot = new Quaternionf().rotateYXZ(yaw, pitch, 0);
 				pose.mulPose(newRot);
-				pose.translate(-bodyPos.x, -bodyPos.y, -bodyPos.z);
-				PartRenderer.renderQuads(bodyQuads, texture, pose.last(), bufferSource, color, packedLight, packedOverlay);
+
+				if (MechaOverlayRenderer.shouldProcessMechaOverlay()) {
+					pose.mulPose(new Quaternionf().rotateZ((float) mecha.tickCount / 30));
+					drawHoloOrdnance(pose, bufferSource, ordnance, mecha);
+//					drawHoloSegment(new Vector3f(), new Vector3f(0, 0, barrelLength), pose, bufferSource, mecha.getRandom());
+				} else {
+					pose.translate(-bodyPos.x, -bodyPos.y, -bodyPos.z);
+					PartRenderer.renderQuads(bodyQuads, texture, pose.last(), bufferSource, color, packedLight, packedOverlay);
+				}
 			}
 		}
 		pose.popPose();
@@ -114,5 +134,24 @@ public class OrdnanceRenderer {
 	@FunctionalInterface
 	public interface Renderer {
 		void render(MechaEntity mecha, OrdnancePart ordnance, float tickDelta, PoseStack pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay);
+	}
+
+	private static void drawHoloOrdnance(PoseStack poseStack, MultiBufferSource bufferSource, OrdnancePart ordnance, MechaEntity mecha) {
+		float barrelLength = (float) ordnance.modelInfo().markers().get(1).origin().z();
+		Vector3f tipPos = new Vector3f(0, 0, barrelLength);
+		drawHoloSegment(holoTips[0], holoTips[1], poseStack, bufferSource, mecha.getRandom());
+		drawHoloSegment(holoTips[1], holoTips[2], poseStack, bufferSource, mecha.getRandom());
+		drawHoloSegment(holoTips[2], holoTips[0], poseStack, bufferSource, mecha.getRandom());
+		drawHoloSegment(holoTips[0], tipPos, poseStack, bufferSource, mecha.getRandom());
+		drawHoloSegment(holoTips[1], tipPos, poseStack, bufferSource, mecha.getRandom());
+		drawHoloSegment(holoTips[2], tipPos, poseStack, bufferSource, mecha.getRandom());
+	}
+
+	private static void drawHoloSegment(Vector3f from, Vector3f to, PoseStack poseStack, MultiBufferSource bufferSource, RandomSource random) {
+		MechaEntityRenderer.renderHologramFlicker(
+			(pos, col) -> MechaEntityRenderer.drawSeg(
+				from, to, poseStack, bufferSource, col
+			), MechaHudRenderer.lightbulbColor(), random
+		);
 	}
 }

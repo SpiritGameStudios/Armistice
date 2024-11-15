@@ -122,7 +122,7 @@ public class Missile extends AbstractOrdnanceProjectile {
 		Vec3 hitLocation = result.getLocation();
 		level().broadcastEntityEvent(this, (byte) 3);
 		DamageSource damagesource = damageSources().explosion(this, getOwner());
-		level().explode(this, damagesource, null, hitLocation.x(), hitLocation.y(), hitLocation.z(), 3.0F, false, Level.ExplosionInteraction.BLOCK);
+		level().explode(this, damagesource, null, hitLocation.x(), hitLocation.y(), hitLocation.z(), 3.0F, false, Level.ExplosionInteraction.MOB);
 	}
 
 	@Override

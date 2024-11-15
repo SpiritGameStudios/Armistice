@@ -46,6 +46,20 @@ public class PartRenderer {
 		}
 	}
 
+	public static void renderPilotParts(MechaEntity mecha, float tickDelta, PoseStack pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
+		pose.pushPose();
+		{
+			// temp: just render ordnance only, ordnance renderer detects and draws polyhedra
+			pose.translate(-mecha.core().position().x(), -mecha.core().position().y(), -mecha.core().position().z());
+			for (int i = 0; i < mecha.core().ordnance().size(); i++) {
+				OrdnancePart part = mecha.core().ordnance().get(i);
+				if (part instanceof NullOrdnancePart) continue;
+				OrdnanceRenderer.dispatch(mecha, part, tickDelta, pose, bufferSource, color, packedLight, packedOverlay);
+			}
+		}
+		pose.popPose();
+	}
+
 	public static void renderParts(MechaEntity mecha, float tickDelta, PoseStack pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
 		// render in absolute space to ensure we match internal representation
 		pose.pushPose();

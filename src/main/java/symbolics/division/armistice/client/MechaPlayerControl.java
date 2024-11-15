@@ -29,6 +29,7 @@ public class MechaPlayerControl {
 	public static void handleMouseInput(InputEvent.MouseButton.Pre event) {
 		LocalPlayer player = Minecraft.getInstance().player;
 		if (player != null && !Minecraft.getInstance().isPaused() && Minecraft.getInstance().screen == null && player.getVehicle() instanceof MechaEntity mecha) {
+			if (event.getAction() != 1) return;
 			switch (event.getButton()) {
 				case 0 -> {
 					onLeftClick(player, mecha, event.getAction(), event.getModifiers());
@@ -46,8 +47,6 @@ public class MechaPlayerControl {
 	// modifiers: 0 none, 2 ctrl, 1 probably shift
 
 	private static void onLeftClick(LocalPlayer player, MechaEntity mecha, int action, int modifiers) {
-		if (action != 1) return;
-
 		Entity cameraEntity = Minecraft.getInstance().getCameraEntity();
 		if (cameraEntity == null) return;
 
@@ -73,11 +72,13 @@ public class MechaPlayerControl {
 			));
 		}
 
+		boolean cancel = false;
 
 		// temp: abort if miss and cancel not requested. should do a custom payload instead
 		if (modifiers == 2) {
 			// intentionally send a blockpos zero to signal cancel request
 			raycast = new BlockHitResult(Vec3.ZERO, Direction.getNearest(end.subtract(start)), BlockPos.ZERO, false);
+			cancel = true;
 		} else if (raycast.getType() == HitResult.Type.MISS) {
 			return;
 		}
@@ -85,21 +86,38 @@ public class MechaPlayerControl {
 		tpos = raycast.getLocation();
 		// temp: choose ordnance
 		player.connection.send(new MechaTargetRequestC2SPayload(raycast, 0));
-		player.playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 0.3f, AudioUtil.randomizedPitch(player.getRandom(), 1, 0.4f));
+
+		if (cancel) {
+			player.playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALLGOOD, 0.5f, AudioUtil.randomizedPitch(player.getRandom(), 1, 0.1f));
+		} else {
+			player.playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 0.3f, AudioUtil.randomizedPitch(player.getRandom(), 1, 0.4f));
+		}
 
 	}
 
 	public static Vec3 tpos = null;
 
 	private static void onRightClick(LocalPlayer player, MechaEntity mecha, int action, int modifiers) {
-		if (action != 1) return;
-
 		HitResult raycast = Minecraft.getInstance().getCameraEntity().pick(200, 0, false);
-		if (raycast.getType() == HitResult.Type.MISS) return;
+
+		boolean cancel = false;
+
+		if (modifiers == 2) {
+			// set target pos to below
+			raycast = new BlockHitResult(mecha.position(), Direction.DOWN, BlockPos.containing(mecha.position()), false);
+			cancel = true;
+		} else if (raycast.getType() == HitResult.Type.MISS) {
+			return;
+		}
 
 		player.connection.send(new MechaMovementRequestC2SPayload(raycast.getLocation().toVector3f()));
 		mecha.core().setPathingTarget(raycast.getLocation().toVector3f());
-		player.playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 0.3f, AudioUtil.randomizedPitch(player.getRandom(), 1, 0.4f));
+
+		if (cancel) {
+			player.playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALLGOOD, 0.5f, AudioUtil.randomizedPitch(player.getRandom(), 1, 0.1f));
+		} else {
+			player.playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 0.3f, AudioUtil.randomizedPitch(player.getRandom(), 1, 0.4f));
+		}
 	}
 
 }

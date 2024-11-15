@@ -68,6 +68,7 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 		if (!mecha.core().entity().hasPassenger(Minecraft.getInstance().player)) {
 			PartRenderer.renderParts(mecha, partialTick, poseStack, bufferSource, 0xFFFFFFFF, packedLight, OverlayTexture.NO_OVERLAY);
 		} else {
+			PartRenderer.renderPilotParts(mecha, partialTick, poseStack, bufferSource, 0xFFFFFFFF, packedLight, OverlayTexture.NO_OVERLAY);
 			mecha.core().mapChassisRender(skeleton -> {
 				poseStack.pushPose();
 
@@ -93,14 +94,14 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 		}
 	}
 
-	private static void drawSeg(Vector3f p1, Vector3f p2, PoseStack poseStack, MultiBufferSource bf, Vector4f color) {
+	public static void drawSeg(Vector3f p1, Vector3f p2, PoseStack poseStack, MultiBufferSource bf, Vector4f color) {
 		VertexConsumer bufferBuilder = bf.getBuffer(MechaEntityRenderer.LINE_STRIP);
 
 		bufferBuilder.addVertex(poseStack.last(), p1).setColor(color.x, color.y, color.z, color.w);
 		bufferBuilder.addVertex(poseStack.last(), p2).setColor(color.x, color.y, color.z, color.w);
 	}
 
-	private static void renderHologramFlicker(BiConsumer<Vec3, Vector4f> render, Vector4f color, RandomSource randomSource) {
+	public static void renderHologramFlicker(BiConsumer<Vec3, Vector4f> render, Vector4f color, RandomSource randomSource) {
 		float alpha = randomSource.nextInt(10) == 0 ? Math.min(randomSource.nextFloat(), 0.25F) : 1.0F;
 		alpha = (0.3F + (alpha * 0.7F)) * color.w;
 

@@ -15,6 +15,7 @@ import symbolics.division.armistice.model.MechaModelData;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Predicate;
 
 public class SimpleGunOrdnance extends OrdnancePart {
 	protected final int cooldown;
@@ -22,6 +23,7 @@ public class SimpleGunOrdnance extends OrdnancePart {
 	protected final double projectileVelocity;
 	protected final BiFunction<MechaCore, OrdnanceFireInfo, Entity> projectileCreator;
 	protected final BiConsumer<MechaCore, OrdnanceFireInfo> onShoot;
+	protected final Predicate<HitResult> targetFilter;
 
 	protected int cooldownTicks;
 	protected MechaModelData.MarkerInfo barrelMarker;
@@ -29,6 +31,10 @@ public class SimpleGunOrdnance extends OrdnancePart {
 	protected int heatThisTick = 0;
 
 	public SimpleGunOrdnance(int heatPerShot, int cooldown, double maxDistance, double projectileVelocity, BiFunction<MechaCore, OrdnanceFireInfo, Entity> projectileCreator, BiConsumer<MechaCore, OrdnanceFireInfo> onShoot) {
+		this(heatPerShot, cooldown, maxDistance, projectileVelocity, projectileCreator, onShoot, t -> true);
+	}
+
+	public SimpleGunOrdnance(int heatPerShot, int cooldown, double maxDistance, double projectileVelocity, BiFunction<MechaCore, OrdnanceFireInfo, Entity> projectileCreator, BiConsumer<MechaCore, OrdnanceFireInfo> onShoot, Predicate<HitResult> targetFilter) {
 		super(1);
 
 		this.heatPerShot = heatPerShot;
@@ -37,6 +43,7 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		this.projectileVelocity = projectileVelocity;
 		this.projectileCreator = projectileCreator;
 		this.onShoot = onShoot;
+		this.targetFilter = targetFilter;
 	}
 
 	@Override
@@ -58,11 +65,16 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		if (!ArmisticeDebugValues.simpleGun) return;
 
 		cooldownTicks--;
-		if (targets().isEmpty())
+
+		if (targets().isEmpty()) {
+			rotationManager.clearTarget();
+			rotationManager.tick();
 			return;
+		}
 
 		HitResult target = targets().getFirst();
-		Vec3 targetPos = target instanceof EntityHitResult entity ? entity.getLocation().multiply(1, 1F / 3F, 1) : target.getLocation();
+		if (!targetFilter.test(target)) return;
+		Vec3 targetPos = target instanceof EntityHitResult entity ? entity.getLocation().multiply(1, 1F, 1) : target.getLocation();
 
 		// temp: inappropriate use of rotationmanager. also, try to apply logic to ordnance in general.
 		MechaModelData.OrdnanceInfo info = core.model().ordnanceInfo(this, core);
@@ -101,7 +113,7 @@ public class SimpleGunOrdnance extends OrdnancePart {
 		// temp: rotation manager example
 		Vec3 desiredDir = new Vec3(x, y, z).normalize();
 
-		rotationManager.setTarget(idealBarrelTipPos.add(idealBarrelDir), absBody);
+		rotationManager.setTarget(idealBarrelTipPos.add(idealBarrelDir.scale(1000)), absBody);
 		rotationManager.tick();
 
 		// check heat here so we still track rotation
