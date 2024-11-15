@@ -27,7 +27,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 			9999999,
 			1.5,
 			(core, posInfo) -> {
-				ArtilleryShell shell = new ArtilleryShell(ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL, core.level());
+				ArtilleryShell shell = new ArtilleryShell(ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL, core.level(), 1);
 				shell.setPos(posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z());
 				return shell;
 			},
@@ -72,7 +72,9 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 				null,
 				posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z(),
 				ArmisticeSoundEventRegistrar.WEAPON$HIGH_CAL,
-				SoundSource.HOSTILE
+				SoundSource.HOSTILE,
+				BASE_GUN_ATTENUATION,
+				AudioUtil.randomizedPitch(core.level().getRandom(), 1.5f, 0.1f)
 			)
 		)
 	);
@@ -117,11 +119,11 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		1,
 		() -> new SimpleGunOrdnance(
 			40,
-			20 * 5,
+			20 * 7,
 			2000,
-			1.5,
+			3.5,
 			(core, posInfo) -> {
-				ArtilleryShell shell = new ArtilleryShell(ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL, core.level());
+				ArtilleryShell shell = new ArtilleryShell(ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL, core.level(), 35);
 				shell.setPos(posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z());
 				return shell;
 			},
@@ -130,7 +132,9 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 					null,
 					posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z(),
 					ArmisticeSoundEventRegistrar.WEAPON$HIGH_CAL,
-					SoundSource.HOSTILE
+					SoundSource.HOSTILE,
+					BASE_GUN_ATTENUATION,
+					AudioUtil.randomizedPitch(core.level().getRandom(), 0.5f, 0.1f)
 				);
 
 				Vec3 normalDir = new Vec3(posInfo.direction().x(), posInfo.direction().y(), posInfo.direction().z()).normalize();
@@ -143,7 +147,7 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 						normalDir,
 						normalDir.scale(0.25),
 						50,
-						ParticleTypes.FLAME
+						ParticleTypes.LARGE_SMOKE
 					)
 				);
 			}
@@ -154,11 +158,11 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		1,
 		() -> new SimpleGunOrdnance(
 			40,
-			20 * 20,
+			20 * 3,
 			2000,
-			1.5,
+			4,
 			(core, posInfo) -> {
-				ArtilleryShell shell = new ArtilleryShell(ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL, core.level());
+				ArtilleryShell shell = new ArtilleryShell(ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL, core.level(), 10);
 				shell.setPos(posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z());
 				return shell;
 			},
@@ -167,7 +171,9 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 					null,
 					posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z(),
 					ArmisticeSoundEventRegistrar.WEAPON$HIGH_CAL,
-					SoundSource.HOSTILE
+					SoundSource.HOSTILE,
+					BASE_GUN_ATTENUATION,
+					AudioUtil.randomizedPitch(core.level().getRandom(), 0.8f, 0.1f)
 				);
 
 				Vec3 normalDir = new Vec3(posInfo.direction().x(), posInfo.direction().y(), posInfo.direction().z()).normalize();
@@ -191,11 +197,11 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 		1,
 		() -> new SimpleGunOrdnance(
 			40,
-			20 * 20,
+			20 * 30,
 			2000,
-			1.5,
+			7,
 			(core, posInfo) -> {
-				ArtilleryShell shell = new ArtilleryShell(ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL, core.level());
+				ArtilleryShell shell = new ArtilleryShell(ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL, core.level(), 150);
 				shell.setPos(posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z());
 				return shell;
 			},
@@ -204,7 +210,9 @@ public final class ArmisticeOrdnanceRegistrar implements OrdnanceRegistrar {
 					null,
 					posInfo.pos().x(), posInfo.pos().y(), posInfo.pos().z(),
 					ArmisticeSoundEventRegistrar.WEAPON$HIGH_CAL,
-					SoundSource.HOSTILE
+					SoundSource.HOSTILE,
+					BASE_GUN_ATTENUATION,
+					AudioUtil.randomizedPitch(core.level().getRandom(), 0.3f, 0.1f)
 				);
 
 				Vec3 normalDir = new Vec3(posInfo.direction().x(), posInfo.direction().y(), posInfo.direction().z()).normalize();

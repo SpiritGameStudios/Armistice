@@ -69,7 +69,7 @@ public final class ArmisticeDebugValues {
 
 						ArtilleryShell artilleryShell = new ArtilleryShell(
 							ArmisticeEntityTypeRegistrar.ARTILLERY_SHELL,
-							player.level()
+							player.level(), 35
 						);
 						artilleryShell.setOwner(player);
 						artilleryShell.setPos(player.getX(), player.getEyeY(), player.getZ());

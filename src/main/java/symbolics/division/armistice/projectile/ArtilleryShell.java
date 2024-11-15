@@ -11,8 +11,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class ArtilleryShell extends AbstractOrdnanceProjectile {
 
-	public ArtilleryShell(EntityType<? extends ArtilleryShell> entityType, Level level) {
+	protected final float power;
+
+	public ArtilleryShell(EntityType<? extends ArtilleryShell> entityType, Level level, float power) {
 		super(entityType, level);
+		this.power = power;
 	}
 
 	@Override
@@ -29,8 +32,9 @@ public class ArtilleryShell extends AbstractOrdnanceProjectile {
 		// endregion
 
 		if (random.nextFloat() < 0.25F)
-			level().addParticle(
+			level().addAlwaysVisibleParticle(
 				ParticleTypes.FLASH,
+				true,
 				getX(), getY(), getZ(),
 				0, 0, 0
 			);
@@ -39,12 +43,29 @@ public class ArtilleryShell extends AbstractOrdnanceProjectile {
 	@Override
 	protected void onHit(HitResult result) {
 		super.onHit(result);
-		if (level().isClientSide) return;
+		if (level().isClientSide) {
+			for (int i = 0; i < 40; i++) {
+				level().addAlwaysVisibleParticle(
+					ParticleTypes.CAMPFIRE_SIGNAL_SMOKE,
+					true,
+					result.getLocation().x(),
+					result.getLocation().y(),
+					result.getLocation().z(),
+					0.5 - getRandom().nextFloat(),
+					1 + getRandom().nextFloat(),
+					0.5 - getRandom().nextFloat()
+				);
+			}
+		}
 
 		Vec3 hitLocation = result.getLocation();
 		level().broadcastEntityEvent(this, (byte) 3);
-		DamageSource damagesource = damageSources().explosion(this, getOwner());
-		level().explode(this, damagesource, null, hitLocation.x(), hitLocation.y(), hitLocation.z(), 10.0F, false, Level.ExplosionInteraction.BLOCK);
+		DamageSource damageSource = damageSources().explosion(this, getOwner());
+		explode(damageSource, hitLocation);
+	}
+
+	protected void explode(DamageSource damageSource, Vec3 hitLocation) {
+		level().explode(this, damageSource, null, hitLocation.x(), hitLocation.y(), hitLocation.z(), power, false, Level.ExplosionInteraction.MOB);
 	}
 
 	@Override

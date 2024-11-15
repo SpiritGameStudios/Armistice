@@ -13,8 +13,8 @@ public final class ArmisticeEntityTypeRegistrar implements EntityTypeRegistrar {
 		MechaEntity::temp, MobCategory.MISC
 	).sized(5, 5).updateInterval(1).noSummon().build("mecha");
 
-	public static final EntityType<ArtilleryShell> ARTILLERY_SHELL = EntityType.Builder.of(
-			ArtilleryShell::new, MobCategory.MISC
+	public static final EntityType<ArtilleryShell> ARTILLERY_SHELL = EntityType.Builder.<ArtilleryShell>of(
+			(entityType, level) -> new ArtilleryShell(entityType, level, 35), MobCategory.MISC
 		)
 		.sized(0.5F, 0.5F)
 		.eyeHeight(0.13F)
