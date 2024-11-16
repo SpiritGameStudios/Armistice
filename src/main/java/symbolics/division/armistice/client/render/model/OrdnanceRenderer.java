@@ -19,6 +19,7 @@ import symbolics.division.armistice.client.render.hud.MechaHudRenderer;
 import symbolics.division.armistice.client.render.hud.MechaOverlayRenderer;
 import symbolics.division.armistice.mecha.MechaEntity;
 import symbolics.division.armistice.mecha.OrdnancePart;
+import symbolics.division.armistice.mecha.ordnance.HitscanGunOrdnance;
 import symbolics.division.armistice.model.BBModelTree;
 
 import java.util.Map;
@@ -145,6 +146,9 @@ public class OrdnanceRenderer {
 		drawHoloSegment(holoTips[0], tipPos, poseStack, bufferSource, mecha.getRandom());
 		drawHoloSegment(holoTips[1], tipPos, poseStack, bufferSource, mecha.getRandom());
 		drawHoloSegment(holoTips[2], tipPos, poseStack, bufferSource, mecha.getRandom());
+		if (ordnance instanceof HitscanGunOrdnance) {
+			drawHoloSegment(tipPos, tipPos.mul(1000, new Vector3f()), poseStack, bufferSource, mecha.getRandom());
+		}
 	}
 
 	private static void drawHoloSegment(Vector3f from, Vector3f to, PoseStack poseStack, MultiBufferSource bufferSource, RandomSource random) {

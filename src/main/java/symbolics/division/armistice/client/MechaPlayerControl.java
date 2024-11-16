@@ -17,6 +17,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.InputEvent;
 import symbolics.division.armistice.mecha.MechaEntity;
+import symbolics.division.armistice.mecha.OrdnancePart;
 import symbolics.division.armistice.network.MechaMovementRequestC2SPayload;
 import symbolics.division.armistice.network.MechaTargetRequestC2SPayload;
 import symbolics.division.armistice.registry.ArmisticeSoundEventRegistrar;
@@ -89,10 +90,11 @@ public class MechaPlayerControl {
 
 		if (cancel) {
 			player.playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALLGOOD, 0.5f, AudioUtil.randomizedPitch(player.getRandom(), 1, 0.1f));
+			for (OrdnancePart ordnance : mecha.core().ordnance()) ordnance.clearTargets();
 		} else {
 			player.playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 0.3f, AudioUtil.randomizedPitch(player.getRandom(), 1, 0.4f));
+			for (OrdnancePart ordnance : mecha.core().ordnance()) ordnance.startTargeting(raycast);
 		}
-
 	}
 
 	public static Vec3 tpos = null;

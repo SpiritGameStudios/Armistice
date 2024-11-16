@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -22,6 +23,7 @@ import org.joml.Vector4f;
 import symbolics.division.armistice.Armistice;
 import symbolics.division.armistice.client.ArmisticeClient;
 import symbolics.division.armistice.mecha.MechaEntity;
+import symbolics.division.armistice.mecha.OrdnancePart;
 import symbolics.division.armistice.mixin.GameRenderAccessor;
 
 import java.util.ArrayList;
@@ -50,6 +52,9 @@ public final class MechaHudRenderer {
 
 	private static final ResourceLocation CROSSHAIR = Armistice.id("textures/hud/crosshair.png");
 	private static final ResourceLocation PATHTARGET = Armistice.id("textures/hud/pathtarget.png");
+
+	private static final ResourceLocation ORDNANCE_TARGET_DIM = Armistice.id("textures/hud/ordnance_target_dim.png");
+	private static final ResourceLocation ORDNANCE_TARGET_BRIGHT = Armistice.id("textures/hud/ordnance_target_bright.png");
 
 	private static final ResourceLocation CAM_OVERLAY = Armistice.id("textures/hud/cam_overlay.png");
 
@@ -86,6 +91,7 @@ public final class MechaHudRenderer {
 			renderHeat(drawHelper, mecha);
 			renderElevation(drawHelper, mecha);
 			renderPathtarget(drawHelper, mecha);
+			renderOrdnanceTargets(drawHelper, mecha);
 
 			RenderSystem.defaultBlendFunc();
 			RenderSystem.disableBlend();
@@ -176,21 +182,6 @@ public final class MechaHudRenderer {
 
 		float maxsize = Math.min(gh, gw);
 
-//		drawHelper.renderFlicker(
-//			pos -> drawHelper.guiGraphics().blit(
-//				CAM_OVERLAY,
-//				, 0,
-//				gw, gh,
-//				textureH - innerDiameter * 2, 0,
-//				textureW, textureH,
-//				textureW, textureW
-//			),
-//			new Vec2(
-//				cx,
-//				cy
-//			),
-//			lightbulbColor()
-//		);
 
 		drawHelper.guiGraphics().blit(
 			CAM_OVERLAY,
@@ -201,31 +192,6 @@ public final class MechaHudRenderer {
 			600, 600
 		);
 
-//		drawHelper.renderFlicker(
-//,
-//			new Vec2(
-//				(drawHelper.guiGraphics().guiWidth() - 15) / 2F,
-//				(drawHelper.guiGraphics().guiHeight() - 15) / 2F
-//			),
-//			lightbulbColor()
-//		);
-
-
-//		drawHelper.renderFlicker(
-//			pos -> drawHelper.guiGraphics().blit(
-//				CAM_OVERLAY,
-//				(int) pos.x, (int) pos.y,
-//				100, 100,
-//				0, 0,
-//				textureW, textureH,
-//				textureW, textureW
-//			),
-//			new Vec2(
-//				cx,
-//				cy
-//			),
-//			lightbulbColor()
-//		);
 
 		resetColor();
 	}
@@ -468,6 +434,72 @@ public final class MechaHudRenderer {
 
 				resetColor();
 			}
+		}
+	}
+
+	private static void renderOrdnanceTargets(DrawHelper drawHelper, Entity mecha) {
+		float gw = drawHelper.guiGraphics().guiWidth();
+		float gh = drawHelper.guiGraphics().guiHeight();
+		float ar = gw / gh;
+
+		GameRenderer gr = Minecraft.getInstance().gameRenderer;
+		Entity cameraEntity = Minecraft.getInstance().getCameraEntity();
+		Camera cam = gr.getMainCamera();
+
+		double fov = Math.max(
+			Minecraft.getInstance().options.fov().get(),
+			((GameRenderAccessor) gr).invokeGetFov(cam, cam.getPartialTickTime(), false)
+		);
+
+		// camera to screen matrix
+		Matrix4f mat = gr.getProjectionMatrix(fov);
+
+		// world to camera matrix
+		Vec3 camPos = Objects.requireNonNull(cameraEntity).getEyePosition(cam.getPartialTickTime());
+		mat.rotate(cam.rotation().conjugate(new Quaternionf()));
+		mat.translate((float) -camPos.x, (float) -camPos.y, (float) -camPos.z);
+
+
+		if (mecha instanceof MechaEntity mechaEntity) {
+			for (OrdnancePart ordnance : mechaEntity.core().ordnance()) {
+				for (HitResult target : ordnance.getTargets()) {
+					if (target.getType().equals(HitResult.Type.MISS)) continue;
+					Vector3f p = mat.transformPosition(target.getLocation().toVector3f());
+
+					if (p.z < 0) continue; // not in frame
+
+					// perspective division!!!!!!
+					p.mul(1 / p.z);
+					float screenX = gw / 2 * (p.x + 1);
+					float screenY = gh / 2 * (-p.y + 1);
+
+					drawHelper.renderFlicker(
+						pos -> drawHelper.guiGraphics().blit(
+							ORDNANCE_TARGET_DIM,
+							(int) pos.x, (int) pos.y,
+							15, 15,
+							0, 0,
+							15, 15,
+							15, 15
+						),
+						new Vec2(
+							screenX - 9,
+							screenY - 9
+						),
+						lightbulbColor()
+					);
+
+					drawHelper.renderCenteredNumber(
+						(int) camPos.distanceTo(target.getLocation()),
+						screenX,
+						screenY + 10,
+						1,
+						lightbulbColor()
+					);
+				}
+				break; // temp: only do first ordnance for now
+			}
+			resetColor();
 		}
 	}
 

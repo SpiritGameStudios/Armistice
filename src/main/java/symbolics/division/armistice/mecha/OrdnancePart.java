@@ -14,6 +14,7 @@ import symbolics.division.armistice.mecha.ordnance.OrdnanceRotation;
 import symbolics.division.armistice.model.MechaModelData;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class OrdnancePart extends AbstractMechaPart {
@@ -99,12 +100,15 @@ public abstract class OrdnancePart extends AbstractMechaPart {
 	}
 
 	public boolean isTargeting() {
-		// problem: only works serverside
 		return !targets.isEmpty();
 	}
 
 	public void clearTargets() {
 		targets.clear();
+	}
+
+	public List<HitResult> getTargets() {
+		return Collections.unmodifiableList(targets);
 	}
 
 	public void setId(ResourceLocation id) {
