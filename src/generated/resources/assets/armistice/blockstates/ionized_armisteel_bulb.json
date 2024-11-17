@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "armistice:block/ionized_armisteel_bulb"
+    },
+    "lit=true": {
+      "model": "armistice:block/ionized_armisteel_bulb_on"
+    }
+  }
+}

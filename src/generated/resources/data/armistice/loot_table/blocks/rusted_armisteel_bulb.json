@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "armistice:rusted_armisteel_bulb"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "armistice:blocks/rusted_armisteel_bulb"
+}

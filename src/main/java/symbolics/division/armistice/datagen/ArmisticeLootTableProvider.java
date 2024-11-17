@@ -51,6 +51,14 @@ public class ArmisticeLootTableProvider extends LootTableProvider {
 			dropSelf(ArmisticeBlockRegistrar.ARMISTEEL_BARS);
 			dropSelf(ArmisticeBlockRegistrar.ARMISTEEL_DOOR);
 			dropSelf(ArmisticeBlockRegistrar.ARMISTEEL_TRAPDOOR);
+			dropSelf(ArmisticeBlockRegistrar.IONIZED_ARMISTEEL_MESH);
+			dropSelf(ArmisticeBlockRegistrar.IONIZED_ARMISTEEL_PIPING);
+			dropSelf(ArmisticeBlockRegistrar.IONIZED_ARMISTEEL_VENT);
+			dropSelf(ArmisticeBlockRegistrar.IONIZED_RIGIDIZED_ARMISTEEL);
+			dropSelf(ArmisticeBlockRegistrar.IONIZED_ARMISTEEL_BULB);
+			dropSelf(ArmisticeBlockRegistrar.RUSTED_ARMISTEEL_BULB);
+			dropSelf(ArmisticeBlockRegistrar.CORRODED_ARMISTEEL_BULB);
+			dropSelf(ArmisticeBlockRegistrar.SCORCHED_ARMISTEEL_BULB);
 		}
 	}
 }

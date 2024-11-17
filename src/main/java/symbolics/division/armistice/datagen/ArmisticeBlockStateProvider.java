@@ -32,30 +32,22 @@ public class ArmisticeBlockStateProvider extends BlockStateProvider {
 		cubeAllWithItem(ArmisticeBlockRegistrar.ARMISTEEL_PIPING);
 		cubeAllWithItem(ArmisticeBlockRegistrar.ARMISTEEL_VENT);
 
+		cubeAllWithItem(ArmisticeBlockRegistrar.IONIZED_ARMISTEEL_MESH);
+		cubeAllWithItem(ArmisticeBlockRegistrar.IONIZED_ARMISTEEL_PIPING);
+		cubeAllWithItem(ArmisticeBlockRegistrar.IONIZED_ARMISTEEL_VENT);
+		cubeAllWithItem(ArmisticeBlockRegistrar.IONIZED_RIGIDIZED_ARMISTEEL);
+
 		axisBlock(
 			ArmisticeBlockRegistrar.ARMISTEEL_CHAIN,
 			models().cross("armisteel_chain", modLoc("block/armisteel_chain")).renderType("cutout"),
 			models().cross("armisteel_chain", modLoc("block/armisteel_chain")).renderType("cutout")
 		);
 
-		VariantBlockStateBuilder variantBuilder = getVariantBuilder(ArmisticeBlockRegistrar.ARMISTEEL_BULB);
-		VariantBlockStateBuilder.PartialBlockstate litState = variantBuilder.partialState()
-			.with(BlockStateProperties.LIT, true);
-
-		VariantBlockStateBuilder.PartialBlockstate unlitState = variantBuilder.partialState()
-			.with(BlockStateProperties.LIT, false);
-
-		variantBuilder.addModels(unlitState,
-			unlitState.modelForState()
-				.modelFile(cubeAll("armisteel_bulb", Armistice.id("block/armisteel_bulb")))
-				.build());
-
-		variantBuilder.addModels(litState,
-			litState.modelForState()
-				.modelFile(cubeAll("armisteel_bulb_on", Armistice.id("block/armisteel_bulb_on")))
-				.build());
-
-		simpleBlockItem(ArmisticeBlockRegistrar.ARMISTEEL_BULB, cubeAll("armisteel_bulb", Armistice.id("block/armisteel_bulb")));
+		bulb(ArmisticeBlockRegistrar.ARMISTEEL_BULB, "armisteel_bulb");
+		bulb(ArmisticeBlockRegistrar.IONIZED_ARMISTEEL_BULB, "ionized_armisteel_bulb");
+		bulb(ArmisticeBlockRegistrar.RUSTED_ARMISTEEL_BULB, "rusted_armisteel_bulb");
+		bulb(ArmisticeBlockRegistrar.CORRODED_ARMISTEEL_BULB, "corroded_armisteel_bulb");
+		bulb(ArmisticeBlockRegistrar.SCORCHED_ARMISTEEL_BULB, "scorched_armisteel_bulb");
 
 		ModelFile post = bars("post");
 		ModelFile postEnds = bars("post_ends");
@@ -183,5 +175,26 @@ public class ArmisticeBlockStateProvider extends BlockStateProvider {
 			.texture("edge", Armistice.id("block/armisteel_bars_edge"))
 			.texture("particle", Armistice.id("block/armisteel_bars"))
 			.renderType("minecraft:cutout");
+	}
+
+	private void bulb(Block block, String id) {
+		VariantBlockStateBuilder variantBuilder = getVariantBuilder(block);
+		VariantBlockStateBuilder.PartialBlockstate litState = variantBuilder.partialState()
+			.with(BlockStateProperties.LIT, true);
+
+		VariantBlockStateBuilder.PartialBlockstate unlitState = variantBuilder.partialState()
+			.with(BlockStateProperties.LIT, false);
+
+		variantBuilder.addModels(unlitState,
+			unlitState.modelForState()
+				.modelFile(cubeAll(id, Armistice.id("block/" + id)))
+				.build());
+
+		variantBuilder.addModels(litState,
+			litState.modelForState()
+				.modelFile(cubeAll(id + "_on", Armistice.id("block/" + id + "_on")))
+				.build());
+
+		simpleBlockItem(block, cubeAll(id, Armistice.id("block/" + id)));
 	}
 }

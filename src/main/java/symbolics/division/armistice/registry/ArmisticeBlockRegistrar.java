@@ -8,6 +8,8 @@ import net.minecraft.world.level.material.MapColor;
 import symbolics.division.armistice.block.ArmisteelChainBlock;
 import symbolics.division.armistice.util.registrar.BlockRegistrar;
 
+import java.util.function.Function;
+
 @SuppressWarnings("unused")
 public final class ArmisticeBlockRegistrar implements BlockRegistrar {
 	public static final Block ARMISTEEL_GRATE = new WaterloggedTransparentBlock(
@@ -124,4 +126,22 @@ public final class ArmisticeBlockRegistrar implements BlockRegistrar {
 			.mapColor(MapColor.METAL)
 			.requiresCorrectToolForDrops()
 	);
+
+	public static final Block IONIZED_ARMISTEEL_MESH = copyOf(ARMISTEEL_MESH);
+	public static final Block IONIZED_ARMISTEEL_PIPING = copyOf(ARMISTEEL_PIPING);
+	public static final Block IONIZED_ARMISTEEL_VENT = copyOf(ARMISTEEL_VENT);
+	public static final Block IONIZED_RIGIDIZED_ARMISTEEL = copyOf(RIGIDIZED_ARMISTEEL);
+
+	public static final Block IONIZED_ARMISTEEL_BULB = copyOf(ARMISTEEL_BULB, CopperBulbBlock::new);
+	public static final Block RUSTED_ARMISTEEL_BULB = copyOf(ARMISTEEL_BULB, CopperBulbBlock::new);
+	public static final Block CORRODED_ARMISTEEL_BULB = copyOf(ARMISTEEL_BULB, CopperBulbBlock::new);
+	public static final Block SCORCHED_ARMISTEEL_BULB = copyOf(ARMISTEEL_BULB, CopperBulbBlock::new);
+
+	private static Block copyOf(BlockBehaviour referenceBlock) {
+		return copyOf(referenceBlock, Block::new);
+	}
+
+	private static <T extends Block> T copyOf(BlockBehaviour referenceBlock, Function<BlockBehaviour.Properties, T> constructor) {
+		return constructor.apply(BlockBehaviour.Properties.ofFullCopy(referenceBlock));
+	}
 }

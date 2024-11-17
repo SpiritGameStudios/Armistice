@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "armistice:block/ionized_armisteel_bulb_on"
+  }
+}
