@@ -1,0 +1,12 @@
+{
+	"tier": 1,
+	"slots": [
+		1
+	],
+	"heat": {
+		"max": 100,
+		"delay": 20,
+		"decay": 5
+	},
+	"id": "armistice:null"
+}

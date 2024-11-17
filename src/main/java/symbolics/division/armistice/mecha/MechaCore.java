@@ -3,18 +3,25 @@ package symbolics.division.armistice.mecha;
 import au.edu.federation.caliko.FabrikStructure3D;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector2fc;
 import org.joml.Vector3f;
+import symbolics.division.armistice.client.sound.CockpitSoundInstance;
 import symbolics.division.armistice.mecha.movement.ChassisLeg;
 import symbolics.division.armistice.mecha.movement.Euclidean;
 import symbolics.division.armistice.mecha.schematic.MechaSchematic;
@@ -46,6 +53,7 @@ public class MechaCore implements Part {
 	private MechaEntity entity = null;
 
 	private int soundCooldown;
+	private CockpitSoundInstance clientSound = null;
 
 	public static final StreamCodec<RegistryFriendlyByteBuf, MechaCore> TO_CLIENT_STREAM_CODEC = StreamCodec.of(
 		(buffer, value) -> {
@@ -78,10 +86,44 @@ public class MechaCore implements Part {
 	}
 
 	@Override
+	@OnlyIn(Dist.CLIENT)
 	public void clientTick(float tickDelta) {
 		Part.super.clientTick(tickDelta);
 
 		chassis.clientTick(tickDelta);
+
+		Player player = Minecraft.getInstance().player;
+
+		if (entity.hasPassenger(player)) {
+			// play interior sound
+			if (clientSound == null || clientSound.isStopped()) {
+				Minecraft.getInstance().getSoundManager().stop();
+				clientSound = new CockpitSoundInstance(entity, player, 0.35f, 1, entity.getRandom());
+				Minecraft.getInstance().getSoundManager().play(
+					clientSound
+				);
+			}
+		} else {
+			if (clientSound != null) {
+				clientSound = null;
+			}
+			soundCooldown--;
+			if (soundCooldown <= 0) {
+				if (player.distanceTo(entity) <= 40) {
+					Minecraft.getInstance().getSoundManager().play(
+						new SimpleSoundInstance(ArmisticeSoundEventRegistrar.AMBIENT$GEIGER, SoundSource.NEUTRAL, 2, entity.getRandom().nextFloat() * (1.25F - 0.75F) + 0.75F, entity.getRandom(), entity.blockPosition())
+					);
+				} else {
+					Minecraft.getInstance().getSoundManager().play(
+						new SimpleSoundInstance(
+							entity.getRandom().nextBoolean() ? ArmisticeSoundEventRegistrar.AMBIENT$MECHA1 : ArmisticeSoundEventRegistrar.AMBIENT$MECHA2,
+							SoundSource.NEUTRAL, 4, entity.getRandom().nextFloat() * (1.25F - 0.75F) + 0.75F, entity.getRandom(), entity.blockPosition())
+					);
+				}
+				soundCooldown = entity.getRandom().nextIntBetweenInclusive(20 * 20, 40 * 20);
+			}
+		}
+
 	}
 
 	@Override
@@ -90,18 +132,6 @@ public class MechaCore implements Part {
 
 		chassis.serverTick();
 		entity.setDeltaMovement(acceleration());
-
-		soundCooldown--;
-
-		if (soundCooldown <= 0) {
-			entity.playSound(
-				entity.getRandom().nextBoolean() ? ArmisticeSoundEventRegistrar.AMBIENT$MECHA1 : ArmisticeSoundEventRegistrar.AMBIENT$MECHA2,
-				1.0F,
-				entity.getRandom().nextFloat() * (1.25F - 0.75F) + 0.75F
-			);
-
-			soundCooldown = entity.getRandom().nextIntBetweenInclusive(20 * 20, 40 * 20);
-		}
 	}
 
 	@Override
