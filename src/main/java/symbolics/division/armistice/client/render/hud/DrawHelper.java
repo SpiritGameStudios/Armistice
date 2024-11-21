@@ -13,6 +13,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import symbolics.division.armistice.Armistice;
+import symbolics.division.armistice.client.ArmisticeClientConfig;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -121,6 +122,7 @@ public record DrawHelper(GuiGraphics guiGraphics) {
 	public void renderFlicker(Consumer<Vec2> render, Vec2 pos, Vector4f color) {
 		float alpha = RANDOM.nextInt(15) == 0 ? Math.min(RANDOM.nextFloat(), 0.5F) : 1.0F;
 		alpha = (0.3F + (alpha * 0.7F)) * color.w;
+		alpha = (float) Mth.lerp(ArmisticeClientConfig.INSTANCE.flickerAmount().get(), color.w, alpha);
 
 		RenderSystem.setShaderColor(color.x, color.y, color.z, alpha * 0.05F);
 
