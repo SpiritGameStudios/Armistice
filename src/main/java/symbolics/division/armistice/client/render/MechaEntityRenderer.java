@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -20,6 +21,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import symbolics.division.armistice.Armistice;
+import symbolics.division.armistice.client.ArmisticeClientConfig;
 import symbolics.division.armistice.client.render.hud.MechaHudRenderer;
 import symbolics.division.armistice.client.render.model.PartRenderer;
 import symbolics.division.armistice.mecha.MechaEntity;
@@ -104,6 +106,7 @@ public class MechaEntityRenderer extends EntityRenderer<MechaEntity> {
 	public static void renderHologramFlicker(BiConsumer<Vec3, Vector4f> render, Vector4f color, RandomSource randomSource) {
 		float alpha = randomSource.nextInt(10) == 0 ? Math.min(randomSource.nextFloat(), 0.25F) : 1.0F;
 		alpha = (0.3F + (alpha * 0.7F)) * color.w;
+		alpha = (float) Mth.lerp(ArmisticeClientConfig.INSTANCE.flickerAmount().get(), color.w, alpha);
 
 		render.accept(Vec3.ZERO.offsetRandom(randomSource, 0.0025F), new Vector4f(color.x, color.y, color.z, alpha));
 		render.accept(Vec3.ZERO.offsetRandom(randomSource, 0.075F), new Vector4f(color.x, color.y, color.z, alpha));
