@@ -2,6 +2,7 @@ package symbolics.division.armistice.client.render.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
@@ -88,6 +89,7 @@ public class OrdnanceRenderer {
 
 	public void render(MechaEntity mecha, OrdnancePart ordnance, float tickDelta, PoseStack pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
 		if (!ArmisticeClientDebugValues.showOrdnance) return;
+		boolean riding = MechaOverlayRenderer.shouldProcessMechaOverlay() && mecha.hasPassenger(Minecraft.getInstance().player);
 		pose.pushPose();
 		{
 			var baseRotation = mecha.core().model().ordnanceInfo(ordnance, mecha.core()).mountPoint().rotationInfo().bbRotation()
@@ -95,7 +97,7 @@ public class OrdnanceRenderer {
 
 			Quaternionf baseRot = new Quaternionf().rotateZYX((float) baseRotation.z, (float) baseRotation.y, (float) baseRotation.x);
 			pose.mulPose(baseRot);
-			if (!MechaOverlayRenderer.shouldProcessMechaOverlay()) {
+			if (!riding) {
 				PartRenderer.renderQuads(quads, texture, pose.last(), bufferSource, color, packedLight, packedOverlay);
 			}
 			if (bodyQuads.length > 0) {
@@ -119,7 +121,7 @@ public class OrdnanceRenderer {
 				Quaternionf newRot = new Quaternionf().rotateYXZ(yaw, pitch, 0);
 				pose.mulPose(newRot);
 
-				if (MechaOverlayRenderer.shouldProcessMechaOverlay()) {
+				if (riding) {
 					pose.mulPose(new Quaternionf().rotateZ((float) mecha.tickCount / 30));
 					drawHoloOrdnance(pose, bufferSource, ordnance, mecha);
 //					drawHoloSegment(new Vector3f(), new Vector3f(0, 0, barrelLength), pose, bufferSource, mecha.getRandom());

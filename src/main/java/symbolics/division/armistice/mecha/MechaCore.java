@@ -111,16 +111,16 @@ public class MechaCore implements Part {
 			if (soundCooldown <= 0) {
 				if (player.distanceTo(entity) <= 40) {
 					Minecraft.getInstance().getSoundManager().play(
-						new SimpleSoundInstance(ArmisticeSoundEventRegistrar.AMBIENT$GEIGER, SoundSource.NEUTRAL, 2, entity.getRandom().nextFloat() * (1.25F - 0.75F) + 0.75F, entity.getRandom(), entity.blockPosition())
+						new SimpleSoundInstance(ArmisticeSoundEventRegistrar.AMBIENT$GEIGER, SoundSource.NEUTRAL, 4, entity.getRandom().nextFloat() * (1.25F - 0.75F) + 0.75F, entity.getRandom(), entity.blockPosition())
 					);
 				} else {
 					Minecraft.getInstance().getSoundManager().play(
 						new SimpleSoundInstance(
 							entity.getRandom().nextBoolean() ? ArmisticeSoundEventRegistrar.AMBIENT$MECHA1 : ArmisticeSoundEventRegistrar.AMBIENT$MECHA2,
-							SoundSource.NEUTRAL, 4, entity.getRandom().nextFloat() * (1.25F - 0.75F) + 0.75F, entity.getRandom(), entity.blockPosition())
+							SoundSource.NEUTRAL, 5, entity.getRandom().nextFloat() * (1.25F - 0.75F) + 0.75F, entity.getRandom(), entity.blockPosition())
 					);
 				}
-				soundCooldown = entity.getRandom().nextIntBetweenInclusive(20 * 20, 40 * 20);
+				soundCooldown = entity.getRandom().nextIntBetweenInclusive(20 * 40, 20 * 60);
 			}
 		}
 

@@ -188,7 +188,7 @@ public class MechaEntity extends Entity {
 	protected int ticksSincePlayerSeen = 0;
 
 	protected static int SPY_TICKS = 20 * 6;
-	protected int KILL_TICKS = 20 * 60;
+	protected int KILL_TICKS = 20 * 20;
 
 	protected void crueltyEngineTick() {
 		if (level().isClientSide) return;
@@ -201,24 +201,32 @@ public class MechaEntity extends Entity {
 					core().setPathingTarget(new Vector3f((float) getRandomX(1000), (float) getY() + 50, (float) getRandomZ(1000)));
 				}
 //				level().getNearbyPlayers(TARGET_CONDITIONS, this, new AABB(this.getX()-200, this.getY()-50, this.getZ()-200, this.getX()+200, this.getY()+50,this.getZ()+200)))
-				for (var player : serverLevel.getPlayers(p -> validCrueltyTarget(p) && p.distanceTo(this) < 200 && p.hasLineOfSight(this), 1)) {
+				for (var player : serverLevel.getPlayers(p -> validCrueltyTarget(p)
+					&& ((p.distanceTo(this) < 100) || (p.distanceTo(this) < 200 && !p.isCrouching()))
+					&& p.hasLineOfSight(this), 1)) {
 					crueltyMode = CrueltyMode.SPY;
 					fixation = player.getUUID();
 					modeTicks = 0;
 					core().setPathingTarget(position().toVector3f());
-					playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 5, AudioUtil.randomizedPitch(random, 1, 0.2f));
+					playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 7, AudioUtil.randomizedPitch(random, 1, 0.2f));
 				}
 			}
 			case SPY -> {
 				if (modeTicks < SPY_TICKS) return;
 				if (fixation != null && level().getPlayerByUUID(fixation).hasLineOfSight(this) && validCrueltyTarget(level().getPlayerByUUID(fixation))) {
-					playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 5, AudioUtil.randomizedPitch(random, 1, 0.2f));
+					playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 7, AudioUtil.randomizedPitch(random, 1, 0.2f));
 					crueltyMode = CrueltyMode.KILL;
 					modeTicks = 0;
 					ticksSincePlayerSeen = 0;
 				} else {
+					if (fixation != null && level().getPlayerByUUID(fixation) != null) {
+						// walk  in  direction of last seen player
+						core().setPathingTarget(level().getPlayerByUUID(fixation).position().subtract(position()).scale(1000).add(position()).toVector3f());
+						modeTicks = 0;
+					} else {
+						modeTicks = 10000;
+					}
 					crueltyMode = CrueltyMode.ROAM;
-					modeTicks = 10000;
 				}
 			}
 			case KILL -> {

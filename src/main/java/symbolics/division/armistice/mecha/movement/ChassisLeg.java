@@ -191,7 +191,7 @@ public class ChassisLeg {
 				ticksToStep = 0;
 				tickTarget = finalStepTarget;
 				prevStepTarget = finalStepTarget;
-				core.entity().level().playSound(core.entity(), BlockPos.containing(finalStepTarget), ArmisticeSoundEventRegistrar.ENTITY$MECHA$STEP3, SoundSource.HOSTILE, 3, AudioUtil.randomizedPitch(core.entity().getRandom(), 1, 0.2f));
+				core.entity().level().playSound(core.entity(), BlockPos.containing(finalStepTarget), ArmisticeSoundEventRegistrar.ENTITY$MECHA$STEP3, SoundSource.HOSTILE, 5, AudioUtil.randomizedPitch(core.entity().getRandom(), 1, 0.2f));
 			}
 		}
 
