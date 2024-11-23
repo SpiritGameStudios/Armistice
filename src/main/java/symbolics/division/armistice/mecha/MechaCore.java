@@ -120,7 +120,7 @@ public class MechaCore implements Part {
 							SoundSource.NEUTRAL, 5, entity.getRandom().nextFloat() * (1.25F - 0.75F) + 0.75F, entity.getRandom(), entity.blockPosition())
 					);
 				}
-				soundCooldown = entity.getRandom().nextIntBetweenInclusive(20 * 40, 20 * 60);
+				soundCooldown = entity.getRandom().nextIntBetweenInclusive(20 * 50, 20 * 80);
 			}
 		}
 

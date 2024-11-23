@@ -11,7 +11,7 @@ import symbolics.division.armistice.util.registrar.EntityTypeRegistrar;
 public final class ArmisticeEntityTypeRegistrar implements EntityTypeRegistrar {
 	public static final EntityType<MechaEntity> MECHA = EntityType.Builder.of(
 		MechaEntity::temp, MobCategory.MISC
-	).sized(5, 5).updateInterval(1).noSummon().build("mecha");
+	).sized(15, 15).updateInterval(1).noSummon().build("mecha");
 
 	public static final EntityType<ArtilleryShell> ARTILLERY_SHELL = EntityType.Builder.<ArtilleryShell>of(
 			(entityType, level) -> new ArtilleryShell(entityType, level, 35), MobCategory.MISC

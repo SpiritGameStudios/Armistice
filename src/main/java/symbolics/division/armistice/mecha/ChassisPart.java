@@ -228,7 +228,7 @@ public class ChassisPart extends AbstractMechaPart {
 			}
 			legsReady = true;
 		}
-		core.entity().setPos(IKUtil.f2m(skeleton.getChain(0).getBone(0).getEndLocation()));
+		core.entity().moveBySkeletonTo(IKUtil.f2m(skeleton.getChain(0).getBone(0).getEndLocation()));
 
 		for (var leg : legs) {
 			// live-update chain (caliko bug: fixedbase doesn't update on time)

@@ -17,9 +17,11 @@ import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
@@ -92,6 +94,8 @@ public class MechaEntity extends Entity {
 		return new MechaEntity(entityType, level, new MechaCore(new MechaSchematic(hull, ordnance, chassis, armor), null));
 	}
 
+	private boolean collided = false;
+
 	@Override
 	public void tick() {
 		super.tick();
@@ -103,7 +107,9 @@ public class MechaEntity extends Entity {
 
 		if (this.level().isClientSide())
 			core().clientTick(Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(true));
-		else core().serverTick();
+		else {
+			core().serverTick();
+		}
 
 		this.move(MoverType.SELF, this.getDeltaMovement());
 	}
@@ -194,9 +200,14 @@ public class MechaEntity extends Entity {
 		if (level().isClientSide) return;
 		var serverLevel = (ServerLevel) level();
 		modeTicks++;
+		boolean alertCollide = collided;
+		collided = false;
 		switch (crueltyMode) {
 			case ROAM -> {
-				if (modeTicks > 20 * 120) {
+				if (alertCollide) {
+					// stop if we hit a wall
+					core().setPathingTarget(position().toVector3f());
+				} else if (modeTicks > 20 * 120) {
 					modeTicks = 0;
 					core().setPathingTarget(new Vector3f((float) getRandomX(1000), (float) getY() + 50, (float) getRandomZ(1000)));
 				}
@@ -256,6 +267,30 @@ public class MechaEntity extends Entity {
 				}
 			}
 		}
+	}
+
+	public void moveBySkeletonTo(Vec3 pos) {
+		Vec3 prevPos = position();
+		Vec3 movement = pos.subtract(prevPos);
+
+		if (!destroysTerrain()) {
+			List<VoxelShape> collisions = this.level().getEntityCollisions(this, this.getBoundingBox().expandTowards(movement));
+			Vec3 adjMovement = movement.lengthSqr() == 0.0 ? movement : collideBoundingBox(this, movement, this.getBoundingBox(), level(), collisions);
+			setPos(prevPos.add(adjMovement));
+
+			if (!adjMovement.equals(movement)) {
+				collided = true;
+			}
+		} else {
+			setPos(pos);
+			if (level().getBlockStates(getBoundingBox()).filter(b -> !b.isAir()).findFirst().isPresent()) {
+				level().explode(this, pos.x, pos.y, pos.z, 20, Level.ExplosionInteraction.MOB);
+			}
+		}
+	}
+
+	public boolean destroysTerrain() {
+		return level().getGameRules().getRule(GameRules.RULE_MOBGRIEFING).get();
 	}
 
 	public static boolean validCrueltyTarget(Player player) {
