@@ -75,12 +75,16 @@ public class MechaEntity extends Entity {
 	protected MechaEntity(EntityType<? extends Entity> entityType, Level level, MechaCore core) {
 		super(entityType, level);
 		getEntityData().set(CORE, core);
-		setViewScale(10.0);
 		this.noCulling = true;
 	}
 
 	public MechaEntity(EntityType<? extends Entity> entityType, Level level, MechaSchematic schematic, @Nullable MechaSkin skin) {
 		this(entityType, level, schematic.make(skin));
+	}
+
+	@Override
+	public boolean shouldRenderAtSqrDistance(double distance) {
+		return true;
 	}
 
 	public static MechaEntity temp(EntityType<? extends Entity> entityType, Level level) {
