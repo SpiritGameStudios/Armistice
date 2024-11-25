@@ -3,17 +3,21 @@ package symbolics.division.armistice.client.render.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Quaternionf;
 import org.joml.Vector2fc;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import symbolics.division.armistice.client.render.MechaEntityRenderer;
 import symbolics.division.armistice.client.render.debug.ArmisticeClientDebugValues;
 import symbolics.division.armistice.client.render.hud.MechaHudRenderer;
@@ -127,7 +131,25 @@ public class OrdnanceRenderer {
 //					drawHoloSegment(new Vector3f(), new Vector3f(0, 0, barrelLength), pose, bufferSource, mecha.getRandom());
 				} else {
 					pose.translate(-bodyPos.x, -bodyPos.y, -bodyPos.z);
-					PartRenderer.renderQuads(bodyQuads, texture, pose.last(), bufferSource, color, packedLight, packedOverlay);
+					Vector3fc absPos = ordnance.absPos();
+					BlockPos pos = new BlockPos(
+						Mth.floor(absPos.x()),
+						Mth.floor(absPos.y()),
+						Mth.floor(absPos.z())
+					);
+
+					int light = LightTexture.pack(
+						mecha.level().getBrightness(
+							LightLayer.BLOCK,
+							pos
+						),
+						mecha.level().getBrightness(
+							LightLayer.SKY,
+							pos
+						)
+					);
+
+					PartRenderer.renderQuads(bodyQuads, texture, pose.last(), bufferSource, color, light, packedOverlay);
 				}
 			}
 		}
