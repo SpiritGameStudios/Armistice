@@ -95,13 +95,25 @@ public class ChassisRenderer {
 					matrices.mulPose(new Quaternionf().rotateZYX(0, yaw, calcPitch + Mth.PI));
 					matrices.translate(-seg.x, -seg.y, -seg.z);
 
+					BlockPos baseBlockPos = BlockPos.containing(IKUtil.f2m(base));
+					int light = LightTexture.pack(
+						mecha.level().getBrightness(
+							LightLayer.BLOCK,
+							baseBlockPos
+						),
+						mecha.level().getBrightness(
+							LightLayer.SKY,
+							baseBlockPos
+						)
+					);
+
 					PartRenderer.renderQuads(
 						quadArrays.get(i),
 						ResourceLocation.fromNamespaceAndPath(skin.id().getNamespace(), "textures/mecha/skin/" + skin.id().getPath() + ".png"),
 						matrices.last(),
 						bufferSource,
 						color,
-						packedLight,
+						light,
 						packedOverlay
 					);
 				}
