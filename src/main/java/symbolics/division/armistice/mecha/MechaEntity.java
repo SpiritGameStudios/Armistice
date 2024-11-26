@@ -99,6 +99,7 @@ public class MechaEntity extends Entity {
 	}
 
 	private boolean collided = false;
+	private int collisionCooldown = 0;
 
 	@Override
 	public void tick() {
@@ -206,11 +207,13 @@ public class MechaEntity extends Entity {
 		modeTicks++;
 		boolean alertCollide = collided;
 		collided = false;
+		collisionCooldown--;
 		switch (crueltyMode) {
 			case ROAM -> {
-				if (alertCollide) {
+				if (alertCollide && collisionCooldown <= 0) {
 					// stop if we hit a wall
 					core().setPathingTarget(position().toVector3f());
+					collisionCooldown = 20 * 10;
 				} else if (modeTicks > 20 * 120) {
 					modeTicks = 0;
 					core().setPathingTarget(new Vector3f((float) getRandomX(1000), (float) getY() + 50, (float) getRandomZ(1000)));
@@ -238,6 +241,7 @@ public class MechaEntity extends Entity {
 						// walk  in  direction of last seen player
 						core().setPathingTarget(level().getPlayerByUUID(fixation).position().subtract(position()).scale(1000).add(position()).toVector3f());
 						modeTicks = 0;
+						collisionCooldown = 20 * 20;
 					} else {
 						modeTicks = 10000;
 					}
