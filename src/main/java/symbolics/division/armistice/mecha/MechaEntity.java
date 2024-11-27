@@ -213,7 +213,7 @@ public class MechaEntity extends Entity {
 				if (alertCollide && collisionCooldown <= 0) {
 					// stop if we hit a wall
 					core().setPathingTarget(position().toVector3f());
-					collisionCooldown = 20 * 10;
+					collisionCooldown = 20;
 				} else if (modeTicks > 20 * 120) {
 					modeTicks = 0;
 					core().setPathingTarget(new Vector3f((float) getRandomX(1000), (float) getY() + 50, (float) getRandomZ(1000)));
@@ -225,7 +225,9 @@ public class MechaEntity extends Entity {
 					crueltyMode = CrueltyMode.SPY;
 					fixation = player.getUUID();
 					modeTicks = 0;
-					core().setPathingTarget(position().toVector3f());
+					if (ticksSincePlayerSeen >= 20 * 20) {
+						core().setPathingTarget(position().toVector3f());
+					}
 					playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 7, AudioUtil.randomizedPitch(random, 1, 0.2f));
 				}
 			}
