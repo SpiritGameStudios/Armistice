@@ -6,6 +6,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.AABB;
@@ -139,7 +140,10 @@ public class HitscanGunOrdnance extends OrdnancePart {
 				target
 			)
 		);
-		hitResult.getEntity().hurt(core.entity().damageSources().magic(), (float) damage);
+		hitResult.getEntity().hurt(core.entity().damageSources().source(
+			DamageTypes.MOB_ATTACK,
+			core.entity()
+		), (float) damage);
 
 		cooldownTicks = cooldown;
 		heatThisTick = heatPerShot;

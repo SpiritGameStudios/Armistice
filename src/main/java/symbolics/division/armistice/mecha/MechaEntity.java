@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -186,6 +187,11 @@ public class MechaEntity extends Entity {
 			return InteractionResult.SUCCESS;
 
 		return player.startRiding(this) ? InteractionResult.CONSUME : InteractionResult.PASS;
+	}
+
+	@Override
+	protected Component getTypeName() {
+		return Component.translatable((morality ? "armistice.entity.mecha.peace_engine" : "armistice.entity.mecha.cruelty_engine"));
 	}
 
 	protected enum CrueltyMode {
