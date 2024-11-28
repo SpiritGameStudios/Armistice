@@ -208,12 +208,14 @@ public class MechaEntity extends Entity {
 		boolean alertCollide = collided;
 		collided = false;
 		collisionCooldown--;
+		ticksSincePlayerSeen++;
 		switch (crueltyMode) {
 			case ROAM -> {
 				if (alertCollide && collisionCooldown <= 0) {
 					// stop if we hit a wall
-					core().setPathingTarget(position().toVector3f());
-					collisionCooldown = 20;
+					core().setPathingTarget(position().toVector3f().add(0, 0, 1));
+					collisionCooldown = 20 * 20;
+					modeTicks = 20 * 110; // hacky,  makes  it wait 10 seconds before new path
 				} else if (modeTicks > 20 * 120) {
 					modeTicks = 0;
 					core().setPathingTarget(new Vector3f((float) getRandomX(1000), (float) getY() + 50, (float) getRandomZ(1000)));
@@ -226,15 +228,15 @@ public class MechaEntity extends Entity {
 					fixation = player.getUUID();
 					modeTicks = 0;
 					if (ticksSincePlayerSeen >= 20 * 20) {
-						core().setPathingTarget(position().toVector3f());
+						core().setPathingTarget(position().toVector3f().add(0, 0, 1));
 					}
-					playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 7, AudioUtil.randomizedPitch(random, 1, 0.2f));
+					playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 11, AudioUtil.randomizedPitch(random, 1, 0.2f));
 				}
 			}
 			case SPY -> {
 				if (modeTicks < SPY_TICKS) return;
-				if (fixation != null && level().getPlayerByUUID(fixation).hasLineOfSight(this) && validCrueltyTarget(level().getPlayerByUUID(fixation))) {
-					playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 7, AudioUtil.randomizedPitch(random, 1, 0.2f));
+				if (fixation != null && level().getPlayerByUUID(fixation) != null && level().getPlayerByUUID(fixation).hasLineOfSight(this) && validCrueltyTarget(level().getPlayerByUUID(fixation))) {
+					playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALLGOOD, 11, AudioUtil.randomizedPitch(random, 1, 0.2f));
 					crueltyMode = CrueltyMode.KILL;
 					modeTicks = 0;
 					ticksSincePlayerSeen = 0;
@@ -254,7 +256,6 @@ public class MechaEntity extends Entity {
 				var targetPlayer = level().getPlayerByUUID(fixation);
 				if (targetPlayer != null && validCrueltyTarget(targetPlayer)) {
 					if (!targetPlayer.hasLineOfSight(this)) {
-						ticksSincePlayerSeen++;
 						core().clearAllOrdnanceTargets();
 						if (ticksSincePlayerSeen > KILL_TICKS) {
 							crueltyMode = CrueltyMode.ROAM;
