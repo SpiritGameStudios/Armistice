@@ -236,13 +236,13 @@ public class MechaEntity extends Entity {
 					if (ticksSincePlayerSeen >= 20 * 20) {
 						core().setPathingTarget(position().toVector3f().add(0, 0, 1));
 					}
-					playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 11, AudioUtil.randomizedPitch(random, 1, 0.2f));
+					playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALERT, 7, AudioUtil.randomizedPitch(random, 1, 0.2f));
 				}
 			}
 			case SPY -> {
 				if (modeTicks < SPY_TICKS) return;
 				if (fixation != null && level().getPlayerByUUID(fixation) != null && level().getPlayerByUUID(fixation).hasLineOfSight(this) && validCrueltyTarget(level().getPlayerByUUID(fixation))) {
-					playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALLGOOD, 11, AudioUtil.randomizedPitch(random, 1, 0.2f));
+					playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALLGOOD, 7, AudioUtil.randomizedPitch(random, 1, 0.2f));
 					crueltyMode = CrueltyMode.KILL;
 					modeTicks = 0;
 					ticksSincePlayerSeen = 0;
