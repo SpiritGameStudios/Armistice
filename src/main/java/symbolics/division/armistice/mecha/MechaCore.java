@@ -30,6 +30,7 @@ import symbolics.division.armistice.registry.ArmisticeSoundEventRegistrar;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import static symbolics.division.armistice.mecha.MechaEntity.BARREL_ROTATIONS;
@@ -93,6 +94,7 @@ public class MechaCore implements Part {
 		chassis.clientTick(tickDelta);
 
 		Player player = Minecraft.getInstance().player;
+		Objects.requireNonNull(player);
 
 		if (entity.hasPassenger(player)) {
 			// play interior sound

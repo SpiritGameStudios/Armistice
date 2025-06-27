@@ -41,7 +41,7 @@ public class ArtilleryShell extends AbstractOrdnanceProjectile {
 	}
 
 	@Override
-	protected void onHit(HitResult result) {
+	protected void onHit(@NotNull HitResult result) {
 		super.onHit(result);
 		if (level().isClientSide) {
 			for (int i = 0; i < 40; i++) {

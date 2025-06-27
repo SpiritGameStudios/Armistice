@@ -1,14 +1,17 @@
 package symbolics.division.armistice.registry;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import symbolics.division.armistice.Armistice;
-import symbolics.division.armistice.component.*;
+import symbolics.division.armistice.component.ArmorSchematicComponent;
+import symbolics.division.armistice.component.ChassisSchematicComponent;
+import symbolics.division.armistice.component.HullSchematicComponent;
+import symbolics.division.armistice.component.OrdnanceSchematicComponent;
+import symbolics.division.armistice.component.SkinComponent;
 import symbolics.division.armistice.mecha.MechaSkin;
 import symbolics.division.armistice.mecha.schematic.ArmorSchematic;
 import symbolics.division.armistice.mecha.schematic.ChassisSchematic;
@@ -24,13 +27,27 @@ public final class ArmisticeCreativeModeTabRegistrar implements CreativeModeTabR
 		.title(Component.translatable("itemGroup.armistice.schematics"))
 		.icon(ArmisticeItemRegistrar.MECHA_SCHEMATIC::getDefaultInstance)
 		.displayItems((parameters, output) -> {
-			RegistryAccess access = Minecraft.getInstance().getConnection().registryAccess();
+			HolderLookup.Provider holders = parameters.holders();
 
-			List<ArmorSchematic> armorSchematics = access.registryOrThrow(ArmisticeRegistries.ARMOR_KEY).stream().toList();
-			List<HullSchematic> hullSchematics = access.registryOrThrow(ArmisticeRegistries.HULL_KEY).stream().toList();
-			List<ChassisSchematic> chassisSchematics = access.registryOrThrow(ArmisticeRegistries.CHASSIS_KEY).stream().toList();
+			List<ArmorSchematic> armorSchematics = holders.lookupOrThrow(ArmisticeRegistries.ARMOR_KEY)
+				.listElements()
+				.map(Holder.Reference::value)
+				.toList();
+
+			List<HullSchematic> hullSchematics = holders.lookupOrThrow(ArmisticeRegistries.HULL_KEY)
+				.listElements()
+				.map(Holder.Reference::value)
+				.toList();
+			List<ChassisSchematic> chassisSchematics = holders.lookupOrThrow(ArmisticeRegistries.CHASSIS_KEY)
+				.listElements()
+				.map(Holder.Reference::value)
+				.toList();
+
 			List<OrdnanceSchematic> ordnanceSchematics = ArmisticeRegistries.ORDNANCE.stream().toList();
-			List<MechaSkin> skins = access.registryOrThrow(ArmisticeRegistries.SKIN_KEY).stream()
+
+			List<MechaSkin> skins = holders.lookupOrThrow(ArmisticeRegistries.SKIN_KEY)
+				.listElements()
+				.map(Holder.Reference::value)
 				.filter(skin -> !skin.id().equals(Armistice.id("default")))
 				.toList();
 

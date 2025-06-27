@@ -100,7 +100,10 @@ public class MechaPlayerControl {
 	public static Vec3 tpos = null;
 
 	private static void onRightClick(LocalPlayer player, MechaEntity mecha, int action, int modifiers) {
-		HitResult raycast = Minecraft.getInstance().getCameraEntity().pick(200, 0, false);
+		Entity cameraEntity = Minecraft.getInstance().getCameraEntity();
+		if (cameraEntity == null) return;
+
+		HitResult raycast = cameraEntity.pick(200, 0, false);
 
 		boolean cancel = false;
 

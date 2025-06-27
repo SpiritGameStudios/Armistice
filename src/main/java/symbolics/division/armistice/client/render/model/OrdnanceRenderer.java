@@ -28,6 +28,7 @@ import symbolics.division.armistice.mecha.ordnance.HitscanGunOrdnance;
 import symbolics.division.armistice.model.BBModelTree;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @OnlyIn(value = Dist.CLIENT)
@@ -93,7 +94,7 @@ public class OrdnanceRenderer {
 
 	public void render(MechaEntity mecha, OrdnancePart ordnance, float tickDelta, PoseStack pose, MultiBufferSource bufferSource, int color, int packedLight, int packedOverlay) {
 		if (!ArmisticeClientDebugValues.showOrdnance) return;
-		boolean riding = MechaOverlayRenderer.shouldProcessMechaOverlay() && mecha.hasPassenger(Minecraft.getInstance().player);
+		boolean riding = MechaOverlayRenderer.shouldProcessMechaOverlay() && mecha.hasPassenger(Objects.requireNonNull(Minecraft.getInstance().player));
 		pose.pushPose();
 		{
 			var baseRotation = mecha.core().model().ordnanceInfo(ordnance, mecha.core()).mountPoint().rotationInfo().bbRotation()

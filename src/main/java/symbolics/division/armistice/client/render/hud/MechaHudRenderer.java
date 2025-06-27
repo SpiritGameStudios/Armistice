@@ -168,21 +168,6 @@ public final class MechaHudRenderer {
 	}
 
 	private static void renderOverlay(DrawHelper drawHelper, Entity mecha) {
-		int textureW = 600;
-		int textureH = 600;
-		int gw = drawHelper.guiGraphics().guiWidth();
-		int gh = drawHelper.guiGraphics().guiHeight();
-		float cx = gw / 2;
-		float cy = gh / 2;
-
-		// vertical should map to inner plus some change
-		int innerDiameter = 420;
-		int uOffset = (textureW - innerDiameter) / 2;
-		int vOffset = (textureH - innerDiameter) / 2;
-
-		float maxsize = Math.min(gh, gw);
-
-
 		drawHelper.guiGraphics().blit(
 			CAM_OVERLAY,
 			0, drawHelper.guiGraphics().guiWidth() - (600 / drawHelper.guiGraphics().guiWidth()),
@@ -191,7 +176,6 @@ public final class MechaHudRenderer {
 			600, 600,
 			600, 600
 		);
-
 
 		resetColor();
 	}

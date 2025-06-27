@@ -28,7 +28,11 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import symbolics.division.armistice.Armistice;
-import symbolics.division.armistice.mecha.schematic.*;
+import symbolics.division.armistice.mecha.schematic.ArmorSchematic;
+import symbolics.division.armistice.mecha.schematic.ChassisSchematic;
+import symbolics.division.armistice.mecha.schematic.HullSchematic;
+import symbolics.division.armistice.mecha.schematic.MechaSchematic;
+import symbolics.division.armistice.mecha.schematic.OrdnanceSchematic;
 import symbolics.division.armistice.registry.ArmisticeEntityDataSerializerRegistrar;
 import symbolics.division.armistice.registry.ArmisticeOrdnanceRegistrar;
 import symbolics.division.armistice.registry.ArmisticeRegistries;
@@ -190,7 +194,7 @@ public class MechaEntity extends Entity {
 	}
 
 	@Override
-	protected Component getTypeName() {
+	protected @NotNull Component getTypeName() {
 		return Component.translatable((morality ? "armistice.entity.mecha.peace_engine" : "armistice.entity.mecha.cruelty_engine"));
 	}
 
@@ -241,15 +245,17 @@ public class MechaEntity extends Entity {
 			}
 			case SPY -> {
 				if (modeTicks < SPY_TICKS) return;
-				if (fixation != null && level().getPlayerByUUID(fixation) != null && level().getPlayerByUUID(fixation).hasLineOfSight(this) && validCrueltyTarget(level().getPlayerByUUID(fixation))) {
+				Player player = level().getPlayerByUUID(fixation);
+
+				if (fixation != null && player != null && player.hasLineOfSight(this) && validCrueltyTarget(player)) {
 					playSound(ArmisticeSoundEventRegistrar.ENTITY$MECHA$ALLGOOD, 7, AudioUtil.randomizedPitch(random, 1, 0.2f));
 					crueltyMode = CrueltyMode.KILL;
 					modeTicks = 0;
 					ticksSincePlayerSeen = 0;
 				} else {
-					if (fixation != null && level().getPlayerByUUID(fixation) != null) {
+					if (fixation != null && player != null) {
 						// walk  in  direction of last seen player
-						core().setPathingTarget(level().getPlayerByUUID(fixation).position().subtract(position()).scale(1000).add(position()).toVector3f());
+						core().setPathingTarget(player.position().subtract(position()).scale(1000).add(position()).toVector3f());
 						modeTicks = 0;
 						collisionCooldown = 20 * 20;
 					} else {
@@ -300,7 +306,7 @@ public class MechaEntity extends Entity {
 			}
 		} else {
 			setPos(pos);
-			if (level().getBlockStates(getBoundingBox()).filter(b -> !b.isAir()).findFirst().isPresent()) {
+			if (level().getBlockStates(getBoundingBox()).anyMatch(b -> !b.isAir())) {
 				level().explode(this, pos.x, pos.y, pos.z, 20, Level.ExplosionInteraction.MOB);
 			}
 		}

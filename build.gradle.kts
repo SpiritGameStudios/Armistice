@@ -50,7 +50,7 @@ repositories {
 		filter { includeGroup("maven.modrinth") }
 	}
 
-	maven("https://maven.callmeecho.dev/releases")
+	maven("https://maven.spiritstudios.dev/releases")
 
 	mavenLocal()
 }

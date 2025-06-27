@@ -21,8 +21,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
-
 public class ArmisteelChainBlock extends RotatedPillarBlock implements SimpleWaterloggedBlock {
 	public static final MapCodec<ArmisteelChainBlock> CODEC = simpleCodec(ArmisteelChainBlock::new);
 
@@ -58,11 +56,9 @@ public class ArmisteelChainBlock extends RotatedPillarBlock implements SimpleWat
 		};
 	}
 
-	@Nullable
 	@Override
-	public BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
+	public @NotNull BlockState getStateForPlacement(@NotNull BlockPlaceContext context) {
 		BlockState defaultValue = super.getStateForPlacement(context);
-		if (defaultValue == null) return null;
 
 		return defaultValue.setValue(
 			WATERLOGGED,
