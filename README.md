@@ -1,5 +1,4 @@
 # Armistice
-
 Machines from tomorrow, bringing peace to today
 
 <img alt="modfest 1.21" height="40" src="https://badger-api-staging.worldwidepixel.ca/compact?gradientStart=4B2018&gradientEnd=220D09&lineOne=Made%20for&lineTwo=ModFest+1.21&colourOne=FFFFFF&colourTwo=de634c&iconUrl=https://raw.githubusercontent.com/ModFest/art/refs/heads/v2/icon/svg/1.21/transparent.svg">
@@ -9,20 +8,23 @@ Machines from tomorrow, bringing peace to today
 
 ## 📖 About
 
-In their time they were called Cruelty Engines: Invincible machine gods in humanity's far future, born from greed and
-spite, unshackled from dominion; possessing a singleminded devotion to annihilation.
+In their time they were called Cruelty Engines: Invincible machine gods in humanity's far future, born from greed and spite, unshackled from dominion; possessing a singleminded devotion to annihilation. 
 
 The survivors moved underground--living in fear of the machines that now ruled the earth.
 
-Among the endlass flotsam and jetsam washed up by the stellar winds and temporal tides, their wreckage has been
-rediscovered. The great hollow shells were repurposed not for the destruction of life, but rather its preservation. In
-this time beyond time, they are known as Peace Engines for the inscription found scratched inside in desperate hand: "
-Let those who read the words in this engine live in a world that only knows peace"
+Among the endless flotsam and jetsam washed up by the stellar winds and temporal tides, their wreckage has been rediscovered. The great hollow shells were repurposed not for the destruction of life, but rather its preservation. In this time beyond time, they are known as Peace Engines for the inscription found scratched inside in desperate hand: "Let those who read the words in this engine live in a world that only knows peace"
+
+<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/JvvKrkzeFM0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+
+## 🎮 Gameplay
+
+Armistice is currently in early Alpha. To create a Peace Engine, craft it from schematics of armor, chassis, hull and ordnance.
+
+To create a Cruelty Engine, move near a Peace Engine and run `/data merge @n[type=armistice:mecha] {morality:0b}`
+
 
 ## 📚 Citations
 
-Aristidou, A., & Lasenby, J. (2011). FABRIK: A fast, iterative solver for the Inverse Kinematics problem. Graphical
-Models, 73(5), 243–260. doi:10.1016/j.gmod.2011.05.003
+Aristidou, A., & Lasenby, J. (2011). FABRIK: A fast, iterative solver for the Inverse Kinematics problem. Graphical Models, 73(5), 243–260. doi:10.1016/j.gmod.2011.05.003
 
-Lansley, A., Vamplew, P., Smith, P., & Foale, C. (2016). Caliko: An inverse kinematics software library implementation
-of the FABRIK algorithm. Journal of Open Research Software, 4(1).
+Lansley, A., Vamplew, P., Smith, P., & Foale, C. (2016). Caliko: An inverse kinematics software library implementation of the FABRIK algorithm. Journal of Open Research Software, 4(1).
